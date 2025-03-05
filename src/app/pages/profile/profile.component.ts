@@ -7,7 +7,8 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { FileUploadModule, FileUploadEvent } from 'primeng/fileupload';
-import { User, UserRole } from '../../model/User';
+import { User } from '../../model/User';
+import { UserRole } from '../../model/UserRole';
 import { AuthService } from '../service/auth.service';
 import { FluidModule } from 'primeng/fluid';
 import { Avatar } from 'primeng/avatar';
@@ -22,8 +23,8 @@ import { InputMask } from 'primeng/inputmask';
 export class ProfileComponent implements OnInit {
     userForm!: FormGroup;
     userRoles = [
-        { label: 'Individual', value: UserRole.particulier },
-        { label: 'Business', value: UserRole.entreprise }
+        { label: 'MEDICINE', value: UserRole.MEDICINE },
+        { label: 'PATIENT', value: UserRole.PATIENT }
     ];
     maxBirthDate = new Date();
     user?: User;
@@ -78,7 +79,7 @@ export class ProfileComponent implements OnInit {
                 ville: ['', Validators.required],
                 codePostal: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]]
             }),
-            role: [UserRole.particulier, Validators.required],
+            role: [UserRole.PATIENT, Validators.required],
             photoProfil: ['']
         });
     }
@@ -135,10 +136,7 @@ export class ProfileComponent implements OnInit {
                 next: (response) => {
                     this.user = response;
                     this.isEditMode = false;
-                    this.authService.storeAuthData({
-                        user: updatedUser,
-                        token: this.authService.getToken() as string
-                    });
+                    
                 },
                 error: (error) => {
                     console.error('Error updating profile:', error);

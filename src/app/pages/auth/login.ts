@@ -11,11 +11,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
-import { AuthService } from '../service/auth.service';
-import { LogoComponent } from '../../shared/logo/logo.component';
-import { User as UserType  } from '../../model/User';
+import { AuthService, LoginResponse } from '../service/auth.service';
+import { User as UserType } from '../../model/User';
 import { UserRole } from '../../model/UserRole';
-
+import { LogoComponent } from '../../shared/componenets/logo/logo.component';
 
 @Component({
     selector: 'app-login',
@@ -71,8 +70,8 @@ export class Login implements OnInit {
     constructor(
         private fb: FormBuilder,
         private authService: AuthService,
-        private messageService: MessageService,
-        private router: Router
+        private router: Router,
+        private messageService: MessageService
     ) {
         this.loginForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
@@ -107,24 +106,21 @@ export class Login implements OnInit {
         }
 
         this.authService.login(email, password).subscribe({
-            next: (data: UserType) => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Success',
-                    detail: 'Logged in successfully'
-                });
-                this.authService.storeAuthData({ user: data, token: 'example of token' });
+            next: (res: { data: LoginResponse }) => {
+                this.authService.storeAuthData(res.data);
                 this.router.navigate(['/dashboard']);
             },
             error: (error) => {
+                console.error('Login Error:', error);
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: error.message || 'Login failed'
+                    summary: 'Login Failed',
+                    detail: error.message || 'An unexpected error occurred during login.'
                 });
-                this.loading = false;
             },
-            complete: () => (this.loading = false)
+            complete: () => {
+                this.loading = false;
+            }
         });
     }
 

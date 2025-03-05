@@ -1,27 +1,39 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { tap, catchError, map } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { throwError } from 'rxjs';
 
-import { User as UserType , UserRole } from '../../model/User';
+import { User as UserType } from '../../model/User';
+import { UserRole } from '../../model/UserRole';
 
-interface LoginResponse {
-    user: Omit<UserType, 'password'>;
-    token: string;
+export interface LoginResponse {
+    user: Omit<UserType, 'password'>; 
+    refreshToken: string; 
+    accessToken: string; 
+    refreshExpiresIn: number;
+}
+
+export interface RegisterRequest {
+    password: string;
+    name: string;
+    email: string;
+    role: UserRole;
+    phoneNumber: string;
 }
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class AuthService {
     private currentUserSubject = new BehaviorSubject<Partial<UserType> | null>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
-    private readonly TOKEN_KEY = 'auth_token';
+    private readonly ACCESS_TOKEN_KEY = 'access_token';
+    private readonly REFRESH_TOKEN_KEY = 'refresh_token';
     private readonly USER_KEY = 'current_user';
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-    public isAuthenticated$ = this.isAuthenticatedSubject.asObservable()
+    public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
     constructor(
         private http: HttpClient,
@@ -32,73 +44,82 @@ export class AuthService {
 
     private loadUserFromStorage(): void {
         const storedUser = localStorage.getItem(this.USER_KEY);
-        const storedToken = localStorage.getItem(this.TOKEN_KEY);
+        const storedAccessToken = localStorage.getItem(this.ACCESS_TOKEN_KEY);
+        const storedRefreshToken = localStorage.getItem(this.REFRESH_TOKEN_KEY);
 
-        if (storedUser && storedToken) {
+        if (storedUser && storedAccessToken && storedRefreshToken) {
             try {
                 const user = JSON.parse(storedUser);
                 this.currentUserSubject.next(user);
-                this.isAuthenticatedSubject.next(true);  
+                this.isAuthenticatedSubject.next(true);
             } catch (error) {
                 this.logout();
             }
         }
     }
 
-    login(email: string, password: string): Observable<UserType> {
-        return this.http.get<UserType[]>('/users?email=' + email + "&password=" + password).pipe(
-            map(users => {
-                if (users.length === 0) {
-                    throw { status: 404, message: 'The credentials do not match our records.' };
-                }
-                return users[0];
+    login(email: string, password: string): Observable<{data : LoginResponse}> {
+        return this.http.post<{data : LoginResponse}>('/auth/login', { email, password }).pipe(
+            tap((response) => {
+                this.storeAuthData(response.data); 
             }),
-            catchError(error => {
-                return throwError(error);
+            catchError((error) => {
+                this.logout(); 
+                return throwError(() => error);
             })
         );
     }
 
-    register(userData: UserType): Observable<UserType> {
-        return this.http.post<UserType>(`/users`, userData);
+    register(userData: RegisterRequest): Observable<UserType> {
+        return this.http.post<UserType>('/auth/signup', userData);
     }
 
     logout(): void {
-        this.http.post(`/auth/logout`, {}).subscribe({
+        this.http.post('/auth/logout', {}).subscribe({
             complete: () => {
-                localStorage.removeItem(this.TOKEN_KEY);
-                localStorage.removeItem(this.USER_KEY);
-                this.currentUserSubject.next(null);
+                this.clearAuthData(); // Clear tokens and user data
                 this.router.navigate(['/auth/login']);
-            }
+            },
         });
     }
 
     isAuthenticated(): boolean {
-        return !!this.getToken() && !!this.currentUserSubject.value;
+        return !!this.getAccessToken() && !!this.currentUserSubject.value;
     }
 
-    getToken(): string | null {
-        return localStorage.getItem(this.TOKEN_KEY);
+    getAccessToken(): string | null {
+        return localStorage.getItem(this.ACCESS_TOKEN_KEY);
     }
 
-    getAuthUser(){
-        return this.currentUser$
+    getRefreshToken(): string | null {
+        return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+    }
+
+    getAuthUser(): Observable<Partial<UserType> | null> {
+        return this.currentUser$;
     }
 
     public storeAuthData(authData: LoginResponse): void {
-        localStorage.setItem(this.TOKEN_KEY, authData.token);
+        localStorage.setItem(this.ACCESS_TOKEN_KEY, authData.accessToken);
+        localStorage.setItem(this.REFRESH_TOKEN_KEY, authData.refreshToken);
         localStorage.setItem(this.USER_KEY, JSON.stringify(authData.user));
         this.currentUserSubject.next(authData.user);
+        this.isAuthenticatedSubject.next(true);
+    }
+
+    private clearAuthData(): void {
+        localStorage.removeItem(this.ACCESS_TOKEN_KEY);
+        localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+        localStorage.removeItem(this.USER_KEY);
+        this.currentUserSubject.next(null);
+        this.isAuthenticatedSubject.next(false);
     }
 
     updateProfile(userId: string, updates: UserType): Observable<UserType> {
-        return this.http.put<UserType>(`/users/${userId}`, updates)
+        return this.http.put<UserType>(`/users/${userId}`, updates);
     }
 
     resetPassword(email: string): Observable<{ success: boolean }> {
-        return this.http.post<{ success: boolean }>(`/auth/reset-password`, { email });
+        return this.http.post<{ success: boolean }>('/auth/reset-password', { email });
     }
-
-    
 }
