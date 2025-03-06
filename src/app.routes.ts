@@ -6,9 +6,12 @@ import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
 import { ProfileComponent } from './app/pages/profile/profile.component';
 import { getAuthUserResolver } from './app/core/resolvers/get-auth-user.resolver';
+import { DoctorAppointmentComponent } from './app/pages/doctor-appointment/doctor-appointment.component';
 
 export const appRoutes: Routes = [
     { path: '', component: Landing },
+    { path: 'BookApointment', component: DoctorAppointmentComponent },
+
     {
         path: 'dashboard',
         component: AppLayout,
