@@ -68,7 +68,7 @@ export class DoctorAppointmentComponent {
 
   // Handle date click (create a new event)
   handleDateClick(arg: any) {
-    const title = prompt('Enter appointment title:');
+    // const title = prompt('Enter appointment title:');
     if (title) {
       const newEvent: EventInput = {
         title,
