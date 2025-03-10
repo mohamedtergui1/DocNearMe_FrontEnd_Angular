@@ -70,8 +70,7 @@ export class Login implements OnInit {
     constructor(
         private fb: FormBuilder,
         private authService: AuthService,
-        private router: Router,
-        private messageService: MessageService
+        private router: Router
     ) {
         this.loginForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
@@ -106,21 +105,15 @@ export class Login implements OnInit {
         }
 
         this.authService.login(email, password).subscribe({
-            next: (res: { data: LoginResponse }) => {
+            next: (res:{data: LoginResponse}) => {
                 this.authService.storeAuthData(res.data);
-                this.router.navigate(['/dashboard']);
+
+                this.router.navigate([ res.data.user.role == UserRole.MEDICINE ?  'medcine/dashboard' :  'PATIENT/dashboard']);
             },
             error: (error) => {
-                console.error('Login Error:', error);
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Login Failed',
-                    detail: error.message || 'An unexpected error occurred during login.'
-                });
+
             },
-            complete: () => {
-                this.loading = false;
-            }
+            complete: () => (this.loading = false)
         });
     }
 

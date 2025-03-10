@@ -9,11 +9,15 @@ import { MessageService } from 'primeng/api';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const authService = inject(AuthService);
     const messageService = inject(MessageService);
-
-    const newReq = req.clone({
-        url: environment.apiUrl + req.url,
-        headers: req.headers.set('Authorization', authService.getAccessToken() || '')
-    });
+    const header = authService.getAccessToken()
+        ? {
+              url: environment.apiUrl + req.url,
+              headers: req.headers.set('Authorization', 'Bearer ' + authService.getAccessToken())
+          }
+        : {
+              url: environment.apiUrl + req.url
+          };
+    const newReq = req.clone(header);
 
     return next(newReq).pipe(
         tap((response: any) => {
@@ -24,16 +28,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                     summary: 'Success',
                     detail: response.body.message
                 });
-                
             }
-
         }),
         catchError((error: HttpErrorResponse) => {
-            console.log('Error:', error);
+            console.log('Error:', error.error);
             messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: error.message || 'An unexpected error occurred.'
+                detail: error?.error.message || 'An unexpected error occurred.'
             });
             return throwError(() => error);
         })
