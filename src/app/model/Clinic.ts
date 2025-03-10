@@ -1,9 +1,16 @@
+import { Category } from "./Category";
+import { DayOfWeek } from "./DayOfWeek";
 import { User } from "./User";
+import { VacationPeriod } from "./VacationPeriod";
 
 export interface Clinic {
-    id: string;
-    clinicOwnerName: User;
+    id: string;           
     clinicName: string;
+    clinicOwner: User;    
     clinicAddress: string;
-    categoryName: string;
-}
+    category: Category;
+    startTime: string;    
+    stopTime: string;     
+    workingDays: DayOfWeek[];
+    vacations: VacationPeriod[];
+  }
