@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
                     fill="var(--primary-color)"
                 />
             </svg>
-            <h4 class="font-medium text-3xl text-surface-900 dark:text-surface-0">HealthConsult</h4>
+            <h4 class="font-medium text-3xl text-surface-900 dark:text-surface-0">DocNearMe</h4>
         </a>
     `
 })
