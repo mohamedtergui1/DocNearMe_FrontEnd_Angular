@@ -9,10 +9,12 @@ import { getAuthUserResolver } from './app/core/resolvers/get-auth-user.resolver
 import { DoctorAppointmentComponent } from './app/pages/doctor-appointment/doctor-appointment.component';
 import { getClinicForAuthUserResolver } from './app/core/resolvers/get-clinic-for-auth-user.resolver';
 import { CreateClinicComponent } from './app/pages/create-clinic/create-clinic.component';
+import { BookAppointmentComponent } from './app/pages/book-appointment/book-appointment.component';
 
 export const appRoutes: Routes = [
     { path: '', component: Landing },
-    { path: 'BookApointment', component: DoctorAppointmentComponent },
+    { path: 'bookApointment/:clinic_id', component: DoctorAppointmentComponent },
+    { path: 'ClinicListApointment', component: BookAppointmentComponent },
     {
         path : 'create-clinic' , component: CreateClinicComponent
     }

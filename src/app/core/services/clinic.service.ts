@@ -25,4 +25,12 @@ export class ClinicService {
   createClinic(clinic:ClinicRequest): Observable<Clinic> {
       return this.api.post<Clinic>("/clinic",clinic)
   }
+
+  allClinics(){
+    return this.api.get("/clinic")
+  }
+
+  getClinicById(id:string){
+    return this.api.get("/clinic/" + id)
+  }
 }

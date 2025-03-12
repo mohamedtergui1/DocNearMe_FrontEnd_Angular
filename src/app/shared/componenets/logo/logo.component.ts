@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
     selector: 'app-logo',
     imports: [],
     template: `
-        <a (click)="navigateToHome()" class="flex flex-wrap items-center justify-center md:justify-start md:mb-0 mb-6 cursor-pointer">
+        <a (click)="navigateToHome()" class="flex  pr-10 items-center justify-center md:justify-start md:mb-0  cursor-pointer">
             <svg viewBox="0 0 54 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-14 mr-2">
                 <path
                     fill-rule="evenodd"

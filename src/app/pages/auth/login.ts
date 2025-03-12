@@ -15,52 +15,53 @@ import { AuthService, LoginResponse } from '../service/auth.service';
 import { User as UserType } from '../../model/User';
 import { UserRole } from '../../model/UserRole';
 import { LogoComponent } from '../../shared/componenets/logo/logo.component';
+import { LayoutComponent } from '../../shared/componenets/layout/layout.component';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, HttpClientModule, ToastModule, ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator, LogoComponent],
+    imports: [CommonModule, ReactiveFormsModule, ToastModule, ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, LogoComponent, LayoutComponent],
     providers: [MessageService],
     template: `
-        <app-floating-configurator />
-        <p-toast></p-toast>
-        <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
-            <div class="flex flex-col items-center justify-center">
-                <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
-                    <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
-                        <div class="text-center mb-8">
-                            <app-logo />
-                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to PrimeLand!</div>
-                            <span class="text-muted-color font-medium">Sign in to continue</span>
-                        </div>
-
-                        <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
-                            <div class="flex flex-col gap-2">
-                                <div>
-                                    <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                                    <input pInputText id="email1" type="email" placeholder="Email address" class="w-full md:w-[30rem] mb-2" formControlName="email" />
-                                    <small *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.touched" class="p-error block mb-4">Email is required</small>
-                                    <small *ngIf="loginForm.get('email')?.errors?.['email'] && loginForm.get('email')?.touched" class="p-error block mb-4">Invalid email format</small>
-                                </div>
-                                <div>
-                                    <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                                    <p-password id="password1" formControlName="password" placeholder="Password" [toggleMask]="true" styleClass="mb-2" [fluid]="true" [feedback]="false"></p-password>
-                                    <small *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched" class="p-error block mb-4">Password is required</small>
-                                </div>
-                                <div class="flex items-center justify-between mt-2 mb-8 gap-8">
-                                    <div class="flex items-center">
-                                        <p-checkbox formControlName="rememberMe" id="rememberme1" binary class="mr-2"></p-checkbox>
-                                        <label for="rememberme1">Remember me</label>
-                                    </div>
-                                    <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
-                                </div>
-                                <p-button label="Sign In" styleClass="w-full" type="submit" [loading]="loading"></p-button>
+        <app-layout>
+            <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden py-20 " selector>
+                <div class="flex flex-col items-center justify-center">
+                    <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
+                        <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
+                            <div class="text-center mb-8">
+                                <app-logo />
+                                <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to PrimeLand!</div>
+                                <span class="text-muted-color font-medium">Sign in to continue</span>
                             </div>
-                        </form>
+
+                            <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+                                <div class="flex flex-col gap-2">
+                                    <div>
+                                        <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
+                                        <input pInputText id="email1" type="email" placeholder="Email address" class="w-full md:w-[30rem] mb-2" formControlName="email" />
+                                        <small *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.touched" class="p-error block mb-4">Email is required</small>
+                                        <small *ngIf="loginForm.get('email')?.errors?.['email'] && loginForm.get('email')?.touched" class="p-error block mb-4">Invalid email format</small>
+                                    </div>
+                                    <div>
+                                        <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
+                                        <p-password id="password1" formControlName="password" placeholder="Password" [toggleMask]="true" styleClass="mb-2" [fluid]="true" [feedback]="false"></p-password>
+                                        <small *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched" class="p-error block mb-4">Password is required</small>
+                                    </div>
+                                    <div class="flex items-center justify-between mt-2 mb-8 gap-8">
+                                        <div class="flex items-center">
+                                            <p-checkbox formControlName="rememberMe" id="rememberme1" binary class="mr-2"></p-checkbox>
+                                            <label for="rememberme1">Remember me</label>
+                                        </div>
+                                        <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
+                                    </div>
+                                    <p-button label="Sign In" styleClass="w-full" type="submit" [loading]="loading"></p-button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </app-layout>
     `
 })
 export class Login implements OnInit {
@@ -105,14 +106,12 @@ export class Login implements OnInit {
         }
 
         this.authService.login(email, password).subscribe({
-            next: (res:{data: LoginResponse}) => {
+            next: (res: { data: LoginResponse }) => {
                 this.authService.storeAuthData(res.data);
 
-                this.router.navigate([ res.data.user.role == UserRole.MEDICINE ?  'medcine/dashboard' :  'PATIENT/dashboard']);
+                this.router.navigate([res.data.user.role == UserRole.MEDICINE ? 'medcine/dashboard' : 'PATIENT/dashboard']);
             },
-            error: (error) => {
-
-            },
+            error: (error) => {},
             complete: () => (this.loading = false)
         });
     }

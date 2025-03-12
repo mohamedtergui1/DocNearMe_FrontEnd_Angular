@@ -84,7 +84,7 @@ import { SkeletonModule } from 'primeng/skeleton'; // For loading state
                   <div class="col-4 font-bold">Address:</div>
                   <div class="col-8">{{ clinic.clinicAddress }}</div>
                   <div class="col-4 font-bold">Category:</div>
-                  <div class="col-8">{{ clinic.category.name || 'N/A' }}</div>
+                  <div class="col-8">{{ clinic.categoryName || 'N/A' }}</div>
                 </div>
               </p-fieldset>
             </div>

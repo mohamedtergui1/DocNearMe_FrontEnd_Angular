@@ -35,7 +35,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: error?.error.message || 'An unexpected error occurred.'
+                detail: error?.error?.message || 'An unexpected error occurred.'
             });
             return throwError(() => error);
         })

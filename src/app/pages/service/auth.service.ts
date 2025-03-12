@@ -75,12 +75,13 @@ export class AuthService {
     }
 
     logout(): void {
-        this.http.post('/auth/logout', {}).subscribe({
-            complete: () => {
-                this.clearAuthData(); // Clear tokens and user data
-                this.router.navigate(['/auth/login']);
-            },
-        });
+        this.clearAuthData(); 
+        this.router.navigate(['/auth/login']);
+        // this.http.post('/auth/logout', {}).subscribe({
+        //     complete: () => {
+       
+        //     },
+        // });
     }
 
     isAuthenticated(): boolean {
