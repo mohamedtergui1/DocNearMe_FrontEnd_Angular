@@ -21,7 +21,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
     return next(newReq).pipe(
         tap((response: any) => {
-            console.log('Response:', response);
+            
             if (response.body && response.body.message) {
                 messageService.add({
                     severity: 'success',
@@ -31,7 +31,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             }
         }),
         catchError((error: HttpErrorResponse) => {
-            console.log('Error:', error.error);
             messageService.add({
                 severity: 'error',
                 summary: 'Error',
