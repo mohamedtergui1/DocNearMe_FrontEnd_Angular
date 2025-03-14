@@ -41,53 +41,8 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
         InputTextModule, // Add InputTextModule
         FormsModule
     ],
-    providers: [MessageService, LayoutComponent],
-    template: `
-        <app-layout>
-            <div class="p-4" selector>
-                <app-floating-configurator />
-                <h1 class="text-xl font-bold mb-4">Appointment Scheduler - {{ clinic?.clinicName }}</h1>
-
-                <!-- FullCalendar Component -->
-                <div style="70vh" class="py-12 overflow-y-scroll ">
-                    <full-calendar [options]="calendarOptions"></full-calendar>
-                </div>
-
-                <!-- Create Appointment Dialog -->
-                <p-dialog header="Create Appointment" [(visible)]="displayAppointmentDialog" [modal]="true" [style]="{ width: '650px' }" [draggable]="false" [resizable]="false">
-                    <form (ngSubmit)="createAppointment()">
-                        <div class="p-fluid">
-                            <div class="p-field">
-                                <label for="subject">Subject</label>
-                                <input id="subject" type="text" pInputText [(ngModel)]="newAppointment.subject" name="subject" required />
-                            </div>
-                        </div>
-                        <div class="p-dialog-footer">
-                            <button type="button" pButton label="Cancel" icon="pi pi-times" (click)="displayAppointmentDialog = false" class="p-button-text"></button>
-                            <button type="submit" pButton label="Save" icon="pi pi-check" class="p-button-success"></button>
-                        </div>
-                    </form>
-                </p-dialog>
-
-                <!-- Edit Appointment Dialog -->
-                <p-dialog (onHide)="cancelEdit()" header="Edit Appointment" [(visible)]="displayEditAppointmentDialog" [modal]="true" [style]="{ width: '650px' }" [draggable]="false" [resizable]="false">
-                    <form (ngSubmit)="updateAppointment()">
-                        <div class="p-fluid">
-                            <div class="p-field">
-                                <label for="editSubject">Subject</label>
-                                <input id="editSubject" type="text" pInputText [(ngModel)]="selectedAppointment.subject" name="editSubject" required />
-                            </div>
-                        </div>
-                        <div class="p-dialog-footer">
-                            <button type="button" pButton label="Delete" icon="pi pi-trash" (click)="deleteAppointment()" class="p-button-danger"></button>
-                            <button type="button" pButton label="Cancel" icon="pi pi-times" (click)="cancelEdit()" class="p-button-text"></button>
-                            <button type="submit" pButton label="Save" icon="pi pi-check" class="p-button-success"></button>
-                        </div>
-                    </form>
-                </p-dialog>
-            </div>
-        </app-layout>
-    `
+    providers: [ LayoutComponent],
+    templateUrl: './doctor-appointment.component.html'
 })
 export class DoctorAppointmentComponent implements OnInit {
     @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
@@ -159,6 +114,7 @@ export class DoctorAppointmentComponent implements OnInit {
                 detail: 'No clinic ID provided.'
             });
         }
+         this.authService.getAuthUser().subscribe((data) => {this.authUser = (data as User)})
     }
 
     forceCalendarRender(): void {
@@ -225,17 +181,23 @@ export class DoctorAppointmentComponent implements OnInit {
             };
 
             // Convert appointments to FullCalendar events
-            const formattedAppointments = this.appointments.map((appointment: Appointment) => ({
-                title: appointment.subject,
-                start: new Date(appointment.startDateTime),
-                end: new Date(appointment.endDateTime),
-                backgroundColor: '#1e90ff', // Blue for appointments
-                borderColor: '#1e90ff',
-                extendedProps: {
-                    appointmentId: appointment.id,
-                    type: 'appointment'
-                }
-            }));
+            const formattedAppointments = this.appointments.map((appointment: Appointment) => {
+                const isPatientAppointment = appointment.patientId === this.authUser?.id;
+            
+                return {
+                    title: isPatientAppointment ? appointment.subject : "",
+                    start: new Date(appointment.startDateTime),
+                    end: new Date(appointment.endDateTime),
+                    backgroundColor: isPatientAppointment ? '#1e90ff' : '#ff0000',
+                    borderColor: isPatientAppointment ? '#1e90ff' : '#ff0000',
+                    extendedProps: {
+                        appointmentId: appointment.id,
+                        type: 'appointment',
+                        canUpdate: isPatientAppointment,  // Flag to indicate if the appointment can be updated
+                        canDelete: isPatientAppointment  // Flag to indicate if the appointment can be deleted
+                    }
+                };
+            });
 
             // Convert vacation periods to blocked events
             const vacationEvents = this.clinic.vacations.map((vacation: VacationPeriod) => ({
@@ -288,10 +250,17 @@ export class DoctorAppointmentComponent implements OnInit {
             const appointmentId = info.event.extendedProps.appointmentId;
             const appointment = this.appointments.find((a) => a.id === appointmentId);
 
-            if (appointment) {
+            if (appointment && appointment.patientId == this.authUser?.id) {
                 // Set the selected appointment for editing
                 this.selectedAppointment = { ...appointment };
                 this.displayEditAppointmentDialog = true;
+            } else{
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'Event Clicked',
+                    detail: `You don't have the permission to edit this slot.`
+                });
+        
             }
         } else {
             this.messageService.add({
@@ -309,7 +278,7 @@ export class DoctorAppointmentComponent implements OnInit {
         // Find the appointment in the appointments array
         const appointment = this.appointments.find((a) => a.id === appointmentId);
 
-        if (appointment) {
+        if (appointment && appointment.patientId) {
             // Store the original appointment data
             this.originalAppointment = { ...appointment };
 
