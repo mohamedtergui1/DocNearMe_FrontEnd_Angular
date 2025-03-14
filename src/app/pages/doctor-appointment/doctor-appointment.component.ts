@@ -1,55 +1,140 @@
 import { Component, OnInit } from '@angular/core';
-import { EventSettingsModel, DayService, WeekService, WorkWeekService, MonthService, AgendaService, MonthAgendaService, WorkHoursModel, ActionEventArgs } from '@syncfusion/ej2-angular-schedule';
-import { ScheduleModule } from '@syncfusion/ej2-angular-schedule';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-// Import DayOfWeek and mapping
 import { VacationPeriod } from '../../model/VacationPeriod';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Clinic } from '../../model/Clinic';
 import { ClinicService } from '../../core/services/clinic.service';
-import { DayOfWeek, dayOfWeekToNumber } from '../../model/DayOfWeek';
 import { LayoutComponent } from '../../shared/componenets/layout/layout.component';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 import { AppointmentService } from '../../core/services/appointment.service';
 import { Appointment } from '../../model/Appointment';
 import { AuthService } from '../service/auth.service';
+import { dayOfWeekToNumber, DayOfWeek } from '../../model/DayOfWeek';
 
-interface EventData {
-    Id?: string;
-    Subject: string;
-    StartTime: Date;
-    EndTime: Date;
-    IsBlock?: boolean;
-    RecurrenceRule?: string;
-}
+// FullCalendar imports
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { CalendarOptions } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { FormsModule } from '@angular/forms';
+import { AppointmentStatus } from '../../model/AppointmentStatus';
+import { User } from '../../model/User';
+import { map } from 'rxjs';
+import { Calendar } from 'primeng/calendar';
 
 @Component({
     selector: 'app-doctor-appointment',
     standalone: true,
-    imports: [ScheduleModule, CommonModule, LayoutComponent, AppFloatingConfigurator],
-    providers: [DayService, WeekService, WorkWeekService, MonthService, AgendaService, MonthAgendaService, MessageService, LayoutComponent],
+    imports: [
+        CommonModule,
+        LayoutComponent,
+        AppFloatingConfigurator,
+        FullCalendarModule,
+        DialogModule, // Add DialogModule
+        ButtonModule, // Add ButtonModule
+        InputTextModule, // Add InputTextModule
+        FormsModule
+    ],
+    providers: [MessageService, LayoutComponent],
     template: `
         <app-layout>
             <div class="p-4" selector>
                 <app-floating-configurator />
                 <h1 class="text-xl font-bold mb-4">Appointment Scheduler - {{ clinic?.clinicName }}</h1>
 
-                <!-- Schedule Component -->
-                <ejs-schedule width="100%" height="100vh" [minDate]="yesterday" [selectedDate]="selectedDate" [eventSettings]="eventSettings" [workHours]="workHours" [workDays]="workDays" (actionBegin)="onActionBegin($event)"> </ejs-schedule>
+                <!-- FullCalendar Component -->
+                <div style="70vh" class="py-12 overflow-y-scroll "  >
+                    <full-calendar [options]="calendarOptions"></full-calendar>
+                </div>
+
+                <!-- Create Appointment Dialog -->
+                <p-dialog header="Create Appointment" [(visible)]="displayAppointmentDialog" [modal]="true" [style]="{ width: '650px' }" [draggable]="false" [resizable]="false">
+                    <form (ngSubmit)="createAppointment()">
+                        <div class="p-fluid">
+                            <div class="p-field">
+                                <label for="subject">Subject</label>
+                                <input id="subject" type="text" pInputText [(ngModel)]="newAppointment.subject" name="subject" required />
+                            </div>
+                        </div>
+                        <div class="p-dialog-footer">
+                            <button type="button" pButton label="Cancel" icon="pi pi-times" (click)="displayAppointmentDialog = false" class="p-button-text"></button>
+                            <button type="submit" pButton label="Save" icon="pi pi-check" class="p-button-success"></button>
+                        </div>
+                    </form>
+                </p-dialog>
+
+                <!-- Edit Appointment Dialog -->
+                <p-dialog header="Edit Appointment" [(visible)]="displayEditAppointmentDialog" [modal]="true" [style]="{ width: '650px' }" [draggable]="false" [resizable]="false">
+                    <form (ngSubmit)="updateAppointment()">
+                        <div class="p-fluid">
+                            <div class="p-field">
+                                <label for="editSubject">Subject</label>
+                                <input id="editSubject" type="text" pInputText [(ngModel)]="selectedAppointment.subject" name="editSubject" required />
+                            </div>
+                        </div>
+                        <div class="p-dialog-footer">
+                            <button type="button" pButton label="Delete" icon="pi pi-trash" (click)="deleteAppointment()" class="p-button-danger"></button>
+                            <button type="button" pButton label="Cancel" icon="pi pi-times" (click)="displayEditAppointmentDialog = false" class="p-button-text"></button>
+                            <button type="submit" pButton label="Save" icon="pi pi-check" class="p-button-success"></button>
+                        </div>
+                    </form>
+                </p-dialog>
             </div>
         </app-layout>
     `
 })
 export class DoctorAppointmentComponent implements OnInit {
-    public selectedDate: Date = new Date();
-    public yesterday = new Date(this.selectedDate.setDate(this.selectedDate.getDate() - 1));
-    public clinic: Clinic | null = null;
-    public workHours: WorkHoursModel = { start: '09:00', end: '17:00' };
-    public workDays: number[] = [];
-    public eventSettings: EventSettingsModel = { dataSource: [] };
-    public appointmnts: Appointment[] = [];
+    private authUser!: User | null;
+    public displayEditAppointmentDialog: boolean = false; // Controls edit dialog visibility
+    public selectedAppointment: Appointment = {
+        id: '',
+        subject: '',
+        startDateTime: '',
+        endDateTime: '',
+        clinicId: '',
+        patientId: '',
+        status: AppointmentStatus.PENDING
+    }; // S
+    public events: any[] = []; // Calendar events
+    public clinic: Clinic | null = null; // Clinic data
+    public appointments: Appointment[] = []; // Appointments data
+    public displayAppointmentDialog: boolean = false; // Controls dialog visibility
+    public newAppointment: Appointment = {
+        id: '',
+        subject: '',
+        startDateTime: '',
+        endDateTime: '',
+        clinicId: '',
+        patientId: '',
+        status: AppointmentStatus.PENDING
+    }; // Stores new appointment data
+    public selectedDateRange: { start: Date; end: Date } | null = null;
+
+    
+    public calendarOptions: CalendarOptions = {
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+        initialView: 'timeGridWeek',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'timeGridWeek,dayGridMonth,timeGridDay'
+        },
+        editable: true,
+        selectable: true,
+        selectMirror: true,
+        dayMaxEvents: true,
+        events: this.events,
+        eventClick: this.handleEventClick.bind(this),
+        select: this.handleDateSelect.bind(this),
+        eventResize: this.handleEventResize.bind(this),
+        eventDrop: this.handleEventDrop.bind(this)
+    };
 
     constructor(
         private messageService: MessageService,
@@ -57,11 +142,11 @@ export class DoctorAppointmentComponent implements OnInit {
         private clinicService: ClinicService,
         private router: Router,
         private appointmentService: AppointmentService,
-        private authUser:AuthService
+        private authService: AuthService,
+        private confirmationService: ConfirmationService
     ) {}
 
     ngOnInit(): void {
-        console.log(this.selectedDate);
         const clinicId = this.route.snapshot.paramMap.get('clinic_id');
         if (clinicId) {
             this.loadClinic(clinicId);
@@ -89,178 +174,375 @@ export class DoctorAppointmentComponent implements OnInit {
         });
     }
 
-    loadAppointmentsOfClinic(clinic_id: string) {
+    loadAppointmentsOfClinic(clinic_id: string): void {
         this.appointmentService.getAppointmentByClinicIdAndDateAfterNow(clinic_id).subscribe({
             next: (data: any) => {
-                this.appointmnts = data.data
-                console.log(this.appointmnts);
+                this.appointments = data.data;
                 this.configureCalendar();
             },
             error: (err: HttpErrorResponse) => {
                 if (err.status == 404) {
                     this.router.navigate(['/404']);
                 }
-                console.error('Error loading clinic:', err);
+                console.error('Error loading appointments:', err);
             }
         });
     }
 
     configureCalendar(): void {
         if (!this.clinic) return;
-    
-        // Convert DayOfWeek enum values to numbers
-        this.workDays = this.clinic.workingDays.map((day: DayOfWeek) => dayOfWeekToNumber(day)).sort();
-    
-        // Block vacation periods
-        const vacationEvents = this.clinic.vacations.map((vacation: VacationPeriod) => ({
-            Subject: 'Vacation',
-            StartTime: new Date(vacation.startDate),
-            EndTime: new Date(vacation.endDate),
-            IsBlock: true,
-            RecurrenceRule: 'FREQ=DAILY;INTERVAL=1'
-        }));
-    
-        // Format appointments
-        const formattedAppointments = this.appointmnts.map((appointment: Appointment) => ({
-            Id: appointment.id,
-            Subject: appointment.subject,
-            StartTime: new Date(appointment.startDateTime),
-            EndTime: new Date(appointment.endDateTime),
-            IsBlock: false
-        }));
-    
-        // Combine vacation events and appointments
-        const allEvents = [...vacationEvents.map(e => {
-            e.IsBlock = true
-            return e;
-        }), ...formattedAppointments];
-    
-        // Set event settings
-        this.eventSettings = {
-            dataSource: allEvents,
-            fields: {
-                id: 'Id',
-                subject: { name: 'Subject', title: 'enter Subject' },
-                startTime: { name: 'StartTime', title: 'Start Time' },
-                endTime: { name: 'EndTime', title: 'End Time' },
-                isBlock: 'IsBlock'
-            }
-            
-        };
+
+        try {
+            // Get working days from the clinic data
+            const workingDays = this.clinic.workingDays.map((day) => dayOfWeekToNumber(day)).sort();
+            const hiddenDays = this.getHiddenDays(workingDays);
+
+            // Get working hours from the clinic data
+            const startTime = this.clinic.startTime || '09:00';
+            const endTime = this.clinic.stopTime || '18:00';
+
+            // Update calendar options with clinic working days and hours
+            this.calendarOptions = {
+                ...this.calendarOptions,
+                businessHours: {
+                    daysOfWeek: workingDays,
+                    startTime: startTime,
+                    endTime: endTime
+                },
+                slotMinTime: startTime,
+                slotMaxTime: endTime,
+                hiddenDays: hiddenDays,
+                selectConstraint: 'businessHours',
+                eventConstraint: 'businessHours'
+            };
+
+            // Convert appointments to FullCalendar events
+            const formattedAppointments = this.appointments.map((appointment: Appointment) => ({
+                title: appointment.subject,
+                start: new Date(appointment.startDateTime),
+                end: new Date(appointment.endDateTime),
+                backgroundColor: '#1e90ff', // Blue for appointments
+                borderColor: '#1e90ff',
+                extendedProps: {
+                    appointmentId: appointment.id,
+                    type: 'appointment'
+                }
+            }));
+
+            // Convert vacation periods to blocked events
+            const vacationEvents = this.clinic.vacations.map((vacation: VacationPeriod) => ({
+                title: 'Vacation',
+                start: new Date(vacation.startDate),
+                end: new Date(vacation.endDate),
+                backgroundColor: '#ff0000', // Red for vacation
+                borderColor: '#ff0000',
+                display: 'background', // Make vacation periods appear as background events
+                extendedProps: {
+                    vacationId: null,
+                    type: 'vacation'
+                }
+            }));
+
+            // Combine appointments and vacation events
+            this.events = [...formattedAppointments, ...vacationEvents];
+
+            // Update calendar options with new events
+            this.calendarOptions.events = this.events;
+
+            // Log confirmation
+            console.log('Calendar configured with clinic hours:', {
+                workingDays,
+                startTime,
+                endTime,
+                hiddenDays
+            });
+        } catch (error) {
+            console.error('Error configuring calendar:', error);
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Calendar Configuration Error',
+                detail: 'Failed to configure calendar with clinic data.'
+            });
+        }
     }
 
-    onActionBegin(args: any): void {
-        console.log(args);
+    // Helper method to get hidden days based on working days
+    getHiddenDays(workingDays: number[]): number[] {
+        const allDays = [0, 1, 2, 3, 4, 5, 6]; // Sunday to Saturday
+        return allDays.filter((day) => !workingDays.includes(day));
+    }
 
-        if (args.requestType === 'eventCreate') {
-            const eventData = args.addedRecords[0];
-            const startTime = new Date(eventData.StartTime);
-            const endTime = new Date(eventData.EndTime);
-            console.log('Raw Start Time:', eventData.StartTime);
-            console.log('Raw End Time:', this.eventSettings);
+    handleEventClick(info: any): void {
+        const eventType = info.event.extendedProps.type;
 
-            const validationResult = this.validateAppointment(startTime, endTime);
+        if (eventType === 'appointment') {
+            // Find the clicked appointment in the appointments array
+            const appointmentId = info.event.extendedProps.appointmentId;
+            const appointment = this.appointments.find((a) => a.id === appointmentId);
 
-            if (validationResult.isValid) {
-                const newAppointment: Omit<Appointment, 'patientId' | 'id' | 'status'> = {
-                    subject: eventData.Subject,
-                    startDateTime: startTime.toISOString(),
-                    endDateTime: endTime.toISOString(),
-                    clinicId: this.clinic!.id
-                };
+            if (appointment) {
+                // Set the selected appointment for editing
+                this.selectedAppointment = { ...appointment };
+                this.displayEditAppointmentDialog = true;
+            }
+        } else {
+            this.messageService.add({
+                severity: 'info',
+                summary: 'Event Clicked',
+                detail: `You clicked on ${info.event.title} (${eventType})`
+            });
+        }
+    }
 
-                this.createAppointment(newAppointment);
-            } else {
-                alert(validationResult.message);
+    handleEventResize(info: any): void {
+        const event = info.event;
+        const appointmentId = event.extendedProps.appointmentId;
+
+        // Find the appointment in the appointments array
+        const appointment = this.appointments.find((a) => a.id === appointmentId);
+
+        if (appointment) {
+            // Update the appointment's start and end times
+            appointment.startDateTime = event.start.toISOString();
+            appointment.endDateTime = event.end.toISOString();
+
+            // Set the selected appointment for editing
+            this.selectedAppointment = { ...appointment };
+            this.displayEditAppointmentDialog = true;
+        }
+    }
+
+    handleEventDrop(info: any): void {
+        const event = info.event;
+        const appointmentId = event.extendedProps.appointmentId;
+
+        // Find the appointment in the appointments array
+        const appointment = this.appointments.find((a) => a.id === appointmentId);
+
+        if (appointment) {
+            // Update the appointment's start and end times
+            appointment.startDateTime = event.start.toISOString();
+            appointment.endDateTime = event.end.toISOString();
+
+            // Set the selected appointment for editing
+            this.selectedAppointment = { ...appointment };
+            this.displayEditAppointmentDialog = true;
+        }
+    }
+
+    handleDateSelect(info: any): void {
+        const selectedStart = new Date(info.start);
+        const selectedEnd = new Date(info.end);
+        const dayOfWeek = selectedStart.getDay();
+
+        // Check if the selected date range overlaps with any vacation period
+        if (this.clinic && this.clinic.vacations) {
+            const isOverlappingWithVacation = this.clinic.vacations.some((vacation: VacationPeriod) => {
+                const vacationStart = new Date(vacation.startDate);
+                const vacationEnd = new Date(vacation.endDate);
+                return (selectedStart >= vacationStart && selectedStart <= vacationEnd) || (selectedEnd >= vacationStart && selectedEnd <= vacationEnd) || (selectedStart <= vacationStart && selectedEnd >= vacationEnd);
+            });
+
+            if (isOverlappingWithVacation) {
                 this.messageService.add({
-                    severity: 'error',
-                    summary: 'Invalid Appointment',
-                    detail: validationResult.message
+                    severity: 'warn',
+                    summary: 'Vacation Period',
+                    detail: 'Appointments cannot be scheduled during vacation periods.'
                 });
-                args.cancel = true;
+                return;
             }
-        } 
+        }
+
+        // Check if the day is a working day
+        if (this.clinic && this.clinic.workingDays) {
+            const workingDays = this.clinic.workingDays.map((day) => dayOfWeekToNumber(day));
+            if (!workingDays.includes(dayOfWeek)) {
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'Non-working Day',
+                    detail: 'Appointments cannot be scheduled on non-working days.'
+                });
+                return;
+            }
+        }
+
+        // Initialize newAppointment with the selected date range
+        this.newAppointment = {
+            id: '',
+            subject: '',
+            startDateTime: selectedStart.toISOString(),
+            endDateTime: selectedEnd.toISOString(),
+            clinicId: this.clinic?.id || '',
+            patientId: '',
+            status: AppointmentStatus.PENDING
+        };
+
+        // Open the create appointment dialog
+        this.displayAppointmentDialog = true;
     }
 
-    createAppointment(appointment: Omit<Appointment, 'patientId' | 'id' | 'status'>): void {
-        console.log(appointment);
-        this.appointmentService.createAppointment(appointment).subscribe({
-            next: () => {
-                this.loadAppointmentsOfClinic(this.clinic!.id);
+    createAppointment(): void {
+        if (!this.newAppointment.subject || !this.newAppointment.startDateTime || !this.newAppointment.endDateTime || !this.clinic) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Please fill in all required fields.'
+            });
+            return;
+        }
+
+        // Prepare the appointment data
+        const appointmentData: Appointment = {
+            id: '', // Generate or let the backend generate an ID
+            subject: this.newAppointment.subject,
+            startDateTime: this.newAppointment.startDateTime,
+            endDateTime: this.newAppointment.endDateTime,
+            clinicId: this.clinic.id,
+            patientId: this.newAppointment.patientId,
+            status: AppointmentStatus.PENDING
+        };
+
+        // Call the appointment service to create the appointment
+        this.appointmentService.createAppointment(appointmentData).subscribe({
+            next: (response: any) => {
+                
+                this.events = [
+                    ...this.events,
+                    {
+                        title: appointmentData.subject,
+                        start: new Date(appointmentData.startDateTime),
+                        end: new Date(appointmentData.endDateTime),
+                        backgroundColor: '#1e90ff',
+                        borderColor: '#1e90ff',
+                        extendedProps: {
+                            appointmentId: response.data.id,
+                            type: 'appointment'
+                        }
+                    }
+                ];
+
+                // Reset the form and close the dialog
+                this.newAppointment = {
+                    id: '',
+                    subject: '',
+                    startDateTime: '',
+                    endDateTime: '',
+                    clinicId: '',
+                    patientId: '',
+                    status: AppointmentStatus.PENDING
+                };
+                this.displayAppointmentDialog = false;
             },
             error: (err: HttpErrorResponse) => {
                 console.error('Error creating appointment:', err);
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Failed to create appointment. Please try again.'
-                });
+                
             }
         });
     }
 
-    updateAppointment(appointmentId: string, appointment: Omit<Appointment, 'patientId' | 'id' | 'status'>): void {
-        console.log(appointment);
-       
+    updateAppointment(): void {
+        if (!this.selectedAppointment.id || !this.selectedAppointment.subject) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Please fill in all required fields.'
+            });
+            return;
+        }
+        
+        this.appointmentService.updateAppointment(this.selectedAppointment).subscribe({
+            next: (response: any) => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: 'Appointment updated successfully.'
+                });
+
+                // Update the event in the calendar
+                const updatedEvent = this.events.find((e) => e.extendedProps.appointmentId === this.selectedAppointment.id);
+                if (updatedEvent) {
+                    updatedEvent.title = this.selectedAppointment.subject;
+                    updatedEvent.start = new Date(this.selectedAppointment.startDateTime);
+                    updatedEvent.end = new Date(this.selectedAppointment.endDateTime);
+                }
+
+                // Reset the form and close the dialog
+                this.selectedAppointment = {
+                    id: '',
+                    subject: '',
+                    startDateTime: '',
+                    endDateTime: '',
+                    clinicId: '',
+                    patientId: '',
+                    status: AppointmentStatus.PENDING
+                };
+                this.displayEditAppointmentDialog = false;
+            } 
+        });
     }
 
-    validateAppointment(startTime: Date, endTime: Date): { isValid: boolean; message: string } {
-        // Convert working hours to UTC for comparison
-        const workStart = new Date(startTime);
-        workStart.setUTCHours(parseInt(this.clinic!.startTime.split(':')[0], 10), parseInt(this.clinic!.startTime.split(':')[1], 10), 0);
-
-        const workEnd = new Date(startTime);
-        workEnd.setUTCHours(parseInt(this.clinic!.stopTime.split(':')[0], 10), parseInt(this.clinic!.stopTime.split(':')[1], 10), 0);
-
-        // Check if the appointment is outside working hours
-        if (startTime < workStart || endTime > workEnd) {
-            return {
-                isValid: false,
-                message: `Appointments can only be scheduled between ${this.clinic!.startTime} and ${this.clinic!.stopTime}.`
-            };
+    deleteAppointment(): void {
+        if (!this.selectedAppointment.id) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No appointment selected for deletion.'
+            });
+            return;
         }
-
-        // Check if the appointment is on a working day
-        const appointmentDay = startTime.getUTCDay(); // Use UTC day of the week
-
-        if (!this.workDays.includes(appointmentDay)) {
-            return {
-                isValid: false,
-                message: 'Appointments can only be scheduled on working days.'
-            };
-        }
-
-        // Check if the appointment overlaps with a vacation period
-        const overlapsWithVacation = this.clinic!.vacations.some((vacation: VacationPeriod) => {
-            const vacationStart = new Date(vacation.startDate);
-            const vacationEnd = new Date(vacation.endDate);
-            return startTime < vacationEnd && endTime > vacationStart;
+    
+        // Show confirmation dialog
+        this.confirmationService.confirm({
+            message: 'Are you sure you want to delete this appointment?',
+            header: 'Confirm Deletion',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                // Call the appointment service to delete the appointment
+                this.appointmentService.deleteAppointment(this.selectedAppointment.id).subscribe({
+                    next: () => {
+                        // Remove the event from the calendar
+                        this.events = this.events.filter(e => e.extendedProps.appointmentId !== this.selectedAppointment.id);
+    
+                        // Reset the form and close the dialog
+                        this.selectedAppointment = {
+                            id: '',
+                            subject: '',
+                            startDateTime: '',
+                            endDateTime: '',
+                            clinicId: '',
+                            patientId: '',
+                            status: AppointmentStatus.PENDING
+                        };
+                        this.displayEditAppointmentDialog = false;
+                    } 
+                });
+            },
+            reject: () => {
+                // Do nothing if the user cancels
+            }
         });
+    }
 
-        if (overlapsWithVacation) {
-            return {
-                isValid: false,
-                message: 'Appointments cannot be scheduled during vacation periods.'
-            };
-        }
+    confirmDelete(): void {
+        // Call the appointment service to delete the appointment
+        this.appointmentService.deleteAppointment(this.selectedAppointment.id).subscribe({
+            next: () => {
+                
+                // Remove the event from the calendar
+                this.events = this.events.filter((e) => e.extendedProps.appointmentId !== this.selectedAppointment.id);
 
-        // Check if the appointment overlaps with existing appointments
-        const overlapsWithExistingAppointment = this.appointmnts.some((appointment: Appointment) => {
-            const existingStartTime = new Date(appointment.startDateTime);
-            const existingEndTime = new Date(appointment.endDateTime);
-            return startTime < existingEndTime && endTime > existingStartTime;
+                // Reset the form and close the dialog
+                this.selectedAppointment = {
+                    id: '',
+                    subject: '',
+                    startDateTime: '',
+                    endDateTime: '',
+                    clinicId: '',
+                    patientId: '',
+                    status: AppointmentStatus.PENDING
+                };
+                this.displayEditAppointmentDialog = false;
+            }
         });
-
-        if (overlapsWithExistingAppointment) {
-            return {
-                isValid: false,
-                message: 'The selected time slot is already booked.'
-            };
-        }
-
-        return {
-            isValid: true,
-            message: ''
-        };
     }
 }

@@ -6,8 +6,11 @@ import Aura from '@primeng/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
 import { authInterceptor } from './app/core/interceptors/auth.interceptor';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CalendarUtils } from 'angular-calendar';
+import { FullCalendarModule } from '@fullcalendar/angular';
+
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
@@ -15,6 +18,9 @@ export const appConfig: ApplicationConfig = {
         provideAnimationsAsync(),
         providePrimeNG({ theme: { preset: Aura, options: { darkModeSelector: '.app-dark' } } }),
         MessageService,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        FullCalendarModule,
+        CalendarUtils,
+        ConfirmationService
     ]
 };
