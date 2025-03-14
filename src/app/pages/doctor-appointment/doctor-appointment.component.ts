@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,7 +26,7 @@ import { FormsModule } from '@angular/forms';
 import { AppointmentStatus } from '../../model/AppointmentStatus';
 import { User } from '../../model/User';
 import { map } from 'rxjs';
-import { Calendar } from 'primeng/calendar';
+import { FullCalendarComponent } from '@fullcalendar/angular';
 
 @Component({
     selector: 'app-doctor-appointment',
@@ -49,7 +49,7 @@ import { Calendar } from 'primeng/calendar';
                 <h1 class="text-xl font-bold mb-4">Appointment Scheduler - {{ clinic?.clinicName }}</h1>
 
                 <!-- FullCalendar Component -->
-                <div style="70vh" class="py-12 overflow-y-scroll "  >
+                <div style="70vh" class="py-12 overflow-y-scroll ">
                     <full-calendar [options]="calendarOptions"></full-calendar>
                 </div>
 
@@ -70,7 +70,7 @@ import { Calendar } from 'primeng/calendar';
                 </p-dialog>
 
                 <!-- Edit Appointment Dialog -->
-                <p-dialog header="Edit Appointment" [(visible)]="displayEditAppointmentDialog" [modal]="true" [style]="{ width: '650px' }" [draggable]="false" [resizable]="false">
+                <p-dialog (onHide)="cancelEdit()" header="Edit Appointment" [(visible)]="displayEditAppointmentDialog" [modal]="true" [style]="{ width: '650px' }" [draggable]="false" [resizable]="false">
                     <form (ngSubmit)="updateAppointment()">
                         <div class="p-fluid">
                             <div class="p-field">
@@ -80,7 +80,7 @@ import { Calendar } from 'primeng/calendar';
                         </div>
                         <div class="p-dialog-footer">
                             <button type="button" pButton label="Delete" icon="pi pi-trash" (click)="deleteAppointment()" class="p-button-danger"></button>
-                            <button type="button" pButton label="Cancel" icon="pi pi-times" (click)="displayEditAppointmentDialog = false" class="p-button-text"></button>
+                            <button type="button" pButton label="Cancel" icon="pi pi-times" (click)="cancelEdit()" class="p-button-text"></button>
                             <button type="submit" pButton label="Save" icon="pi pi-check" class="p-button-success"></button>
                         </div>
                     </form>
@@ -90,6 +90,9 @@ import { Calendar } from 'primeng/calendar';
     `
 })
 export class DoctorAppointmentComponent implements OnInit {
+    @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
+
+    public originalAppointment: Appointment | null = null; // Store original appointment data
     private authUser!: User | null;
     public displayEditAppointmentDialog: boolean = false; // Controls edit dialog visibility
     public selectedAppointment: Appointment = {
@@ -116,7 +119,6 @@ export class DoctorAppointmentComponent implements OnInit {
     }; // Stores new appointment data
     public selectedDateRange: { start: Date; end: Date } | null = null;
 
-    
     public calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         initialView: 'timeGridWeek',
@@ -156,6 +158,12 @@ export class DoctorAppointmentComponent implements OnInit {
                 summary: 'Error',
                 detail: 'No clinic ID provided.'
             });
+        }
+    }
+
+    forceCalendarRender(): void {
+        if (this.calendarComponent) {
+            this.calendarComponent.getApi().render();
         }
     }
 
@@ -302,14 +310,61 @@ export class DoctorAppointmentComponent implements OnInit {
         const appointment = this.appointments.find((a) => a.id === appointmentId);
 
         if (appointment) {
+            // Store the original appointment data
+            this.originalAppointment = { ...appointment };
+
             // Update the appointment's start and end times
             appointment.startDateTime = event.start.toISOString();
             appointment.endDateTime = event.end.toISOString();
 
-            // Set the selected appointment for editing
-            this.selectedAppointment = { ...appointment };
-            this.displayEditAppointmentDialog = true;
+            // Update the corresponding event in the events array
+            const updatedEventIndex = this.events.findIndex((e) => e.extendedProps.appointmentId === appointmentId);
+
+            if (updatedEventIndex !== -1) {
+                this.events[updatedEventIndex] = {
+                    ...this.events[updatedEventIndex],
+                    start: new Date(appointment.startDateTime),
+                    end: new Date(appointment.endDateTime)
+                };
+
+                // Update the calendar options to trigger a re-render
+                this.calendarOptions.events = [...this.events];
+            }
+
+            // Call the appointment service to update the appointment
+            this.appointmentService.updateAppointment(appointment).subscribe({
+                next: (response: any) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: 'Appointment resized successfully.'
+                    });
+                },
+                error: (err: HttpErrorResponse) => {
+                    console.error('Error resizing appointment:', err);
+                    // Revert to the original appointment data if the update fails
+                    if (this.originalAppointment) {
+                        appointment.startDateTime = this.originalAppointment.startDateTime;
+                        appointment.endDateTime = this.originalAppointment.endDateTime;
+
+                        // Revert the event in the events array
+                        if (updatedEventIndex !== -1) {
+                            this.events[updatedEventIndex] = {
+                                ...this.events[updatedEventIndex],
+                                start: new Date(this.originalAppointment.startDateTime),
+                                end: new Date(this.originalAppointment.endDateTime)
+                            };
+
+                            // Update the calendar options to trigger a re-render
+                            this.calendarOptions.events = [...this.events];
+                        }
+                    }
+                }
+            });
         }
+
+        // Force the calendar to re-render
+        this.forceCalendarRender();
     }
 
     handleEventDrop(info: any): void {
@@ -320,14 +375,61 @@ export class DoctorAppointmentComponent implements OnInit {
         const appointment = this.appointments.find((a) => a.id === appointmentId);
 
         if (appointment) {
+            // Store the original appointment data
+            this.originalAppointment = { ...appointment };
+
             // Update the appointment's start and end times
             appointment.startDateTime = event.start.toISOString();
             appointment.endDateTime = event.end.toISOString();
 
-            // Set the selected appointment for editing
-            this.selectedAppointment = { ...appointment };
-            this.displayEditAppointmentDialog = true;
+            // Update the corresponding event in the events array
+            const updatedEventIndex = this.events.findIndex((e) => e.extendedProps.appointmentId === appointmentId);
+
+            if (updatedEventIndex !== -1) {
+                this.events[updatedEventIndex] = {
+                    ...this.events[updatedEventIndex],
+                    start: new Date(appointment.startDateTime),
+                    end: new Date(appointment.endDateTime)
+                };
+
+                // Update the calendar options to trigger a re-render
+                this.calendarOptions.events = [...this.events];
+            }
+
+            // Call the appointment service to update the appointment
+            this.appointmentService.updateAppointment(appointment).subscribe({
+                next: (response: any) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: 'Appointment moved successfully.'
+                    });
+                },
+                error: (err: HttpErrorResponse) => {
+                    console.error('Error moving appointment:', err);
+                    // Revert to the original appointment data if the update fails
+                    if (this.originalAppointment) {
+                        appointment.startDateTime = this.originalAppointment.startDateTime;
+                        appointment.endDateTime = this.originalAppointment.endDateTime;
+
+                        // Revert the event in the events array
+                        if (updatedEventIndex !== -1) {
+                            this.events[updatedEventIndex] = {
+                                ...this.events[updatedEventIndex],
+                                start: new Date(this.originalAppointment.startDateTime),
+                                end: new Date(this.originalAppointment.endDateTime)
+                            };
+
+                            // Update the calendar options to trigger a re-render
+                            this.calendarOptions.events = [...this.events];
+                        }
+                    }
+                }
+            });
         }
+
+        // Force the calendar to re-render
+        this.forceCalendarRender();
     }
 
     handleDateSelect(info: any): void {
@@ -405,21 +507,31 @@ export class DoctorAppointmentComponent implements OnInit {
         // Call the appointment service to create the appointment
         this.appointmentService.createAppointment(appointmentData).subscribe({
             next: (response: any) => {
-                
-                this.events = [
-                    ...this.events,
-                    {
-                        title: appointmentData.subject,
-                        start: new Date(appointmentData.startDateTime),
-                        end: new Date(appointmentData.endDateTime),
-                        backgroundColor: '#1e90ff',
-                        borderColor: '#1e90ff',
-                        extendedProps: {
-                            appointmentId: response.data.id,
-                            type: 'appointment'
-                        }
+                // Add the new appointment to the appointments array
+                const newAppointment: Appointment = {
+                    ...appointmentData,
+                    id: response.data.id // Use the ID returned by the backend
+                };
+                this.appointments = [...this.appointments, newAppointment];
+
+                // Create a new event for the calendar
+                const newEvent = {
+                    title: newAppointment.subject,
+                    start: new Date(newAppointment.startDateTime),
+                    end: new Date(newAppointment.endDateTime),
+                    backgroundColor: '#1e90ff',
+                    borderColor: '#1e90ff',
+                    extendedProps: {
+                        appointmentId: newAppointment.id,
+                        type: 'appointment'
                     }
-                ];
+                };
+
+                // Add the new event to the events array
+                this.events = [...this.events, newEvent];
+
+                // Update the calendar options to trigger a re-render
+                this.calendarOptions.events = [...this.events];
 
                 // Reset the form and close the dialog
                 this.newAppointment = {
@@ -432,10 +544,12 @@ export class DoctorAppointmentComponent implements OnInit {
                     status: AppointmentStatus.PENDING
                 };
                 this.displayAppointmentDialog = false;
+
+                // Force the calendar to re-render
+                this.forceCalendarRender();
             },
             error: (err: HttpErrorResponse) => {
                 console.error('Error creating appointment:', err);
-                
             }
         });
     }
@@ -449,7 +563,7 @@ export class DoctorAppointmentComponent implements OnInit {
             });
             return;
         }
-        
+
         this.appointmentService.updateAppointment(this.selectedAppointment).subscribe({
             next: (response: any) => {
                 this.messageService.add({
@@ -458,12 +572,20 @@ export class DoctorAppointmentComponent implements OnInit {
                     detail: 'Appointment updated successfully.'
                 });
 
-                // Update the event in the calendar
-                const updatedEvent = this.events.find((e) => e.extendedProps.appointmentId === this.selectedAppointment.id);
-                if (updatedEvent) {
-                    updatedEvent.title = this.selectedAppointment.subject;
-                    updatedEvent.start = new Date(this.selectedAppointment.startDateTime);
-                    updatedEvent.end = new Date(this.selectedAppointment.endDateTime);
+                // Find the corresponding event in the events array
+                const updatedEventIndex = this.events.findIndex((e) => e.extendedProps.appointmentId === this.selectedAppointment.id);
+
+                if (updatedEventIndex !== -1) {
+                    // Update the event in the events array
+                    this.events[updatedEventIndex] = {
+                        ...this.events[updatedEventIndex],
+                        title: this.selectedAppointment.subject,
+                        start: new Date(this.selectedAppointment.startDateTime),
+                        end: new Date(this.selectedAppointment.endDateTime)
+                    };
+
+                    // Update the calendar options to trigger a re-render
+                    this.calendarOptions.events = [...this.events];
                 }
 
                 // Reset the form and close the dialog
@@ -477,8 +599,14 @@ export class DoctorAppointmentComponent implements OnInit {
                     status: AppointmentStatus.PENDING
                 };
                 this.displayEditAppointmentDialog = false;
-            } 
+            },
+            error: (err: HttpErrorResponse) => {
+                console.error('Error updating appointment:', err);
+            }
         });
+
+        // Force the calendar to re-render
+        this.forceCalendarRender();
     }
 
     deleteAppointment(): void {
@@ -490,7 +618,7 @@ export class DoctorAppointmentComponent implements OnInit {
             });
             return;
         }
-    
+
         // Show confirmation dialog
         this.confirmationService.confirm({
             message: 'Are you sure you want to delete this appointment?',
@@ -501,8 +629,11 @@ export class DoctorAppointmentComponent implements OnInit {
                 this.appointmentService.deleteAppointment(this.selectedAppointment.id).subscribe({
                     next: () => {
                         // Remove the event from the calendar
-                        this.events = this.events.filter(e => e.extendedProps.appointmentId !== this.selectedAppointment.id);
-    
+                        this.events = this.events.filter((e) => e.extendedProps.appointmentId !== this.selectedAppointment.id);
+
+                        // Update the calendar options to trigger a re-render
+                        this.calendarOptions.events = [...this.events];
+
                         // Reset the form and close the dialog
                         this.selectedAppointment = {
                             id: '',
@@ -514,7 +645,10 @@ export class DoctorAppointmentComponent implements OnInit {
                             status: AppointmentStatus.PENDING
                         };
                         this.displayEditAppointmentDialog = false;
-                    } 
+                    },
+                    error: (err: HttpErrorResponse) => {
+                        console.error('Error deleting appointment:', err);
+                    }
                 });
             },
             reject: () => {
@@ -527,7 +661,6 @@ export class DoctorAppointmentComponent implements OnInit {
         // Call the appointment service to delete the appointment
         this.appointmentService.deleteAppointment(this.selectedAppointment.id).subscribe({
             next: () => {
-                
                 // Remove the event from the calendar
                 this.events = this.events.filter((e) => e.extendedProps.appointmentId !== this.selectedAppointment.id);
 
@@ -544,5 +677,33 @@ export class DoctorAppointmentComponent implements OnInit {
                 this.displayEditAppointmentDialog = false;
             }
         });
+        this.forceCalendarRender();
+    }
+
+    cancelEdit(): void {
+        if (this.originalAppointment) {
+            // Restore the original appointment data
+            const appointment = this.appointments.find((a) => a.id === this.originalAppointment?.id);
+            if (appointment) {
+                appointment.startDateTime = this.originalAppointment.startDateTime;
+                appointment.endDateTime = this.originalAppointment.endDateTime;
+            }
+
+            // Update the calendar event
+            const eventIndex = this.events.findIndex((e) => e.extendedProps.appointmentId === this.originalAppointment?.id);
+            if (eventIndex !== -1) {
+                this.events[eventIndex].start = new Date(this.originalAppointment.startDateTime);
+                this.events[eventIndex].end = new Date(this.originalAppointment.endDateTime);
+            }
+
+            // Reset the original appointment data
+            this.originalAppointment = null;
+
+            // Refresh the calendar
+            this.calendarOptions.events = [...this.events];
+        }
+
+        // Close the edit dialog
+        this.displayEditAppointmentDialog = false;
     }
 }

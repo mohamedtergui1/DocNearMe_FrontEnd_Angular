@@ -19,6 +19,6 @@ export class AppointmentService {
         return this.api.put('/appointment/' + data.id, data);
     }
     deleteAppointment(id: string) {
-        return this.api.get('/appointment/' + id);
+        return this.api.delete('/appointment/' + id);
     }
 }
