@@ -4,6 +4,7 @@
 @use 'primeicons/primeicons.css';
 @use './assets/demo/demo.scss';
 
+
 input-error-color {
     color: red;
 }
@@ -15,12 +16,28 @@ input-error-background {
 input-error-border{
     border: red 2px solid;
 }
-@import '../node_modules/@syncfusion/ej2-base/styles/material.css';
-@import '../node_modules/@syncfusion/ej2-buttons/styles/material.css';
-@import '../node_modules/@syncfusion/ej2-calendars/styles/material.css';
-@import '../node_modules/@syncfusion/ej2-dropdowns/styles/material.css';
-@import '../node_modules/@syncfusion/ej2-inputs/styles/material.css';
-@import '../node_modules/@syncfusion/ej2-lists/styles/material.css';
-@import '../node_modules/@syncfusion/ej2-popups/styles/material.css';
-@import '../node_modules/@syncfusion/ej2-navigations/styles/material.css';
-@import '../node_modules/@syncfusion/ej2-angular-schedule/styles/material.css';
+/* styles.css or styles.scss */
+
+/* Custom styles */
+.calendar-event {
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.calendar-header {
+  background-color: #f0f0f0;
+  padding: 10px;
+  text-align: center;
+}
+
+@import '../node_modules/angular-calendar/css/angular-calendar.css';
+/* Custom CSS for the confirm dialog buttons */
+.custom-accept-delete-button {
+    background-color: #dc3545 !important; /* Red color for the "Accept" (Delete) button */
+    border-color: #dc3545 !important;
+}
+
+.custom-reject-button {
+    background-color: #2b2a2a !important; /* Blue color for the "Reject" (Cancel) button */
+    border-color: #ffffff !important;
+}
