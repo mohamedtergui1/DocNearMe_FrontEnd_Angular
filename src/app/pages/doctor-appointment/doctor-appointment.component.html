@@ -1,10 +1,35 @@
 <app-layout>
     <div class="p-4" selector>
         <app-floating-configurator />
-        <h1 class="text-xl font-bold mb-4">Appointment Scheduler - {{ clinic?.clinicName }}</h1>
-
+        <h1 class="text-xl font-bold  ">Appointment Scheduler - {{ clinic?.clinicName }}</h1>
+        <div class=" px-12 flex  justify-end gap-2">
+            <p-tag [style]="getStyleOfStatusForThTemplate('VALID')" value="VALID"> </p-tag>
+            <p-tag [style]="getStyleOfStatusForThTemplate('PENDING')" value="PENDING"> </p-tag>
+            <p-tag [style]="getStyleOfStatusForThTemplate('CANCELLED')" value="CANCELLED"> </p-tag>
+            <p-tag [style]="{
+                'background-color': 'blue',
+                'color': 'white', 
+                'padding': '0.25rem 0.5rem', 
+                'border-radius': '4px', 
+                'font-size': '0.875rem'
+            }" value="CREATED NOW"> </p-tag>
+            <p-tag [style]="{
+                'background-color': reservedSlot,
+                'color': 'white', 
+                'padding': '0.25rem 0.5rem', 
+                'border-radius': '4px', 
+                'font-size': '0.875rem'
+            }" value="RESERVED"> </p-tag>
+            <p-tag [style]="{
+                'background-color': vacationsColor,
+                'color': 'white', 
+                'padding': '0.25rem 0.5rem', 
+                'border-radius': '4px', 
+                'font-size': '0.875rem'
+            }" value="VACATION"> </p-tag>
+        </div>
         <!-- FullCalendar Component -->
-        <div style="70vh" class="py-12 overflow-y-scroll ">
+        <div  class="py-12 overflow-y-scroll ">
             <full-calendar [options]="calendarOptions"></full-calendar>
         </div>
 

@@ -23,10 +23,11 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
-import { AppointmentStatus } from '../../model/AppointmentStatus';
+import { AppointmentStatus, getColorByStatus } from '../../model/AppointmentStatus';
 import { User } from '../../model/User';
 import { map } from 'rxjs';
 import { FullCalendarComponent } from '@fullcalendar/angular';
+import { Tag } from 'primeng/tag';
 
 @Component({
     selector: 'app-doctor-appointment',
@@ -39,14 +40,16 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
         DialogModule, // Add DialogModule
         ButtonModule, // Add ButtonModule
         InputTextModule, // Add InputTextModule
-        FormsModule
+        FormsModule,
+        Tag
     ],
-    providers: [ LayoutComponent],
+    providers: [LayoutComponent],
     templateUrl: './doctor-appointment.component.html'
 })
 export class DoctorAppointmentComponent implements OnInit {
     @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
-
+    public reservedSlot = '#FFCCCB';
+    public vacationsColor = '#ff0000';
     public originalAppointment: Appointment | null = null; // Store original appointment data
     private authUser!: User | null;
     public displayEditAppointmentDialog: boolean = false; // Controls edit dialog visibility
@@ -114,7 +117,23 @@ export class DoctorAppointmentComponent implements OnInit {
                 detail: 'No clinic ID provided.'
             });
         }
-         this.authService.getAuthUser().subscribe((data) => {this.authUser = (data as User)})
+        this.authService.getAuthUser().subscribe((data) => {
+            this.authUser = data as User;
+        });
+    }
+
+    getStyleOfStatusForThTemplate(value: AppointmentStatus | string): { [key: string]: string } {
+        
+        const status = typeof value === 'string' ? AppointmentStatus[value as keyof typeof AppointmentStatus] : value;
+        const backgroundColor = getColorByStatus(status); // Get background color based on status
+    
+        return {
+            'background-color': backgroundColor,
+            'color': 'white', 
+            'padding': '0.25rem 0.5rem', 
+            'border-radius': '4px', 
+            'font-size': '0.875rem'
+        };
     }
 
     forceCalendarRender(): void {
@@ -183,18 +202,18 @@ export class DoctorAppointmentComponent implements OnInit {
             // Convert appointments to FullCalendar events
             const formattedAppointments = this.appointments.map((appointment: Appointment) => {
                 const isPatientAppointment = appointment.patientId === this.authUser?.id;
-            
+
                 return {
-                    title: isPatientAppointment ? appointment.subject : "",
+                    title: isPatientAppointment ? appointment.subject : 'Unavailable',
                     start: new Date(appointment.startDateTime),
                     end: new Date(appointment.endDateTime),
-                    backgroundColor: isPatientAppointment ? '#1e90ff' : '#ff0000',
-                    borderColor: isPatientAppointment ? '#1e90ff' : '#ff0000',
+                    backgroundColor: isPatientAppointment ? getColorByStatus(appointment.status) : this.reservedSlot,
+                    borderColor: isPatientAppointment ? getColorByStatus(appointment.status) : this.reservedSlot,
                     extendedProps: {
                         appointmentId: appointment.id,
                         type: 'appointment',
-                        canUpdate: isPatientAppointment,  // Flag to indicate if the appointment can be updated
-                        canDelete: isPatientAppointment  // Flag to indicate if the appointment can be deleted
+                        canUpdate: isPatientAppointment, // Flag to indicate if the appointment can be updated
+                        canDelete: isPatientAppointment // Flag to indicate if the appointment can be deleted
                     }
                 };
             });
@@ -204,8 +223,8 @@ export class DoctorAppointmentComponent implements OnInit {
                 title: 'Vacation',
                 start: new Date(vacation.startDate),
                 end: new Date(vacation.endDate),
-                backgroundColor: '#ff0000', // Red for vacation
-                borderColor: '#ff0000',
+                backgroundColor: this.vacationsColor, // Red for vacation
+                borderColor: this.vacationsColor,
                 display: 'background', // Make vacation periods appear as background events
                 extendedProps: {
                     vacationId: null,
@@ -250,17 +269,16 @@ export class DoctorAppointmentComponent implements OnInit {
             const appointmentId = info.event.extendedProps.appointmentId;
             const appointment = this.appointments.find((a) => a.id === appointmentId);
 
-            if (appointment && appointment.patientId == this.authUser?.id) {
+            if (appointment && (!appointment.patientId || appointment.patientId == this.authUser?.id)) {
                 // Set the selected appointment for editing
                 this.selectedAppointment = { ...appointment };
                 this.displayEditAppointmentDialog = true;
-            } else{
+            } else {
                 this.messageService.add({
                     severity: 'warn',
                     summary: 'Event Clicked',
                     detail: `You don't have the permission to edit this slot.`
                 });
-        
             }
         } else {
             this.messageService.add({
@@ -485,6 +503,7 @@ export class DoctorAppointmentComponent implements OnInit {
 
                 // Create a new event for the calendar
                 const newEvent = {
+                    id: newAppointment.id,
                     title: newAppointment.subject,
                     start: new Date(newAppointment.startDateTime),
                     end: new Date(newAppointment.endDateTime),
