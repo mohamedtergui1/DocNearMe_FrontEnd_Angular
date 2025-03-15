@@ -43,8 +43,7 @@ import { Tag } from 'primeng/tag';
         FormsModule,
         Tag
     ],
-    providers: [LayoutComponent],
-    templateUrl: './doctor-appointment.component.html'
+    templateUrl: './doctor-appointment.component.html' 
 })
 export class DoctorAppointmentComponent implements OnInit {
     @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
@@ -80,6 +79,12 @@ export class DoctorAppointmentComponent implements OnInit {
     public calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         initialView: 'timeGridWeek',
+        slotLaneClassNames : 'my-slot-class',
+        eventClassNames:'my-event-class',
+        viewClassNames:'my-view-class',
+        allDayClassNames:'my-allDay-class',
+        slotLabelClassNames : 'my-slotLabel-class'
+        ,
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
