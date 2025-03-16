@@ -1,0 +1,98 @@
+<div class="p-4 card">
+    <app-floating-configurator />
+    <h1 class="text-xl font-bold">Appointment Scheduler - {{ clinic?.clinicName }}</h1>
+    <div class="px-12 flex justify-end gap-2">
+        <p-tag [style]="getStyleOfStatusForThTemplate('VALID')" value="VALID"> </p-tag>
+        <p-tag [style]="getStyleOfStatusForThTemplate('PENDING')" value="PENDING"> </p-tag>
+        <p-tag [style]="getStyleOfStatusForThTemplate('CANCELLED')" value="CANCELLED"> </p-tag>
+    </div>
+    <!-- FullCalendar Component -->
+    <div class="py-12 overflow-y-scroll">
+        <full-calendar [options]="calendarOptions"></full-calendar>
+    </div>
+
+    <p-dialog 
+    (onHide)="cancelEdit()" 
+    header="Appointment Details" 
+    [(visible)]="displayEditAppointmentDialog" 
+    [modal]="true" 
+    [style]="{ width: '650px' }" 
+    [draggable]="false" 
+    [resizable]="false"
+>
+    <form (ngSubmit)="updateAppointment()" class="p-fluid">
+        <!-- Use p-card for better structure -->
+        <p-card>
+            <!-- Appointment Information -->
+            <div class="p-grid p-fluid">
+                <!-- Subject -->
+                <div class="p-col-12 p-field">
+                    <div class="flex align-items-center gap-2 mb-2">
+                        <i class="pi pi-bookmark"></i>
+                        <label for="subject" class="font-medium">Subject</label>
+                    </div>
+                    <p class="m-0">{{ selectedAppointment.subject }}</p>
+                </div>
+
+                <!-- Start Date & Time -->
+                <div class="p-col-12 p-field">
+                    <div class="flex align-items-center gap-2 mb-2">
+                        <i class="pi pi-calendar"></i>
+                        <label for="startDateTime" class="font-medium">Start Date & Time</label>
+                    </div>
+                    <p class="m-0">{{ selectedAppointment.startDateTime | date: 'medium' }}</p>
+                </div>
+
+                <!-- End Date & Time -->
+                <div class="p-col-12 p-field">
+                    <div class="flex align-items-center gap-2 mb-2">
+                        <i class="pi pi-calendar"></i>
+                        <label for="endDateTime" class="font-medium">End Date & Time</label>
+                    </div>
+                    <p class="m-0">{{ selectedAppointment.endDateTime | date: 'medium' }}</p>
+                </div>
+
+                <!-- Status Dropdown -->
+                <div class="p-col-12 p-field">
+                    <div class="flex align-items-center gap-2 mb-2">
+                        <i class="pi pi-info-circle"></i>
+                        <label for="status" class="font-medium">Status</label>
+                    </div>
+                    <p-dropdown
+                        [options]="statusOptions"
+                        [(ngModel)]="selectedAppointment.status"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Select Status"
+                        styleClass="w-full"
+                    ></p-dropdown>
+                </div>
+            </div>
+        </p-card>
+
+        <!-- Dialog Footer -->
+        <div class="p-dialog-footer p-grid p-justify-between p-mt-4 mt-8">
+            
+
+            <!-- Cancel and Save Buttons -->
+            <div class="flex gap-2">
+                <button 
+                    type="button" 
+                    pButton 
+                    label="Cancel" 
+                    icon="pi pi-times" 
+                    (click)="cancelEdit()" 
+                    class="p-button-text"
+                ></button>
+                <button 
+                    type="submit" 
+                    pButton 
+                    label="Save" 
+                    icon="pi pi-check" 
+                    class="p-button-success"
+                ></button>
+            </div>
+        </div>
+    </form>
+</p-dialog>
+</div>

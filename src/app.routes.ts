@@ -16,9 +16,9 @@ export const appRoutes: Routes = [
     { path: 'bookApointment/:clinic_id', component: DoctorAppointmentComponent },
     { path: 'ClinicListApointment', component: BookAppointmentComponent },
     {
-        path : 'create-clinic' , component: CreateClinicComponent
-    }
-    ,
+        path: 'create-clinic',
+        component: CreateClinicComponent
+    },
     {
         path: 'patient/dashboard',
         component: AppLayout,
@@ -35,7 +35,6 @@ export const appRoutes: Routes = [
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
         ]
-        
     },
     {
         path: 'medcine/dashboard',
@@ -49,13 +48,20 @@ export const appRoutes: Routes = [
                     data: getAuthUserResolver
                 }
             },
+            {
+                path: 'medecin-manage-appointment',
+                loadComponent: () => import('./app/pages/medecin-manage-appointment/medecin-manage-appointment.component').then((m) => m.MedecinManageAppointmentComponent),
+
+                resolve: {
+                    clinic: getClinicForAuthUserResolver
+                }
+            },
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
-        ]
-        ,
-        resolve : {
-            clinic : getClinicForAuthUserResolver
+        ],
+        resolve: {
+            clinic: getClinicForAuthUserResolver
         }
     },
     { path: 'notfound', component: Notfound },

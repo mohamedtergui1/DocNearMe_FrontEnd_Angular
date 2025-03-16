@@ -1,49 +1,62 @@
 <app-layout>
     <div class="p-4" selector>
         <app-floating-configurator />
-        <h1 class="text-xl font-bold  ">Appointment Scheduler - {{ clinic?.clinicName }}</h1>
-        <div class=" px-12 flex  justify-end gap-2">
+        <h1 class="text-xl font-bold">Appointment Scheduler - {{ clinic?.clinicName }}</h1>
+        <div class="px-12 flex justify-end gap-2">
             <p-tag [style]="getStyleOfStatusForThTemplate('VALID')" value="VALID"> </p-tag>
             <p-tag [style]="getStyleOfStatusForThTemplate('PENDING')" value="PENDING"> </p-tag>
             <p-tag [style]="getStyleOfStatusForThTemplate('CANCELLED')" value="CANCELLED"> </p-tag>
-            <p-tag [style]="{
-                'background-color': 'blue',
-                'color': 'white', 
-                'padding': '0.25rem 0.5rem', 
-                'border-radius': '4px', 
-                'font-size': '0.875rem'
-            }" value="CREATED NOW"> </p-tag>
-            <p-tag [style]="{
-                'background-color': reservedSlot,
-                'color': 'white', 
-                'padding': '0.25rem 0.5rem', 
-                'border-radius': '4px', 
-                'font-size': '0.875rem'
-            }" value="RESERVED"> </p-tag>
-            <p-tag [style]="{
-                'background-color': vacationsColor,
-                'color': 'white', 
-                'padding': '0.25rem 0.5rem', 
-                'border-radius': '4px', 
-                'font-size': '0.875rem'
-            }" value="VACATION"> </p-tag>
+            <p-tag
+                [style]="{
+                    'background-color': 'blue',
+                    color: 'white',
+                    padding: '0.25rem 0.5rem',
+                    'border-radius': '4px',
+                    'font-size': '0.875rem'
+                }"
+                value="CREATED NOW"
+            >
+            </p-tag>
+            <p-tag
+                [style]="{
+                    'background-color': reservedSlot,
+                    color: 'white',
+                    padding: '0.25rem 0.5rem',
+                    'border-radius': '4px',
+                    'font-size': '0.875rem'
+                }"
+                value="RESERVED"
+            >
+            </p-tag>
+            <p-tag
+                [style]="{
+                    'background-color': vacationsColor,
+                    color: 'white',
+                    padding: '0.25rem 0.5rem',
+                    'border-radius': '4px',
+                    'font-size': '0.875rem'
+                }"
+                value="VACATION"
+            >
+            </p-tag>
         </div>
         <!-- FullCalendar Component -->
-        <div  class="py-12 overflow-y-scroll ">
+        <div class="py-12 overflow-y-scroll">
             <full-calendar [options]="calendarOptions"></full-calendar>
         </div>
 
         <!-- Create Appointment Dialog -->
         <p-dialog header="Create Appointment" [(visible)]="displayAppointmentDialog" [modal]="true" [style]="{ width: '650px' }" [draggable]="false" [resizable]="false">
-            <form (ngSubmit)="createAppointment()">
-                <div class="p-fluid">
-                    <div class="p-field">
+            <form (ngSubmit)="createAppointment()" class="p-fluid">
+                <div class="p-grid p-fluid py-4">
+                    <p-floatlabel variant="in" >
                         <label for="subject">Subject</label>
-                        <input id="subject" type="text" pInputText [(ngModel)]="newAppointment.subject" name="subject" required />
-                    </div>
+                        <input id="subject" type="text" pInputText [(ngModel)]="newAppointment.subject" name="subject" style="width: 450px;"  required />
+                    </p-floatlabel>
+                    <!-- Add more fields here if needed -->
                 </div>
-                <div class="p-dialog-footer">
-                    <button type="button" pButton label="Cancel" icon="pi pi-times" (click)="displayAppointmentDialog = false" class="p-button-text"></button>
+                <div class="p-dialog-footer p-grid p-justify-end">
+                    <button type="button" pButton label="Cancel" icon="pi pi-times" (click)="displayAppointmentDialog = false" class="p-button-text p-mr-2"></button>
                     <button type="submit" pButton label="Save" icon="pi pi-check" class="p-button-success"></button>
                 </div>
             </form>
@@ -51,17 +64,20 @@
 
         <!-- Edit Appointment Dialog -->
         <p-dialog (onHide)="cancelEdit()" header="Edit Appointment" [(visible)]="displayEditAppointmentDialog" [modal]="true" [style]="{ width: '650px' }" [draggable]="false" [resizable]="false">
-            <form (ngSubmit)="updateAppointment()">
-                <div class="p-fluid">
-                    <div class="p-field">
+            <form (ngSubmit)="updateAppointment()" class="p-fluid">
+                <div class="p-grid p-fluid py-4">
+                    <p-floatlabel variant="in" >
                         <label for="editSubject">Subject</label>
-                        <input id="editSubject" type="text" pInputText [(ngModel)]="selectedAppointment.subject" name="editSubject" required />
-                    </div>
+                        <input id="editSubject" type="text" pInputText [(ngModel)]="selectedAppointment.subject" name="editSubject" style="width: 450px;"  required />
+                    </p-floatlabel>
+                    <!-- Add more fields here if needed -->
                 </div>
-                <div class="p-dialog-footer">
+                <div class="p-dialog-footer p-grid p-justify-between">
                     <button type="button" pButton label="Delete" icon="pi pi-trash" (click)="deleteAppointment()" class="p-button-danger"></button>
-                    <button type="button" pButton label="Cancel" icon="pi pi-times" (click)="cancelEdit()" class="p-button-text"></button>
-                    <button type="submit" pButton label="Save" icon="pi pi-check" class="p-button-success"></button>
+                    <div>
+                        <button type="button" pButton label="Cancel" icon="pi pi-times" (click)="cancelEdit()" class="p-button-text p-mr-2"></button>
+                        <button type="submit" pButton label="Save" icon="pi pi-check" class="p-button-success"></button>
+                    </div>
                 </div>
             </form>
         </p-dialog>

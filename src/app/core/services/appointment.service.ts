@@ -21,4 +21,8 @@ export class AppointmentService {
     deleteAppointment(id: string) {
         return this.api.delete('/appointment/' + id);
     }
+
+    getAppointmentForAuthUserClinic(){
+      return this.api.get('/appointment/getAppointmentForAuthUserClinic')
+    }
 }

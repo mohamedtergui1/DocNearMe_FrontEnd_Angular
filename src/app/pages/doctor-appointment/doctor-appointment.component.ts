@@ -28,6 +28,7 @@ import { User } from '../../model/User';
 import { map } from 'rxjs';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { Tag } from 'primeng/tag';
+import { FloatLabel } from 'primeng/floatlabel';
 
 @Component({
     selector: 'app-doctor-appointment',
@@ -41,7 +42,8 @@ import { Tag } from 'primeng/tag';
         ButtonModule, // Add ButtonModule
         InputTextModule, // Add InputTextModule
         FormsModule,
-        Tag
+        Tag,
+        FloatLabel
     ],
     templateUrl: './doctor-appointment.component.html' 
 })
