@@ -31,7 +31,13 @@ export class AppointmentService {
     getAppointmentForAuthUserClinicValidAndofToday(){
       return this.api.get('/appointment/getAppointmentForAuthUserClinicValidAndofToday')
     }
+
     getAppointmentById(id: string) {
         return this.api.get('/appointment/' + id);
     }
+
+    chnageStatusOfAppointmentFromtheMedicine(data:Appointment){
+        return this.api.put('/appointment/medicine/chnage-appointment-status/' + data.id,data);
+    }
+
 }

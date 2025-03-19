@@ -284,7 +284,7 @@ export class MedecinManageAppointmentComponent implements OnInit {
             return;
         }
 
-        this.appointmentService.updateAppointment(this.selectedAppointment).subscribe({
+        this.appointmentService.chnageStatusOfAppointmentFromtheMedicine(this.selectedAppointment).subscribe({
             next: (response: any) => {
                 this.messageService.add({
                     severity: 'success',
@@ -349,7 +349,7 @@ export class MedecinManageAppointmentComponent implements OnInit {
         this.selectedAppointment.status = newStatus as AppointmentStatus;
 
         // Call the appointment service to update the appointment
-        this.appointmentService.updateAppointment(this.selectedAppointment).subscribe({
+        this.appointmentService.chnageStatusOfAppointmentFromtheMedicine(this.selectedAppointment).subscribe({
             next: (response: any) => {
                 this.messageService.add({
                     severity: 'success',
