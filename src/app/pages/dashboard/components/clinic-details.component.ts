@@ -18,7 +18,7 @@ import { SkeletonModule } from 'primeng/skeleton'; // For loading state
     SkeletonModule // For loading state
   ],
   template: `
-    <div class="card p-4">
+    <div class="mt-1 mb-4">
       <!-- Loading State -->
       <ng-template #loading>
         <p-card>
@@ -156,6 +156,7 @@ export class ClinicDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loading = true;
     this.route.parent?.data.subscribe({
       next: (data) => {
         this.clinic = data['clinic']?.data || null;

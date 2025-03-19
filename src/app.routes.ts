@@ -10,6 +10,7 @@ import { DoctorAppointmentComponent } from './app/pages/doctor-appointment/docto
 import { getClinicForAuthUserResolver } from './app/core/resolvers/get-clinic-for-auth-user.resolver';
 import { CreateClinicComponent } from './app/pages/create-clinic/create-clinic.component';
 import { BookAppointmentComponent } from './app/pages/book-appointment/book-appointment.component';
+import { CreateConsultationComponent } from './app/pages/medcine/dashboard/consultation/create-consultation.component';
 
 export const appRoutes: Routes = [
     { path: '', component: Landing },
@@ -49,7 +50,7 @@ export const appRoutes: Routes = [
                 }
             },
             {
-                path: 'medecin-manage-appointment',
+                path: 'appointment',
                 loadComponent: () => import('./app/pages/medecin-manage-appointment/medecin-manage-appointment.component').then((m) => m.MedecinManageAppointmentComponent),
 
                 resolve: {
@@ -58,7 +59,11 @@ export const appRoutes: Routes = [
             },
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
             { path: 'documentation', component: Documentation },
-            { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
+            { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') },
+            {
+                path: 'consultation/:appointmentId',
+                component: CreateConsultationComponent
+              }
         ],
         resolve: {
             clinic: getClinicForAuthUserResolver

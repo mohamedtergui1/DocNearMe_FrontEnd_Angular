@@ -50,20 +50,20 @@ export class ProfileComponent implements OnInit {
 
     toggleEditMode() {
         if (this.user) {
-            this.userForm.patchValue({
-                nom: this.user.nom,
-                prenom: this.user.prenom,
-                email: this.user.email,
-                telephone: this.user.telephone,
-                dateNaissance: new Date(this.user.dateNaissance),
-                adresse: {
-                    rue: this.user.adresse.rue,
-                    ville: this.user.adresse.ville,
-                    codePostal: this.user.adresse.codePostal
-                },
-                role: this.user.role,
-                photoProfil: this.user.photoProfil
-            });
+            // this.userForm.patchValue({
+            //     nom: this.user.nom,
+            //     prenom: this.user.prenom,
+            //     email: this.user.email,
+            //     telephone: this.user.telephone,
+            //     dateNaissance: new Date(this.user.dateNaissance),
+            //     adresse: {
+            //         rue: this.user.adresse.rue,
+            //         ville: this.user.adresse.ville,
+            //         codePostal: this.user.adresse.codePostal
+            //     },
+            //     role: this.user.role,
+            //     photoProfil: this.user.photoProfil
+            // });
         }
         this.isEditMode = true;
     }

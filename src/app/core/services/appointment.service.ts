@@ -15,14 +15,23 @@ export class AppointmentService {
     createAppointment(data: Omit<Appointment, 'patientId' | 'id' | 'status'>) {
         return this.api.post('/appointment', data);
     }
+
     updateAppointment(data: Appointment) {
         return this.api.put('/appointment/' + data.id, data);
     }
+
     deleteAppointment(id: string) {
         return this.api.delete('/appointment/' + id);
     }
 
     getAppointmentForAuthUserClinic(){
       return this.api.get('/appointment/getAppointmentForAuthUserClinic')
+    }
+
+    getAppointmentForAuthUserClinicValidAndofToday(){
+      return this.api.get('/appointment/getAppointmentForAuthUserClinicValidAndofToday')
+    }
+    getAppointmentById(id: string) {
+        return this.api.get('/appointment/' + id);
     }
 }

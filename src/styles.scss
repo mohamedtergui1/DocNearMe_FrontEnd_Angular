@@ -58,3 +58,33 @@ input-error-border{
 .my-slotLabel-class{
     
 }}
+
+ 
+
+@keyframes turn-right-left {
+  0% {
+    transform: rotate(0deg) scale(1); /* Start at normal size */
+    opacity: 1; 
+    filter: brightness(100%); /* Normal brightness */
+  }
+  50% {
+    transform: rotate(30deg) scale(1.1); /* Slightly larger and rotated right */
+    opacity: 0.9; /* Slightly transparent */
+    filter: brightness(120%); /* Brighter */
+  }
+  100% {
+    transform: rotate(-30deg) scale(1.1); /* Slightly larger and rotated left */
+    opacity: 0.9; /* Slightly transparent */
+    filter: brightness(120%); /* Brighter */
+  }
+}
+
+.turn-icon {
+  position: sticky;
+  top: 10px;
+  left: 10px;
+  animation: turn-right-left 1.5s ease-in-out infinite alternate;
+  transform-origin: center; /* Ensure rotation happens around the center */
+}
+ 
+ 

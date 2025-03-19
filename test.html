@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+
+	<script>
+
+
+		const data = JSON.stringify({
+			symptoms: [
+				'severe headache',
+				'fever',
+				'fatigue',
+				'sensitivity to light'
+			],
+			patientInfo: {
+				age: 35,
+				gender: 'female',
+				height: 165,
+				weight: 65,
+				medicalHistory: [
+					'hypertension',
+					'seasonal allergies'
+				],
+				currentMedications: [
+					'lisinopril 10mg',
+					'cetirizine 10mg'
+				],
+				allergies: [
+					'penicillin'
+				],
+				lifestyle: {
+					smoking: false,
+					alcohol: 'occasional',
+					exercise: 'moderate',
+					diet: 'balanced'
+				}
+			},
+			lang: 'en'
+		});
+
+		const xhr = new XMLHttpRequest();
+		xhr.withCredentials = true;
+
+		xhr.addEventListener('readystatechange', function () {
+			if (this.readyState === this.DONE) {
+				console.log(this.responseText);
+			}
+		});
+
+		xhr.open('GET', 'https://www.dwa.ma/api/v1/search?word=vitamine&type=medicaments');
+		
+		xhr.setRequestHeader('Content-Type', 'application/json');
+
+		xhr.send(data);
+
+
+
+
+
+	</script>
+</body>
+
+</html>

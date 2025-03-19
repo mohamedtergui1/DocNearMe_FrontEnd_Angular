@@ -1,54 +1,6 @@
 <p-fluid>
     <!-- Profile Section -->
-    <div class="flex items-center justify-center px-10">
-        <div class="w-full sm:w-1/2 bg-white shadow-xl rounded-3xl">
-            <!-- Previous sections remain unchanged until the form -->
-            <div class="mt-10 flex justify-center mb-5">
-                <img [src]="user?.photoProfil || 'assets/default-profile.png'" class="rounded-full h-40" alt="Profile Photo" />
-            </div>
-            <div class="flex justify-center px-5">
-                <div class="border-b-2 border-gray-500 w-full"></div>
-            </div>
-            
-            <!-- User Info Display -->
-            <div *ngIf="!isEditMode" class="p-6">
-                <div class="flex flex-col gap-4">
-                    <div class="text-center mb-4">
-                        <h2 class="text-2xl font-bold">{{user?.prenom}} {{user?.nom}}</h2>
-                        <p class="text-gray-600">{{user?.email}}</p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <p class="font-semibold">Phone:</p>
-                            <p>{{user?.telephone}}</p>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Date of Birth:</p>
-                            <p>{{user?.dateNaissance | date:'mediumDate'}}</p>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Address:</p>
-                            <p>{{user?.adresse?.rue}}</p>
-                            <p>{{user?.adresse?.ville}}, {{user?.adresse?.codePostal}}</p>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Account Type:</p>
-                            <p>{{user?.role}}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex justify-center mt-6">
-                    <p-button label="Edit Profile" (onClick)="toggleEditMode()" icon="pi pi-pencil"></p-button>
-                </div>
-            </div>
-
-            <!-- Buttons Section -->
-            <div *ngIf="!isEditMode" class="flex justify-center gap-4 p-5">
-                <button class="py-3 bg-indigo-500 font-semibold text-white w-1/4 rounded-xl hover:bg-indigo-600">Follow</button>
-                <button class="py-3 bg-pink-500 font-semibold text-white w-1/4 rounded-xl hover:bg-pink-600">Subscribe</button>
-            </div>
-        </div>
-    </div>
+     
 
     <!-- Form Section -->
     <div *ngIf="isEditMode" class="flex mt-8">

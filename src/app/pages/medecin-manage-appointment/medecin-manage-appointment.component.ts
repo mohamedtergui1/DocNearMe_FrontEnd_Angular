@@ -30,28 +30,17 @@ import { Tag } from 'primeng/tag';
 import { FloatLabel } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
 import { Card } from 'primeng/card';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
     selector: 'app-medecin-manage-appointment',
     standalone: true,
-    imports: [
-        CommonModule,
-        AppFloatingConfigurator,
-        FullCalendarModule,
-        DialogModule,
-        ButtonModule,
-        InputTextModule,
-        FormsModule,
-        Tag,
-        Card,
-        DropdownModule
-    ],
-    templateUrl: './medecin-manage-appointment.component.html',
-     
+    imports: [CommonModule, AppFloatingConfigurator, FullCalendarModule, DialogModule, ButtonModule, InputTextModule, FormsModule, Tag, Card, DropdownModule],
+    templateUrl: './medecin-manage-appointment.component.html'
 })
 export class MedecinManageAppointmentComponent implements OnInit {
     @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
-     
+
     public vacationsColor = '#ff0000';
     public originalAppointment: Appointment | null = null;
     private authUser!: User | null;
@@ -98,6 +87,9 @@ export class MedecinManageAppointmentComponent implements OnInit {
         eventClick: this.handleEventClick.bind(this) // Only handle click events
     };
 
+    public displayUserDetailsModal: boolean = false;
+    public selectedUser: User | null = null;
+
     constructor(
         private messageService: MessageService,
         private route: ActivatedRoute,
@@ -105,7 +97,8 @@ export class MedecinManageAppointmentComponent implements OnInit {
         private router: Router,
         private appointmentService: AppointmentService,
         private authService: AuthService,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        private userService:UserService
     ) {}
 
     ngOnInit(): void {
@@ -117,13 +110,41 @@ export class MedecinManageAppointmentComponent implements OnInit {
         });
     }
 
+    openUserDetailsModal(): void {
+      if (!this.selectedAppointment.patientId) {
+          this.messageService.add({
+              severity: 'warn',
+              summary: 'No User',
+              detail: 'No user associated with this appointment.'
+          });
+          return;
+      }
+
+      // Fetch user details
+      this.userService.getUserById(this.selectedAppointment.patientId).subscribe({
+          next: (response: any) => {
+              this.selectedUser = response.data;
+              this.displayUserDetailsModal = true;
+          },
+          error: (err: HttpErrorResponse) => {
+              console.error('Error fetching user details:', err);
+              this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Failed to fetch user details.'
+              });
+          }
+      });
+  }
+
+
     getStyleOfStatusForThTemplate(value: AppointmentStatus | string): { [key: string]: string } {
         const status = typeof value === 'string' ? AppointmentStatus[value as keyof typeof AppointmentStatus] : value;
         const backgroundColor = getColorByStatus(status);
         return {
             'background-color': backgroundColor,
-            'color': 'white',
-            'padding': '0.25rem 0.5rem',
+            color: 'white',
+            padding: '0.25rem 0.5rem',
             'border-radius': '4px',
             'font-size': '0.875rem'
         };
@@ -176,11 +197,11 @@ export class MedecinManageAppointmentComponent implements OnInit {
             const formattedAppointments = this.appointments.map((appointment: Appointment) => {
                 const isPatientAppointment = appointment.patientId === this.authUser?.id;
                 return {
-                    title:  appointment.subject ,
+                    title: appointment.subject,
                     start: new Date(appointment.startDateTime),
                     end: new Date(appointment.endDateTime),
-                    backgroundColor:  getColorByStatus(appointment.status),
-                    borderColor:  getColorByStatus(appointment.status) ,
+                    backgroundColor: getColorByStatus(appointment.status),
+                    borderColor: getColorByStatus(appointment.status),
                     extendedProps: {
                         appointmentId: appointment.id,
                         type: 'appointment',
@@ -303,17 +324,70 @@ export class MedecinManageAppointmentComponent implements OnInit {
         this.forceCalendarRender();
     }
 
-     
+    confirmStatusChange(newStatus: AppointmentStatus | string): void {
+        this.confirmationService.confirm({
+            message: `Are you sure you want to change the status to ${newStatus}?`,
+            header: 'Confirm Status Change',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.changeStatus(newStatus);
+            } 
+        });
+    }
+
+    changeStatus(newStatus: AppointmentStatus | string): void {
+        if (!this.selectedAppointment.id) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No appointment selected.'
+            });
+            return;
+        }
+
+        // Update the status
+        this.selectedAppointment.status = newStatus as AppointmentStatus;
+
+        // Call the appointment service to update the appointment
+        this.appointmentService.updateAppointment(this.selectedAppointment).subscribe({
+            next: (response: any) => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: `Appointment status updated to ${newStatus}.`
+                });
+
+                // Update the event in the calendar
+                const updatedEventIndex = this.events.findIndex((e) => e.extendedProps.appointmentId === this.selectedAppointment.id);
+                if (updatedEventIndex !== -1) {
+                    this.events[updatedEventIndex].backgroundColor = getColorByStatus(newStatus as AppointmentStatus);
+                    this.events[updatedEventIndex].borderColor = getColorByStatus(newStatus as AppointmentStatus);
+                    this.calendarOptions.events = [...this.events];
+                }
+
+                // Close the dialog
+                this.displayEditAppointmentDialog = false;
+            },
+            error: (err: HttpErrorResponse) => {
+                console.error('Error updating appointment status:', err);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Failed to update appointment status.'
+                });
+            }
+        });
+    }
 
     cancelEdit(): void {
         if (this.originalAppointment) {
-            const appointment = this.appointments.find((a) => a.id === this.originalAppointment?.id);
+            const appointment = this.appointments.find((a) => a.id == this.originalAppointment?.id);
             if (appointment) {
                 appointment.startDateTime = this.originalAppointment.startDateTime;
                 appointment.endDateTime = this.originalAppointment.endDateTime;
             }
 
-            const eventIndex = this.events.findIndex((e) => e.extendedProps.appointmentId === this.originalAppointment?.id);
+            const eventIndex = this.events.findIndex((e) => e.extendedProps.appointmentId == this.originalAppointment?.id);
             if (eventIndex !== -1) {
                 this.events[eventIndex].start = new Date(this.originalAppointment.startDateTime);
                 this.events[eventIndex].end = new Date(this.originalAppointment.endDateTime);
