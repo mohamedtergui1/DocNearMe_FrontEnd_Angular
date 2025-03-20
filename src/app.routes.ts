@@ -6,11 +6,10 @@ import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
 import { ProfileComponent } from './app/pages/profile/profile.component';
 import { getAuthUserResolver } from './app/core/resolvers/get-auth-user.resolver';
-import { DoctorAppointmentComponent } from './app/pages/doctor-appointment/doctor-appointment.component';
+import { DoctorAppointmentComponent } from './app/pages/patient/doctor-appointment/doctor-appointment.component';
 import { getClinicForAuthUserResolver } from './app/core/resolvers/get-clinic-for-auth-user.resolver';
 import { CreateClinicComponent } from './app/pages/create-clinic/create-clinic.component';
-import { BookAppointmentComponent } from './app/pages/book-appointment/book-appointment.component';
-import { CreateConsultationComponent } from './app/pages/medcine/dashboard/consultation/create-consultation.component';
+import { BookAppointmentComponent } from './app/pages/patient/book-appointment/book-appointment.component';
 import { ViewConsultationComponent } from './app/pages/medcine/dashboard/view-consultation/view-consultation.component';
 import { roleGuard } from './app/core/guards/role.guard';
 import { isPatientGuard } from './app/core/guards/is-patient.guard';
@@ -57,7 +56,7 @@ export const appRoutes: Routes = [
             },
             {
                 path: 'appointment',
-                loadComponent: () => import('./app/pages/medcine/dashboard/medecin-manage-appointment/medecin-manage-appointment.component').then((m) => m.MedecinManageAppointmentComponent),
+                loadComponent: () => import('./app/pages/medcine/medecin-manage-appointment/medecin-manage-appointment.component').then((m) => m.MedecinManageAppointmentComponent),
 
                 resolve: {
                     clinic: getClinicForAuthUserResolver
@@ -68,7 +67,7 @@ export const appRoutes: Routes = [
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') },
             {
                 path: 'create-consultation-from-appointment/:appointmentId',
-                component: CreateConsultationComponent
+                component: CreateClinicComponent
             },
             {
                 path: 'view-consultation-by-appointment-id/:appointmentId',

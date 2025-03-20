@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { LayoutComponent } from '../../shared/componenets/layout/layout.component';
-import { Clinic } from '../../model/Clinic';
-import { ClinicService } from '../../core/services/clinic.service';
+import { LayoutComponent } from '../../../shared/componenets/layout/layout.component';
+import { Clinic } from '../../../model/Clinic';
+import { ClinicService } from '../../../core/services/clinic.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';

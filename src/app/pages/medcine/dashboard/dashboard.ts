@@ -9,7 +9,8 @@ import { AppointmentOfTodayWidgetComponent } from './components/appoinment-of-to
 
 @Component({
     selector: 'app-dashboard',
-    imports: [StatsWidget, RevenueStreamWidget, NotificationsWidget, ClinicDetailsComponent,AppointmentOfTodayWidgetComponent],
+    imports: [StatsWidget, RevenueStreamWidget, NotificationsWidget, ClinicDetailsComponent, AppointmentOfTodayWidgetComponent],
+    standalone: true,
     template: `
         <div class="grid grid-cols-12 gap-8">
             <app-stats-widget class="contents" />
