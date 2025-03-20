@@ -4,7 +4,7 @@ import { CardModule } from 'primeng/card';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TagModule } from 'primeng/tag';
 import { ActivatedRoute } from '@angular/router';
-import { Clinic } from '../../../model/Clinic';
+import { Clinic } from '../../../../model/Clinic';
 import { SkeletonModule } from 'primeng/skeleton'; // For loading state
 
 @Component({

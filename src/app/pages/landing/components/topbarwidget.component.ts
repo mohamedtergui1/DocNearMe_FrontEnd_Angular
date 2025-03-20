@@ -3,7 +3,7 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { Router, RouterModule } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
-import { AuthService } from '../../service/auth.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { LogoComponent } from '../../../shared/componenets/logo/logo.component';
 

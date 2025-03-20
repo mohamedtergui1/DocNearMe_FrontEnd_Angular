@@ -18,7 +18,7 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
 import { LogoComponent } from '../../shared/componenets/logo/logo.component';
 
 // Services
-import { AuthService, RegisterRequest } from '../service/auth.service';
+import { AuthService, RegisterRequest } from '../../core/services/auth.service';
 import { UserRole } from '../../model/UserRole';
 import { LayoutComponent } from '../../shared/componenets/layout/layout.component';
 

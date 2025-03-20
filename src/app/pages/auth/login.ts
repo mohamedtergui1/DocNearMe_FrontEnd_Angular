@@ -11,7 +11,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
-import { AuthService, LoginResponse } from '../service/auth.service';
+import { AuthService, LoginResponse } from '../../core/services/auth.service';
 import { User as UserType } from '../../model/User';
 import { UserRole } from '../../model/UserRole';
 import { LogoComponent } from '../../shared/componenets/logo/logo.component';

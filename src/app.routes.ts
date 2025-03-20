@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AppLayout } from './app/layout/component/app.layout';
-import { Dashboard } from './app/pages/dashboard/dashboard';
+import { Dashboard } from './app/pages/medcine/dashboard/dashboard';
 import { Documentation } from './app/pages/documentation/documentation';
 import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
@@ -38,7 +38,7 @@ export const appRoutes: Routes = [
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
-            
+
         ]
         ,
         canActivateChild: [isPatientGuard]
@@ -57,7 +57,7 @@ export const appRoutes: Routes = [
             },
             {
                 path: 'appointment',
-                loadComponent: () => import('./app/pages/medecin-manage-appointment/medecin-manage-appointment.component').then((m) => m.MedecinManageAppointmentComponent),
+                loadComponent: () => import('./app/pages/medcine/dashboard/medecin-manage-appointment/medecin-manage-appointment.component').then((m) => m.MedecinManageAppointmentComponent),
 
                 resolve: {
                     clinic: getClinicForAuthUserResolver

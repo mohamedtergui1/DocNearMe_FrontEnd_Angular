@@ -2,16 +2,16 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { VacationPeriod } from '../../model/VacationPeriod';
+import { VacationPeriod } from '../../../../model/VacationPeriod';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Clinic } from '../../model/Clinic';
-import { ClinicService } from '../../core/services/clinic.service';
-import { LayoutComponent } from '../../shared/componenets/layout/layout.component';
-import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
-import { AppointmentService } from '../../core/services/appointment.service';
-import { Appointment } from '../../model/Appointment';
-import { AuthService } from '../service/auth.service';
-import { dayOfWeekToNumber, DayOfWeek } from '../../model/DayOfWeek';
+import { Clinic } from '../../../../model/Clinic';
+import { ClinicService } from '../../../../core/services/clinic.service';
+import { LayoutComponent } from '../../../../shared/componenets/layout/layout.component';
+import { AppFloatingConfigurator } from '../../../../layout/component/app.floatingconfigurator';
+import { AppointmentService } from '../../../../core/services/appointment.service';
+import { Appointment } from '../../../../model/Appointment';
+import { AuthService } from '../../../../core/services/auth.service';
+import { dayOfWeekToNumber, DayOfWeek } from '../../../../model/DayOfWeek';
 
 // FullCalendar imports
 import { FullCalendarModule } from '@fullcalendar/angular';
@@ -23,14 +23,14 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
-import { AppointmentStatus, getColorByStatus } from '../../model/AppointmentStatus';
-import { User } from '../../model/User';
+import { AppointmentStatus, getColorByStatus } from '../../../../model/AppointmentStatus';
+import { User } from '../../../../model/User';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { Tag } from 'primeng/tag';
 import { FloatLabel } from 'primeng/floatlabel';
 import { DropdownModule } from 'primeng/dropdown';
 import { Card } from 'primeng/card';
-import { UserService } from '../../core/services/user.service';
+import { UserService } from '../../../../core/services/user.service';
 
 @Component({
     selector: 'app-medecin-manage-appointment',
@@ -333,7 +333,7 @@ export class MedecinManageAppointmentComponent implements OnInit {
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.changeStatus(newStatus);
-            } 
+            }
         });
     }
 

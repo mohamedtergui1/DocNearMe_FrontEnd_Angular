@@ -3,15 +3,15 @@ import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { User } from '../../model/User';
 import { catchError, of, switchMap } from 'rxjs';
-import { AuthService } from '../../pages/service/auth.service';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
 export const getAuthUserResolver: ResolveFn<User | null> = (route, state) => {
     const http = inject(HttpClient);
     const authService: AuthService = inject(AuthService);
     const router = inject(Router);
-    
-   
+
+
     return authService.getAuthUser().pipe(
         catchError((error) => {
             console.error('Error fetching auth user:', error);
@@ -33,7 +33,7 @@ export const getAuthUserResolver: ResolveFn<User | null> = (route, state) => {
                     })
                 );
             }
-            return of(null); 
+            return of(null);
         })
     );
 };

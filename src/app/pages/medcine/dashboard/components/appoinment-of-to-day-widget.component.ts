@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // For *ngFor
-import { AppointmentService } from '../../../core/services/appointment.service';
+import { AppointmentService } from '../../../../core/services/appointment.service';
 
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table'; // Import TableModule for p-table
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag'; // Import TagModule for p-tag
-import { Appointment } from '../../../model/Appointment';
-import { AppointmentStatus } from '../../../model/AppointmentStatus';
+import { Appointment } from '../../../../model/Appointment';
+import { AppointmentStatus } from '../../../../model/AppointmentStatus';
 import { DatePipe } from '@angular/common'; // Import DatePipe
 import { Router } from '@angular/router';
 
@@ -35,17 +35,17 @@ import { Router } from '@angular/router';
             <td>
               <!-- Add "Start Consultation" button for valid appointments -->
               <ng-container *ngIf="!appointment.isCompleted">
-                <p-button 
-                  label="Start Consultation" 
-                  icon="pi pi-play" 
+                <p-button
+                  label="Start Consultation"
+                  icon="pi pi-play"
                   (onClick)="startConsultation(appointment.id)"
                   styleClass="p-button-success p-button-sm"
                 ></p-button>
               </ng-container>
               <ng-container *ngIf="appointment.isCompleted">
-                <p-button 
-                  label="View Consultation" 
-                  icon="pi pi-eye" 
+                <p-button
+                  label="View Consultation"
+                  icon="pi pi-eye"
                   (onClick)="viewConsultation(appointment.id)"
                   styleClass="p-button-info p-button-sm"
                 ></p-button>

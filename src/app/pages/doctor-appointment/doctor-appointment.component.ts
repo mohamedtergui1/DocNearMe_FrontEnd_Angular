@@ -10,7 +10,7 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 import { AppointmentService } from '../../core/services/appointment.service';
 import { Appointment } from '../../model/Appointment';
-import { AuthService } from '../service/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { dayOfWeekToNumber, DayOfWeek } from '../../model/DayOfWeek';
 
 // FullCalendar imports
@@ -38,22 +38,22 @@ import { FloatLabel } from 'primeng/floatlabel';
         LayoutComponent,
         AppFloatingConfigurator,
         FullCalendarModule,
-        DialogModule, // Add DialogModule
-        ButtonModule, // Add ButtonModule
-        InputTextModule, // Add InputTextModule
+        DialogModule,
+        ButtonModule,
+        InputTextModule,
         FormsModule,
         Tag,
         FloatLabel
     ],
-    templateUrl: './doctor-appointment.component.html' 
+    templateUrl: './doctor-appointment.component.html'
 })
 export class DoctorAppointmentComponent implements OnInit {
     @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
     public reservedSlot = '#FFCCCB';
     public vacationsColor = '#ff0000';
-    public originalAppointment: Appointment | null = null; 
+    public originalAppointment: Appointment | null = null;
     private authUser!: User | null;
-    public displayEditAppointmentDialog: boolean = false; 
+    public displayEditAppointmentDialog: boolean = false;
     public selectedAppointment: Appointment = {
         id: '',
         subject: '',
@@ -133,15 +133,15 @@ export class DoctorAppointmentComponent implements OnInit {
     }
 
     getStyleOfStatusForThTemplate(value: AppointmentStatus | string): { [key: string]: string } {
-        
+
         const status = typeof value === 'string' ? AppointmentStatus[value as keyof typeof AppointmentStatus] : value;
         const backgroundColor = getColorByStatus(status); // Get background color based on status
-    
+
         return {
             'background-color': backgroundColor,
-            'color': 'white', 
-            'padding': '0.25rem 0.5rem', 
-            'border-radius': '4px', 
+            'color': 'white',
+            'padding': '0.25rem 0.5rem',
+            'border-radius': '4px',
             'font-size': '0.875rem'
         };
     }
@@ -661,13 +661,13 @@ export class DoctorAppointmentComponent implements OnInit {
     }
 
     confirmDelete(): void {
-        
+
         this.appointmentService.deleteAppointment(this.selectedAppointment.id).subscribe({
             next: () => {
-                
+
                 this.events = this.events.filter((e) => e.extendedProps.appointmentId !== this.selectedAppointment.id);
 
-                
+
                 this.selectedAppointment = {
                     id: '',
                     subject: '',

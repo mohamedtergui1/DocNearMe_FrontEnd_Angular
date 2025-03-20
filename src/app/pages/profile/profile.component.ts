@@ -9,7 +9,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { FileUploadModule, FileUploadEvent } from 'primeng/fileupload';
 import { User } from '../../model/User';
 import { UserRole } from '../../model/UserRole';
-import { AuthService } from '../service/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { FluidModule } from 'primeng/fluid';
 import { Avatar } from 'primeng/avatar';
 import { InputMask } from 'primeng/inputmask';
@@ -136,7 +136,7 @@ export class ProfileComponent implements OnInit {
                 next: (response) => {
                     this.user = response;
                     this.isEditMode = false;
-                    
+
                 },
                 error: (error) => {
                     console.error('Error updating profile:', error);
