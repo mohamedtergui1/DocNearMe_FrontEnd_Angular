@@ -11,6 +11,11 @@ export class ConsultationService {
   constructor(private api:HttpClient) { }
 
   createConsultation(consultation:Consultation,  appointmentId:string) {
-    return this.api.post('/consultation/'+ appointmentId, consultation);
+    return this.api.post('/consultation/'+ appointmentId, { ...consultation , appointmentId });
   }
+
+  getConsultationByAppointmentId(appointmentId: string) {
+    return this.api.get('/consultation/getConsultationByAppointmentId/' + appointmentId);
+  }
+
 }

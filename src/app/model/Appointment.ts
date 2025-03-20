@@ -8,5 +8,6 @@ export interface Appointment {
     endDateTime: string;
     patientId:string;
     clinicId:string;
-    status:AppointmentStatus
+    status:AppointmentStatus;
+    isCompleted:boolean;
 }

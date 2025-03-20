@@ -21,31 +21,31 @@ export class AppMenu {
     ngOnInit() {
         this.model = [
             {
-                label: 'Home',
+                label: 'medcine',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard'] },
-                    { label: 'Profile', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard/profile'] },
-                    { label: 'Demande de Collecte ', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard/collecte'] }
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/medcine/dashboard/'] },
+                    { label: 'Appontments', icon: 'pi pi-fw pi-home', routerLink: ['/medcine/dashboard/appointment'] },
+                     
                 ]
             },
             {
                 label: 'UI Components',
                 items: [
-                    { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/dashboard/uikit/formlayout'] },
-                    { label: 'Input', icon: 'pi pi-fw pi-check-square', routerLink: ['/dashboard/uikit/input'] },
-                    { label: 'Button', icon: 'pi pi-fw pi-mobile', class: 'rotated-icon', routerLink: ['/dashboard/uikit/button'] },
-                    { label: 'Table', icon: 'pi pi-fw pi-table', routerLink: ['/dashboard/uikit/table'] },
-                    { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/dashboard/uikit/list'] },
-                    { label: 'Tree', icon: 'pi pi-fw pi-share-alt', routerLink: ['/dashboard/uikit/tree'] },
-                    { label: 'Panel', icon: 'pi pi-fw pi-tablet', routerLink: ['/dashboard/uikit/panel'] },
-                    { label: 'Overlay', icon: 'pi pi-fw pi-clone', routerLink: ['/dashboard/uikit/overlay'] },
-                    { label: 'Media', icon: 'pi pi-fw pi-image', routerLink: ['/dashboard/uikit/media'] },
-                    { label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/dashboard/uikit/menu'] },
-                    { label: 'Message', icon: 'pi pi-fw pi-comment', routerLink: ['/dashboard/uikit/message'] },
-                    { label: 'File', icon: 'pi pi-fw pi-file', routerLink: ['/dashboard/uikit/file'] },
-                    { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/dashboard/uikit/charts'] },
-                    { label: 'Timeline', icon: 'pi pi-fw pi-calendar', routerLink: ['/dashboard/uikit/timeline'] },
-                    { label: 'Misc', icon: 'pi pi-fw pi-circle', routerLink: ['/dashboard/uikit/misc'] }
+                    { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/medcine/dashboard/uikit/formlayout'] },
+                    { label: 'Input', icon: 'pi pi-fw pi-check-square', routerLink: ['/medcine/dashboard/uikit/input'] },
+                    { label: 'Button', icon: 'pi pi-fw pi-mobile', class: 'rotated-icon', routerLink: ['/medcine/dashboard/uikit/button'] },
+                    { label: 'Table', icon: 'pi pi-fw pi-table', routerLink: ['/medcine/dashboard/uikit/table'] },
+                    { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/medcine/dashboard/uikit/list'] },
+                    { label: 'Tree', icon: 'pi pi-fw pi-share-alt', routerLink: ['/medcine/dashboard/uikit/tree'] },
+                    { label: 'Panel', icon: 'pi pi-fw pi-tablet', routerLink: ['/medcine/dashboard/uikit/panel'] },
+                    { label: 'Overlay', icon: 'pi pi-fw pi-clone', routerLink: ['/medcine/dashboard/uikit/overlay'] },
+                    { label: 'Media', icon: 'pi pi-fw pi-image', routerLink: ['/medcine/dashboard/uikit/media'] },
+                    { label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/medcine/dashboard/uikit/menu'] },
+                    { label: 'Message', icon: 'pi pi-fw pi-comment', routerLink: ['/medcine/dashboard/uikit/message'] },
+                    { label: 'File', icon: 'pi pi-fw pi-file', routerLink: ['/medcine/dashboard/uikit/file'] },
+                    { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/medcine/dashboard/uikit/charts'] },
+                    { label: 'Timeline', icon: 'pi pi-fw pi-calendar', routerLink: ['/medcine/dashboard/uikit/timeline'] },
+                    { label: 'Misc', icon: 'pi pi-fw pi-circle', routerLink: ['/medcine/dashboard/uikit/misc'] }
                 ]
             },
             {

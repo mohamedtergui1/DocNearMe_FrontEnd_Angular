@@ -52,7 +52,8 @@ export class MedecinManageAppointmentComponent implements OnInit {
         endDateTime: '',
         clinicId: '',
         patientId: '',
-        status: AppointmentStatus.PENDING
+        status: AppointmentStatus.PENDING,
+        isCompleted:false
     };
     public events: any[] = [];
     public clinic: Clinic | null = null;
@@ -312,7 +313,8 @@ export class MedecinManageAppointmentComponent implements OnInit {
                     endDateTime: '',
                     clinicId: '',
                     patientId: '',
-                    status: AppointmentStatus.PENDING
+                    status: AppointmentStatus.PENDING,
+                    isCompleted:false
                 };
                 this.displayEditAppointmentDialog = false;
             },

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 
 import { CardModule } from 'primeng/card';
@@ -76,7 +76,8 @@ export class CreateConsultationComponent implements OnInit {
     private consultationService: ConsultationService,
     private fb: FormBuilder,
     private messageService: MessageService,
-    private medicationService: MedicationService
+    private medicationService: MedicationService,
+    private router:Router
   ) {
     this.consultationForm = this.fb.group({
       reason: ['', Validators.required],
@@ -159,11 +160,7 @@ export class CreateConsultationComponent implements OnInit {
 
     this.consultationService.createConsultation(consultationDTO,this.appointmentId).subscribe({
       next: (res: any) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Consultation created successfully',
-        });
+        this.router.navigate(['/medcine/dashboard']);
         this.consultationForm.reset();
       },
       error: (err: HttpErrorResponse) => {

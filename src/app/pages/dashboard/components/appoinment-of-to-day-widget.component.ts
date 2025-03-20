@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-appointment-of-today-widget',
-  standalone: true, // If you're using standalone components
+  standalone: true,
   imports: [CommonModule, CardModule, TableModule, ButtonModule, TagModule, DatePipe], // Import PrimeNG modules here
   template: `
     <p-card header="Today's Appointments">
@@ -34,12 +34,20 @@ import { Router } from '@angular/router';
             <td>{{ appointment.endDateTime | date:'shortTime' }}</td>
             <td>
               <!-- Add "Start Consultation" button for valid appointments -->
-              <ng-container *ngIf="appointment.status === AppointmentStatus.VALID">
+              <ng-container *ngIf="!appointment.isCompleted">
                 <p-button 
                   label="Start Consultation" 
                   icon="pi pi-play" 
                   (onClick)="startConsultation(appointment.id)"
                   styleClass="p-button-success p-button-sm"
+                ></p-button>
+              </ng-container>
+              <ng-container *ngIf="appointment.isCompleted">
+                <p-button 
+                  label="View Consultation" 
+                  icon="pi pi-eye" 
+                  (onClick)="viewConsultation(appointment.id)"
+                  styleClass="p-button-info p-button-sm"
                 ></p-button>
               </ng-container>
             </td>
@@ -56,16 +64,22 @@ export class AppointmentOfTodayWidgetComponent implements OnInit {
   // Expose AppointmentStatus enum to the template
   AppointmentStatus = AppointmentStatus;
 
-  constructor(private appointmentService: AppointmentService,private router:Router) {}
+  constructor(private appointmentService: AppointmentService, private router: Router) { }
 
   ngOnInit(): void {
     this.appointmentService.getAppointmentForAuthUserClinicValidAndofToday().subscribe((res: any) => {
       this.appointments = res.data;
+      console.log(res.data)
     });
   }
 
   // Method to start the consultation
   startConsultation(appointmentId: string): void {
-    this.router.navigate(['/medcine/dashboard/consultation/'+ appointmentId]);
+    this.router.navigate(['/medcine/dashboard/create-consultation-from-appointment/' + appointmentId]);
+  }
+
+  // Method to view the consultation
+  viewConsultation(appointmentId: string): void {
+    this.router.navigate(['/medcine/dashboard/view-consultation-by-appointment-id/' + appointmentId]);
   }
 }

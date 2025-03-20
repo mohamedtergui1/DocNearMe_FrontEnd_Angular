@@ -51,9 +51,9 @@ export class DoctorAppointmentComponent implements OnInit {
     @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
     public reservedSlot = '#FFCCCB';
     public vacationsColor = '#ff0000';
-    public originalAppointment: Appointment | null = null; // Store original appointment data
+    public originalAppointment: Appointment | null = null; 
     private authUser!: User | null;
-    public displayEditAppointmentDialog: boolean = false; // Controls edit dialog visibility
+    public displayEditAppointmentDialog: boolean = false; 
     public selectedAppointment: Appointment = {
         id: '',
         subject: '',
@@ -61,7 +61,9 @@ export class DoctorAppointmentComponent implements OnInit {
         endDateTime: '',
         clinicId: '',
         patientId: '',
-        status: AppointmentStatus.PENDING
+        status: AppointmentStatus.PENDING,
+        isCompleted:false
+
     }; // S
     public events: any[] = []; // Calendar events
     public clinic: Clinic | null = null; // Clinic data
@@ -74,7 +76,8 @@ export class DoctorAppointmentComponent implements OnInit {
         endDateTime: '',
         clinicId: '',
         patientId: '',
-        status: AppointmentStatus.PENDING
+        status: AppointmentStatus.PENDING,
+        isCompleted:false
     }; // Stores new appointment data
     public selectedDateRange: { start: Date; end: Date } | null = null;
 
@@ -470,7 +473,8 @@ export class DoctorAppointmentComponent implements OnInit {
             endDateTime: selectedEnd.toISOString(),
             clinicId: this.clinic?.id || '',
             patientId: '',
-            status: AppointmentStatus.PENDING
+            status: AppointmentStatus.PENDING,
+            isCompleted:false
         };
 
         // Open the create appointment dialog
@@ -495,7 +499,8 @@ export class DoctorAppointmentComponent implements OnInit {
             endDateTime: this.newAppointment.endDateTime,
             clinicId: this.clinic.id,
             patientId: this.newAppointment.patientId,
-            status: AppointmentStatus.PENDING
+            status: AppointmentStatus.PENDING,
+            isCompleted:false
         };
 
         // Call the appointment service to create the appointment
@@ -536,7 +541,8 @@ export class DoctorAppointmentComponent implements OnInit {
                     endDateTime: '',
                     clinicId: '',
                     patientId: '',
-                    status: AppointmentStatus.PENDING
+                    status: AppointmentStatus.PENDING,
+                    isCompleted:false
                 };
                 this.displayAppointmentDialog = false;
 
@@ -591,7 +597,8 @@ export class DoctorAppointmentComponent implements OnInit {
                     endDateTime: '',
                     clinicId: '',
                     patientId: '',
-                    status: AppointmentStatus.PENDING
+                    status: AppointmentStatus.PENDING,
+                    isCompleted:false
                 };
                 this.displayEditAppointmentDialog = false;
             },
@@ -637,7 +644,8 @@ export class DoctorAppointmentComponent implements OnInit {
                             endDateTime: '',
                             clinicId: '',
                             patientId: '',
-                            status: AppointmentStatus.PENDING
+                            status: AppointmentStatus.PENDING,
+                            isCompleted:false
                         };
                         this.displayEditAppointmentDialog = false;
                     },
@@ -653,13 +661,13 @@ export class DoctorAppointmentComponent implements OnInit {
     }
 
     confirmDelete(): void {
-        // Call the appointment service to delete the appointment
+        
         this.appointmentService.deleteAppointment(this.selectedAppointment.id).subscribe({
             next: () => {
-                // Remove the event from the calendar
+                
                 this.events = this.events.filter((e) => e.extendedProps.appointmentId !== this.selectedAppointment.id);
 
-                // Reset the form and close the dialog
+                
                 this.selectedAppointment = {
                     id: '',
                     subject: '',
@@ -667,7 +675,8 @@ export class DoctorAppointmentComponent implements OnInit {
                     endDateTime: '',
                     clinicId: '',
                     patientId: '',
-                    status: AppointmentStatus.PENDING
+                    status: AppointmentStatus.PENDING,
+                    isCompleted:false
                 };
                 this.displayEditAppointmentDialog = false;
             }
