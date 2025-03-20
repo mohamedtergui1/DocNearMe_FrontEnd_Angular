@@ -8,7 +8,7 @@ export class MedicationService {
 
   constructor(private api: HttpClient) { }
 
-  getAllMedications() {
-    return this.api.get("https://www.dwa.ma/api/v1/search?type=medicaments&word=a")
+  searchMedications(query: string) {
+    return this.api.get('/medications/search-medications', { params: { query } });
   }
 }

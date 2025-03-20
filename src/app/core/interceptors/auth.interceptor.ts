@@ -35,7 +35,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             }
         }),
         catchError((error: HttpErrorResponse) => {
-
+            console.error(error);
             messageService.add({
                 severity: 'error',
                 summary: 'Error',

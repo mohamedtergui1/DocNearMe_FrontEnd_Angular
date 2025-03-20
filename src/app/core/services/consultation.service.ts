@@ -10,7 +10,7 @@ export class ConsultationService {
 
   constructor(private api:HttpClient) { }
 
-  createConsultation(consultation:Consultation){
-    return this.api.post('/consultation', consultation);
+  createConsultation(consultation:Consultation,  appointmentId:string) {
+    return this.api.post('/consultation/'+ appointmentId, consultation);
   }
 }
