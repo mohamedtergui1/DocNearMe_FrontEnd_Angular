@@ -1,10 +1,20 @@
 import { CanActivateChildFn } from '@angular/router';
 import { AuthService } from '../../pages/service/auth.service';
 import { inject } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { UserRole } from '../../model/UserRole';
 
 export const roleGuard: CanActivateChildFn = (childRoute, state) => {
-  AuthService:AuthService = inject(AuthService);
+  const authService = inject(AuthService); // Correctly inject AuthService
 
   
-  return true;
+  return authService.getAuthUser().pipe(
+    map((user) => {
+      // Check if the user has the 'admin' role
+      if (user?.role ===  UserRole.MEDICINE) {
+        return true; 
+      }
+      return false; 
+    })
+  );
 };

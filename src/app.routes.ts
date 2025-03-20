@@ -12,6 +12,8 @@ import { CreateClinicComponent } from './app/pages/create-clinic/create-clinic.c
 import { BookAppointmentComponent } from './app/pages/book-appointment/book-appointment.component';
 import { CreateConsultationComponent } from './app/pages/medcine/dashboard/consultation/create-consultation.component';
 import { ViewConsultationComponent } from './app/pages/medcine/dashboard/view-consultation/view-consultation.component';
+import { roleGuard } from './app/core/guards/role.guard';
+import { isPatientGuard } from './app/core/guards/is-patient.guard';
 
 export const appRoutes: Routes = [
     { path: '', component: Landing },
@@ -36,7 +38,10 @@ export const appRoutes: Routes = [
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
+            
         ]
+        ,
+        canActivateChild: [isPatientGuard]
     },
     {
         path: 'medcine/dashboard',
@@ -73,6 +78,8 @@ export const appRoutes: Routes = [
         resolve: {
             clinic: getClinicForAuthUserResolver
         }
+        ,
+        canActivateChild: [roleGuard]
     },
     { path: 'notfound', component: Notfound },
     { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },

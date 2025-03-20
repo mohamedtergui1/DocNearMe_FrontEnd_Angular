@@ -29,6 +29,12 @@ export class AppMenu {
                 ]
             },
             {
+                label: 'Patient',
+                items: [
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/patient/dashboard/'] },
+                ]
+            },
+            {
                 label: 'UI Components',
                 items: [
                     { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/medcine/dashboard/uikit/formlayout'] },

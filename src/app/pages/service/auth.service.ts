@@ -58,6 +58,7 @@ export class AuthService {
         }
     }
 
+
     login(email: string, password: string): Observable<{data : LoginResponse}> {
         return this.http.post<{data : LoginResponse}>('/auth/login', { email, password }).pipe(
             tap((response) => {
@@ -123,4 +124,6 @@ export class AuthService {
     resetPassword(email: string): Observable<{ success: boolean }> {
         return this.http.post<{ success: boolean }>('/auth/reset-password', { email });
     }
+
+     
 }
