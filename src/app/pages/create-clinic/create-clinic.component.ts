@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 @Component({
     selector: 'app-create-clinic',
     standalone: true,
-    imports: [CommonModule, InputTextModule, DropdownModule, ButtonModule, LayoutComponent, MultiSelectModule, CalendarModule, ReactiveFormsModule,Router],
+    imports: [CommonModule, InputTextModule, DropdownModule, ButtonModule, LayoutComponent, MultiSelectModule, CalendarModule, ReactiveFormsModule],
     template: `
         <app-layout>
             <div class="container mx-auto px-4 py-8" selector>
@@ -177,7 +177,7 @@ export class CreateClinicComponent implements OnInit {
         private clinicService: ClinicService,
         private messageService: MessageService,
         private categoryService: CategoryService,
-        private router: Router
+        private router:Router
     ) {
         this.clinicForm = this.fb.group({
             clinicName: ['', Validators.required],
