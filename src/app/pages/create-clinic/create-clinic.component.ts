@@ -12,11 +12,12 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { CalendarModule } from 'primeng/calendar';
 import { DayOfWeek } from '../../model/DayOfWeek';
 import { CategoryService } from '../../core/services/category.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-create-clinic',
     standalone: true,
-    imports: [CommonModule, InputTextModule, DropdownModule, ButtonModule, LayoutComponent, MultiSelectModule, CalendarModule, ReactiveFormsModule],
+    imports: [CommonModule, InputTextModule, DropdownModule, ButtonModule, LayoutComponent, MultiSelectModule, CalendarModule, ReactiveFormsModule,Router],
     template: `
         <app-layout>
             <div class="container mx-auto px-4 py-8" selector>
@@ -175,7 +176,8 @@ export class CreateClinicComponent implements OnInit {
         private fb: FormBuilder,
         private clinicService: ClinicService,
         private messageService: MessageService,
-        private categoryService: CategoryService
+        private categoryService: CategoryService,
+        private router: Router
     ) {
         this.clinicForm = this.fb.group({
             clinicName: ['', Validators.required],
@@ -239,11 +241,12 @@ export class CreateClinicComponent implements OnInit {
           endDate: this.extractDate(vacation.endDate)
         }));
     
-        console.log(clinicRequest); // Debugging: Check the payload
+        console.log(clinicRequest); 
     
         this.clinicService.createClinic(clinicRequest).subscribe(
           (response) => {
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Clinic created successfully' });
+            this.router.navigate(['/medicine/dashboard']); 
             console.log(response);
             this.clinicForm.reset();
           },
@@ -254,9 +257,9 @@ export class CreateClinicComponent implements OnInit {
       }
     }
     
-    // Helper method to extract time in HH:mm:ss format
+    
     private extractTime(time: any): string {
-      console.log('Input time:', time); // Debugging
+      console.log('Input time:', time); 
       if (!time) return '';
     
       // Convert time to a string if it's a Date object
