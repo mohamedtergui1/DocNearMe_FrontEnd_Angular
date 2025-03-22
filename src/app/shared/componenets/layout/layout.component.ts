@@ -5,10 +5,11 @@ import { AppFloatingConfigurator } from '../../../layout/component/app.floatingc
 
 @Component({
     selector: 'app-layout',
-    imports: [FooterWidget, TopbarWidget,AppFloatingConfigurator],
+    imports: [FooterWidget, TopbarWidget, AppFloatingConfigurator],
+    standalone: true,
     template: `
         <div class="bg-surface-0 dark:bg-surface-900">
-        <app-floating-configurator />
+            <app-floating-configurator />
             <div id="home" class="landing-wrapper overflow-hidden">
                 <topbar-widget class="py-6 px-6 mx-0 md:mx-12 lg:mx-20 lg:px-20 flex items-center justify-between relative lg:static" />
                 <ng-content select="[selector]"></ng-content>

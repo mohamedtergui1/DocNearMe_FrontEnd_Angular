@@ -11,7 +11,7 @@ import { Clinic } from '../../../model/Clinic';
   standalone: true,
   imports: [CommonModule, CardModule, FieldsetModule, TagModule, SkeletonModule], // Add SkeletonModule
   template: `
-    <p-card header="Clinic Details">
+    <p-card [header]="ClinicDetails">
       <div class="grid">
         <!-- Basic Information -->
         <div class="col-12 md:col-6">
@@ -135,6 +135,7 @@ import { Clinic } from '../../../model/Clinic';
   `]
 })
 export class ClinicInfoComponent {
-  @Input() clinic: Clinic | null = null; // Clinic data
-  @Input() loading: boolean = true; // Loading state
+  @Input() clinic: Clinic | null = null; 
+  @Input() loading: boolean = true; 
+  @Input() ClinicDetails: string = '';
 }
