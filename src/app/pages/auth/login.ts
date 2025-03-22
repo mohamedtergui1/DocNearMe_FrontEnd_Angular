@@ -16,11 +16,12 @@ import { User as UserType } from '../../model/User';
 import { UserRole } from '../../model/UserRole';
 import { LogoComponent } from '../../shared/componenets/logo/logo.component';
 import { LayoutComponent } from '../../shared/componenets/layout/layout.component';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, ToastModule, ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, LogoComponent, LayoutComponent],
+    imports: [CommonModule, ReactiveFormsModule, ToastModule, ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, LogoComponent, LayoutComponent, MessageModule],
     providers: [MessageService],
     template: `
         <app-layout>
@@ -30,11 +31,15 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
                         <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
                             <div class="text-center mb-8">
                                 <div class="flex items-center justify-center  pb-12">
-
                                     <app-logo />
                                 </div>
                                 <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to PrimeLand!</div>
                                 <span class="text-muted-color font-medium">Sign in to continue</span>
+                            </div>
+
+                            <!-- Global Error Message -->
+                            <div *ngIf="backendError" class="mb-4">
+                                <p-message severity="error" [text]="backendError"></p-message>
                             </div>
 
                             <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
@@ -70,6 +75,7 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
 export class Login implements OnInit {
     loginForm: FormGroup;
     loading = false;
+    backendError: string | null = null;
 
     constructor(
         private fb: FormBuilder,
@@ -114,8 +120,10 @@ export class Login implements OnInit {
 
                 this.router.navigate([res.data.user.role == UserRole.MEDICINE ? 'medcine/dashboard' : 'PATIENT/dashboard']);
             },
-            error: (error) => {},
-            complete: () => (this.loading = false)
+            error: (error) => {
+                this.loading = false;
+                this.backendError = error.error.message || 'Login failed. Please check your credentials and try again.';
+            }
         });
     }
 

@@ -12,6 +12,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputMaskModule } from 'primeng/inputmask';
 import { FileUploadModule } from 'primeng/fileupload';
 import { AvatarModule } from 'primeng/avatar';
+import { MessageModule } from 'primeng/message';
 
 // Components
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
@@ -25,7 +26,7 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
 @Component({
     selector: 'app-register',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, ButtonModule, CheckboxModule, InputTextModule, PasswordModule, DropdownModule, InputMaskModule, RouterModule, FileUploadModule, LogoComponent, AvatarModule, LayoutComponent],
+    imports: [CommonModule, ReactiveFormsModule, ButtonModule, CheckboxModule, InputTextModule, PasswordModule, DropdownModule, InputMaskModule, RouterModule, FileUploadModule, LogoComponent, AvatarModule, LayoutComponent, MessageModule],
     template: `
         <app-layout>
             <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden" selector>
@@ -33,11 +34,16 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
                     <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
                         <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
                             <div class="text-center mb-8">
-                            <div class="flex items-center justify-center  pb-12">
-                                <app-logo />
-                            </div>
+                                <div class="flex items-center justify-center  pb-12">
+                                    <app-logo />
+                                </div>
                                 <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Create Your Account</div>
                                 <span class="text-muted-color font-medium">Sign up to get started</span>
+                            </div>
+
+                            <!-- Global Error Message -->
+                            <div *ngIf="backendError" class="mb-4">
+                                <p-message severity="error" [text]="backendError"></p-message>
                             </div>
 
                             <form [formGroup]="registrationForm" (ngSubmit)="onRegister()">
@@ -45,8 +51,8 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
                                     <!-- Name -->
                                     <div>
                                         <label for="name" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Name</label>
-                                        <input pInputText id="name" formControlName="name" placeholder="Enter your name" class="w-full mb-4" />
-                                        <small *ngIf="registrationForm.get('name')?.invalid && registrationForm.get('name')?.touched" class="p-error">
+                                        <input pInputText id="name" formControlName="name" placeholder="Enter your name" class="w-full mb-2" />
+                                        <small *ngIf="registrationForm.get('name')?.invalid && registrationForm.get('name')?.touched" class="p-error block mt-1">
                                             <span *ngIf="registrationForm.get('name')?.errors?.['required']">Name is required</span>
                                             <span *ngIf="registrationForm.get('name')?.errors?.['minlength']">Name must be at least 8 characters</span>
                                         </small>
@@ -55,8 +61,8 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
                                     <!-- Email -->
                                     <div>
                                         <label for="email" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                                        <input pInputText id="email" type="email" formControlName="email" placeholder="Enter email address" class="w-full mb-4" />
-                                        <small *ngIf="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched" class="p-error">
+                                        <input pInputText id="email" type="email" formControlName="email" placeholder="Enter email address" class="w-full mb-2" />
+                                        <small *ngIf="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched" class="p-error block mt-1">
                                             <span *ngIf="registrationForm.get('email')?.errors?.['required']">Email is required</span>
                                             <span *ngIf="registrationForm.get('email')?.errors?.['email']">Invalid email format</span>
                                         </small>
@@ -65,8 +71,8 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
                                     <!-- Password -->
                                     <div>
                                         <label for="password" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Password</label>
-                                        <p-password id="password" formControlName="password" placeholder="Create password" [toggleMask]="true" styleClass="w-full mb-4" [fluid]="true"></p-password>
-                                        <small *ngIf="registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched" class="p-error">
+                                        <p-password id="password" formControlName="password" placeholder="Create password" [toggleMask]="true" styleClass="w-full mb-2" [fluid]="true"></p-password>
+                                        <small *ngIf="registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched" class="p-error block mt-1">
                                             <span *ngIf="registrationForm.get('password')?.errors?.['required']">Password is required</span>
                                             <span *ngIf="registrationForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters</span>
                                         </small>
@@ -75,14 +81,14 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
                                     <!-- Phone Number -->
                                     <div>
                                         <label for="phoneNumber" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Phone Number</label>
-                                        <p-inputMask id="phoneNumber" mask="(999) 999-9999" formControlName="phoneNumber" placeholder="(612) 345-6789" class="w-full mb-4"></p-inputMask>
-                                        <small *ngIf="registrationForm.get('phoneNumber')?.invalid && registrationForm.get('phoneNumber')?.touched" class="p-error"> Phone number is required </small>
+                                        <p-inputMask id="phoneNumber" mask="(999) 999-9999" formControlName="phoneNumber" placeholder="(612) 345-6789" class="w-full mb-2"></p-inputMask>
+                                        <small *ngIf="registrationForm.get('phoneNumber')?.invalid && registrationForm.get('phoneNumber')?.touched" class="p-error block mt-1"> Phone number is required </small>
                                     </div>
 
                                     <!-- Role -->
                                     <div>
                                         <label for="role" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Account Type</label>
-                                        <p-dropdown [options]="roles" formControlName="role" optionLabel="label" optionValue="value" placeholder="Select account type" class="w-full mb-4"></p-dropdown>
+                                        <p-dropdown [options]="roles" formControlName="role" optionLabel="label" optionValue="value" placeholder="Select account type" class="w-full mb-2"></p-dropdown>
                                     </div>
                                 </div>
 
@@ -90,6 +96,7 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
                                 <div class="flex items-center mt-4 mb-8">
                                     <p-checkbox formControlName="termsAccepted" [binary]="true" class="mr-2"></p-checkbox>
                                     <label>I agree to the Terms and Conditions</label>
+                                    <small *ngIf="registrationForm.get('termsAccepted')?.invalid && registrationForm.get('termsAccepted')?.touched" class="p-error block mt-1 ml-2">You must accept the terms and conditions</small>
                                 </div>
 
                                 <!-- Submit Button -->
@@ -104,6 +111,7 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
 })
 export class Register implements OnInit {
     registrationForm!: FormGroup;
+    backendError: string | null = null;
 
     roles = Object.keys(UserRole).map((key) => ({
         label: key,
@@ -172,7 +180,7 @@ export class Register implements OnInit {
                     this.router.navigate(['/login']);
                 },
                 error: (error) => {
-                    console.error('Registration failed', error);
+                    this.backendError = error.error.message || 'Registration failed. Please try again.';
                 }
             });
         }
