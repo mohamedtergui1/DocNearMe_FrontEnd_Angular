@@ -161,8 +161,11 @@ export class ClinicInfoComponent implements OnInit {
   ngOnInit(): void {
     // Simulate a delay of 500ms (0.5 seconds) before hiding the skeleton
     setTimeout(() => {
-      this.loading = false;
-    }, 1500);
+      if(this.loading){
+        this.loading = false;
+      }
+    
+    }, 500);
   }
 
   // Methods to toggle sections
