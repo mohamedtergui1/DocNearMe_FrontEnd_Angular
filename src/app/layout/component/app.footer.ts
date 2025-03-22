@@ -4,8 +4,8 @@ import { Component } from '@angular/core';
     standalone: true,
     selector: 'app-footer',
     template: `<div class="layout-footer">
-        SAKAI by
-        <a href="https://primeng.org" target="_blank" rel="noopener noreferrer" class="text-primary font-bold hover:underline">PrimeNG</a>
+        DocNearMe Make With  Love by
+        <div  target="_blank" rel="noopener noreferrer" class="text-primary cursor-pointer font-bold hover:underline">Mohamed TERGUI</div>
     </div>`
 })
 export class AppFooter {}

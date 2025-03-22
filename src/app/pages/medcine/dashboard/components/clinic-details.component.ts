@@ -77,14 +77,20 @@ import { SkeletonModule } from 'primeng/skeleton'; // For loading state
           <div class="grid">
             <!-- Basic Information -->
             <div class="col-12 md:col-6">
-              <p-fieldset legend="Basic Information">
+              <p-fieldset legend="Basic Information ">
                 <div class="grid">
-                  <div class="col-4 font-bold">Name:</div>
-                  <div class="col-8">{{ clinic.clinicName }}</div>
-                  <div class="col-4 font-bold">Address:</div>
-                  <div class="col-8">{{ clinic.clinicAddress }}</div>
-                  <div class="col-4 font-bold">Category:</div>
-                  <div class="col-8">{{ clinic.categoryName || 'N/A' }}</div>
+                  <div class="py-1">
+                    <span class="col-4 font-bold text-primary  ">Name : </span>
+                    <span class="col-8">{{ clinic.clinicName }}</span>
+                  </div>
+                  <div class="py-1">
+                    <span class="col-4 font-bold text-primary  ">Address:</span>
+                    <span class="col-8">{{ clinic.clinicAddress }}</span>
+                  </div>
+                  <div class="py-1">
+                    <span class="col-4 font-bold text-primary  ">Category:</span>
+                    <span class="col-8">{{ clinic.categoryName || 'N/A' }}</span>
+                  </div>
                 </div>
               </p-fieldset>
             </div>
@@ -93,9 +99,9 @@ import { SkeletonModule } from 'primeng/skeleton'; // For loading state
             <div class="col-12 md:col-6">
               <p-fieldset legend="Working Hours">
                 <div class="grid">
-                  <div class="col-4 font-bold">Start Time:</div>
+                  <div class="col-4 font-bold text-primary ">Start Time:</div>
                   <div class="col-8">{{ clinic.startTime || 'N/A' }}</div>
-                  <div class="col-4 font-bold">End Time:</div>
+                  <div class="col-4 font-bold text-primary ">End Time:</div>
                   <div class="col-8">{{ clinic.stopTime || 'N/A' }}</div>
                 </div>
               </p-fieldset>
@@ -116,9 +122,9 @@ import { SkeletonModule } from 'primeng/skeleton'; // For loading state
               <p-fieldset legend="Vacation Periods">
                 <div *ngFor="let vacation of clinic.vacations" class="mb-3">
                   <div class="grid">
-                    <div class="col-4 font-bold">Start Date:</div>
+                    <div class="col-4 font-bold text-primary ">Start Date:</div>
                     <div class="col-8">{{ vacation.startDate || 'N/A' }}</div>
-                    <div class="col-4 font-bold">End Date:</div>
+                    <div class="col-4 font-bold text-primary ">End Date:</div>
                     <div class="col-8">{{ vacation.endDate || 'N/A' }}</div>
                   </div>
                 </div>

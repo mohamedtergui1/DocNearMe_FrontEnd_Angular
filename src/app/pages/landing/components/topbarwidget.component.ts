@@ -6,6 +6,8 @@ import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { LogoComponent } from '../../../shared/componenets/logo/logo.component';
+import { map, Observable } from 'rxjs';
+import { User } from '../../../model/User';
 
 @Component({
     selector: 'topbar-widget',
@@ -34,8 +36,8 @@ import { LogoComponent } from '../../../shared/componenets/logo/logo.component';
                     </a>
                 </li>
                 <li>
-                    <a (click)="router.navigate(['/'], { fragment: 'pricing' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
-                        <span>Pricing</span>
+                    <a (click)="router.navigate([authUser$.role == 'MEDICINE' ? 'medcine/dashboard' : 'pateint/dashboard'])" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
+                        <span>Dashboard</span>
                     </a>
                 </li>
             </ul>
@@ -51,16 +53,22 @@ import { LogoComponent } from '../../../shared/componenets/logo/logo.component';
         </div> `
 })
 export class TopbarWidget {
+
+    authUser$:any
+
     constructor(
         public router: Router,
         private authService: AuthService
-    ) {}
+    ) {
+          authService.getAuthUser().pipe(map((user) => user)).subscribe((user)=> this.authUser$ = user);
+          console.log(this.authUser$)
+    }
 
     isAuth() {
         return this.authService.isAuthenticated();
     }
     logout(): void {
-        this.authService.logout(); // Log the user out
-        this.router.navigate(['/']); // Optionally navigate the user to a different route, e.g., home
+        this.authService.logout(); 
+        this.router.navigate(['/']); 
     }
 }
