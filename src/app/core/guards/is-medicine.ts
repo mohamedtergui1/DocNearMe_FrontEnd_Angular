@@ -4,7 +4,7 @@ import { inject } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { UserRole } from '../../model/UserRole';
 
-export const roleGuard: CanActivateChildFn = (childRoute, state) => {
+export const isMedicine: CanActivateChildFn = (childRoute, state) => {
   const authService = inject(AuthService); // Correctly inject AuthService
 
 

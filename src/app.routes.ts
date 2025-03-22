@@ -11,7 +11,7 @@ import { getClinicForAuthUserResolver } from './app/core/resolvers/get-clinic-fo
 import { CreateClinicComponent } from './app/pages/create-clinic/create-clinic.component';
 import { BookAppointmentComponent } from './app/pages/patient/book-appointment/book-appointment.component';
 import { ViewConsultationComponent } from './app/pages/medcine/dashboard/view-consultation/view-consultation.component';
-import { roleGuard } from './app/core/guards/role.guard';
+import { isMedicine } from './app/core/guards/is-medicine';
 import { isPatientGuard } from './app/core/guards/is-patient.guard';
 
 export const appRoutes: Routes = [
@@ -78,7 +78,7 @@ export const appRoutes: Routes = [
             clinic: getClinicForAuthUserResolver
         }
         ,
-        canActivateChild: [roleGuard]
+        canActivateChild: [isMedicine]
     },
     { path: 'notfound', component: Notfound },
     { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },
