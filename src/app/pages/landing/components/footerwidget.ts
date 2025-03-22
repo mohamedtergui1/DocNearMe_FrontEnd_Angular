@@ -7,10 +7,11 @@ import { LogoComponent } from '../../../shared/componenets/logo/logo.component';
     imports: [RouterModule,LogoComponent],
     template: `
         <div class="py-12 px-12 mx-0 mt-20 lg:mx-20">
-            <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-12 md:col-span-2">
+        <div class="flex justify-center mb-8">
                     <app-logo />
-                </div>
+                </div>  
+            <div class="grid grid-cols-12 gap-4">
+               
 
                 <div class="col-span-12 md:col-span-10">
                     <div class="grid grid-cols-12 gap-8 text-center md:text-left">

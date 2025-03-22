@@ -8,5 +8,8 @@ export default [
     { path: 'access', component: Access },
     { path: 'error', component: Error },
     { path: 'login', component: Login },
-    { path: 'register', component: Register }
+    { path: 'register', component: Register },
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
+    {path: '**', redirectTo: 'notfound'}
+
 ] as Routes;

@@ -243,9 +243,9 @@ export class CreateClinicComponent implements OnInit {
             console.log(clinicRequest);
 
             this.clinicService.createClinic(clinicRequest).subscribe(
-                (response) => {
+                  (response) => {
                     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Clinic created successfully' });
-                    this.router.navigate(['/medicine/dashboard']);
+                    this.router.navigate(['/medcine/dashboard']);
                     console.log(response);
                     this.clinicForm.reset();
                 },

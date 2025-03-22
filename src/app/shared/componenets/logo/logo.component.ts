@@ -7,8 +7,8 @@ import { CommonModule } from '@angular/common';
     selector: 'app-logo',
     imports: [CommonModule],
     template: `
-        <a (click)="navigateToHome()" class="flex  pr-10 items-center justify-center md:justify-start md:mb-0  cursor-pointer">
-            <svg viewBox="0 0 54 40" fill="none" xmlns="http://www.w3.org/2000/svg" [class.turn-icon]="isLoading" class="h-14 mr-2 turn-icon">
+        <a (click)="navigateToHome()" class="flex  pr-10 items-center justify-center md:justify-start    cursor-pointer">
+            <svg viewBox="0 0 54 40" fill="none" xmlns="http://www.w3.org/2000/svg" [class.turn-icon]="isLoading" class="h-10 mr-2 turn-icon">
                 <path
                     fill-rule="evenodd"
                     clip-rule="evenodd"

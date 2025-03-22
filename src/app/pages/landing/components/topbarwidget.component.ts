@@ -30,13 +30,13 @@ import { User } from '../../../model/User';
                         <span>Features</span>
                     </a>
                 </li>
-                <li>
+                <li  *ngIf="authUser && authUser.role == 'PATIENT'">
                     <a (click)="router.navigate(['/ClinicListApointment'], { fragment: 'highlights' })" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
                         <span>Book Consultaion</span>
                     </a>
                 </li>
                 <li>
-                    <a (click)="router.navigate([authUser$.role == 'MEDICINE' ? 'medcine/dashboard' : 'pateint/dashboard'])" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
+                    <a (click)="router.navigate([authUser.role == 'MEDICINE' ? 'medcine/dashboard' : 'pateint/dashboard'])" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
                         <span>Dashboard</span>
                     </a>
                 </li>
@@ -54,14 +54,14 @@ import { User } from '../../../model/User';
 })
 export class TopbarWidget {
 
-    authUser$:any
+    authUser:any
 
     constructor(
         public router: Router,
         private authService: AuthService
     ) {
-          authService.getAuthUser().pipe(map((user) => user)).subscribe((user)=> this.authUser$ = user);
-          console.log(this.authUser$)
+          authService.getAuthUser().pipe(map((user) => user)).subscribe((user)=> this.authUser = user);
+          console.log(this.authUser)
     }
 
     isAuth() {

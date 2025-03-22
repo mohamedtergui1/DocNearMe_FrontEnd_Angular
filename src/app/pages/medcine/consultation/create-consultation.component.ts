@@ -11,17 +11,17 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 
-import { Appointment } from '../../../../model/Appointment';
-import { AppointmentService } from '../../../../core/services/appointment.service';
-import { ConsultationService } from '../../../../core/services/consultation.service';
+import { Appointment } from '../../../model/Appointment';
+import { AppointmentService } from '../../../core/services/appointment.service';
+import { ConsultationService } from '../../../core/services/consultation.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Consultation } from '../../../../model/Consultation';
+import { Consultation } from '../../../model/Consultation';
 import { TextareaModule } from 'primeng/textarea';
 import { EditorModule } from 'primeng/editor';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { MedicationService } from '../../../../core/services/medication.service';
+import { MedicationService } from '../../../core/services/medication.service';
 import { SelectItem } from 'primeng/select';
-import { Unit } from '../../../../model/Unit';
+import { Unit } from '../../../model/Unit';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
 
 @Component({

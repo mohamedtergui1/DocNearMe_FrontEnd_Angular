@@ -25,6 +25,7 @@ export class AppMenu {
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/medcine/dashboard/'] },
                     { label: 'Appontments', icon: 'pi pi-fw pi-home', routerLink: ['/medcine/dashboard/appointment'] },
+                    { label: 'Consultations', icon: 'pi pi-fw pi-home', routerLink: ['/medcine/dashboard/consultation'] },
                      
                 ]
             },
@@ -57,12 +58,12 @@ export class AppMenu {
             {
                 label: 'Pages',
                 icon: 'pi pi-fw pi-briefcase',
-                routerLink: ['dashboard/pages'],
+                routerLink: ['/medcine/dashboard/pages'],
                 items: [
                     {
                         label: 'Landing',
                         icon: 'pi pi-fw pi-globe',
-                        routerLink: ['dashboard/landing']
+                        routerLink: ['/medcine/dashboard/landing']
                     },
                     {
                         label: 'Auth',
@@ -71,34 +72,34 @@ export class AppMenu {
                             {
                                 label: 'Login',
                                 icon: 'pi pi-fw pi-sign-in',
-                                routerLink: ['dashboard/auth/login']
+                                routerLink: ['/medcine/dashboard/auth/login']
                             },
                             {
                                 label: 'Error',
                                 icon: 'pi pi-fw pi-times-circle',
-                                routerLink: ['dashboard/auth/error']
+                                routerLink: ['/medcine/dashboard/auth/error']
                             },
                             {
                                 label: 'Access Denied',
                                 icon: 'pi pi-fw pi-lock',
-                                routerLink: ['dashboard/auth/access']
+                                routerLink: ['/medcine/dashboard/auth/access']
                             }
                         ]
                     },
                     {
                         label: 'Crud',
                         icon: 'pi pi-fw pi-pencil',
-                        routerLink: ['dashboard/pages/crud']
+                        routerLink: ['/medcine/dashboard/pages/crud']
                     },
                     {
                         label: 'Not Found',
                         icon: 'pi pi-fw pi-exclamation-circle',
-                        routerLink: ['dashboard/pages/notfound']
+                        routerLink: ['/medcine/dashboard/pages/notfound']
                     },
                     {
                         label: 'Empty',
                         icon: 'pi pi-fw pi-circle-off',
-                        routerLink: ['dashboard/pages/empty']
+                        routerLink: ['/medcine/dashboard/pages/empty']
                     }
                 ]
             },
@@ -152,7 +153,7 @@ export class AppMenu {
                     {
                         label: 'Documentation',
                         icon: 'pi pi-fw pi-book',
-                        routerLink: ['dashboard/documentation']
+                        routerLink: ['/medcine/dashboard/documentation']
                     },
                     {
                         label: 'View Source',

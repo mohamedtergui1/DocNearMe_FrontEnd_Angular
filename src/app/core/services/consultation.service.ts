@@ -18,4 +18,8 @@ export class ConsultationService {
     return this.api.get('/consultation/getConsultationByAppointmentId/' + appointmentId);
   }
 
+  getConsultationsForAuthMedcine(){
+    return this.api.get('/consultation/getConsultationsForAuthMedicine');
+  }
+
 }

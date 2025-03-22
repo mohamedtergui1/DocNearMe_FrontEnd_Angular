@@ -13,6 +13,7 @@ import { BookAppointmentComponent } from './app/pages/patient/book-appointment/b
 import { ViewConsultationComponent } from './app/pages/medcine/dashboard/view-consultation/view-consultation.component';
 import { isMedicine } from './app/core/guards/is-medicine';
 import { isPatientGuard } from './app/core/guards/is-patient.guard';
+import { CreateConsultationComponent } from './app/pages/medcine/consultation/create-consultation.component';
 
 export const appRoutes: Routes = [
     { path: '', component: Landing },
@@ -57,7 +58,13 @@ export const appRoutes: Routes = [
             {
                 path: 'appointment',
                 loadComponent: () => import('./app/pages/medcine/medecin-manage-appointment/medecin-manage-appointment.component').then((m) => m.MedecinManageAppointmentComponent),
-
+                resolve: {
+                    clinic: getClinicForAuthUserResolver
+                }
+            },
+            {
+                path: 'consultation',
+                loadComponent: () => import('./app/pages/medcine/consultation-list/consultation-list.component').then((m) => m.ConsultationListComponent),
                 resolve: {
                     clinic: getClinicForAuthUserResolver
                 }
@@ -67,7 +74,7 @@ export const appRoutes: Routes = [
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') },
             {
                 path: 'create-consultation-from-appointment/:appointmentId',
-                component: CreateClinicComponent
+                component: CreateConsultationComponent
             },
             {
                 path: 'view-consultation-by-appointment-id/:appointmentId',
@@ -78,7 +85,7 @@ export const appRoutes: Routes = [
             clinic: getClinicForAuthUserResolver
         }
         ,
-        canActivateChild: [isMedicine]
+        canActivateChild: []
     },
     { path: 'notfound', component: Notfound },
     { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },
