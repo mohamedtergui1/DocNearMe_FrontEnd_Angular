@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
                     fill="var(--primary-color)"
                 />
             </svg>
-            <h4 class="font-medium text-3xl text-surface-900 dark:text-surface-0">{{!isLoading ? 'DocNearMe' : 'isLoading'}}</h4>
+            <h4 class="font-medium text-3xl text-surface-900 dark:text-surface-0"><b>Doc<b class="text-primary" >Near</b>Me</b></h4>
         </a>
     `
 })
@@ -26,7 +26,7 @@ export class LogoComponent implements OnInit  {
     constructor(private router: Router, private loaderService: LoaderService) { }
 
     ngOnInit(): void {
-        // Subscribe to the loading$ observable to get the current value
+         
         this.loaderService.loading$.subscribe((loading) => {
             this.isLoading = loading;
         });
