@@ -8,8 +8,8 @@ import { AppFloatingConfigurator } from '../../../layout/component/app.floatingc
     imports: [FooterWidget, TopbarWidget,AppFloatingConfigurator],
     template: `
         <div class="bg-surface-0 dark:bg-surface-900">
+        <app-floating-configurator />
             <div id="home" class="landing-wrapper overflow-hidden">
-            <app-floating-configurator />
                 <topbar-widget class="py-6 px-6 mx-0 md:mx-12 lg:mx-20 lg:px-20 flex items-center justify-between relative lg:static" />
                 <ng-content select="[selector]"></ng-content>
                 <footer-widget />

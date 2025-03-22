@@ -123,9 +123,13 @@ export class LayoutService {
         const _config = config || this.layoutConfig();
         if (_config.darkTheme) {
             document.documentElement.classList.add('app-dark');
+            _config.darkTheme = true
         } else {
             document.documentElement.classList.remove('app-dark');
+            _config.darkTheme = false
         }
+        
+        localStorage.setItem("appConfig",JSON.stringify(_config))
     }
 
     private onTransitionEnd() {
