@@ -16,7 +16,10 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, CardModule, TableModule, ButtonModule, TagModule, DatePipe], // Import PrimeNG modules here
   template: `
-    <p-card header="Today's Appointments">
+  <div class="h-8">
+
+  </div>
+    <p-card header="Today's Appointments" >
       <!-- Mini Table -->
       <p-table [value]="appointments" [rows]="5" [paginator]="true" [responsive]="true">
         <ng-template pTemplate="header">

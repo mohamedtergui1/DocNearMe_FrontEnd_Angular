@@ -12,14 +12,19 @@ import { ClinicInfoComponent } from '../../../shared/componenets/clinic-info/cli
 
 @Component({
     selector: 'app-book-appointment',
-    imports: [LayoutComponent, CommonModule,  ClinicInfoComponent],
+    imports: [LayoutComponent, CommonModule,  ClinicInfoComponent, Button],
     standalone: true,
     template: `
         <app-layout>
-            <div class="container" selector>
+            <div class=" " selector>
                 <h1 class="text-3xl text-primary font-bold mb-4">Clinic Directory</h1>
-                <div *ngFor="let clinic of clinics">
-                    <app-clinic-info [clinic]="clinic" [loading]="false" />
+                <div *ngFor="let clinic of clinics"  class="grid grid-cols-1 lg:grid-cols-1 m-4">
+                    <div class=" card border" >
+                        <app-clinic-info [clinic]="clinic" [isVacationPeriodsCollapsed]="true"    />
+                        <div class="flex justify-end pr-5 mt-5">
+                            <p-button label="Book Appointment"  (click)="navigateToBookAppointment(clinic.id)"></p-button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </app-layout>`

@@ -19,8 +19,12 @@ import { ClinicInfoComponent } from '../../../../shared/componenets/clinic-info/
     SkeletonModule,
     ClinicInfoComponent
   ],
-  template: `<app-clinic-info [clinic]="clinic" [loading]="loading"></app-clinic-info>`
-   
+  template: `
+  <p-card [header]="  'My Clinic Information'">
+  <app-clinic-info [clinic]="clinic" [loading]="loading" [isWorkingHoursCollapsed]="true"  [isVacationPeriodsCollapsed]="true"  [isWorkingDaysCollapsed]="true"  ></app-clinic-info>
+  </p-card>
+  `
+
 })
 
 export class ClinicDetailsComponent implements OnInit {
@@ -28,7 +32,7 @@ export class ClinicDetailsComponent implements OnInit {
   error: string | null = null;
   loading = true;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.loading = true;
@@ -38,9 +42,9 @@ export class ClinicDetailsComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-         
+
         this.loading = false;
-         
+
       }
     });
   }
