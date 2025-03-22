@@ -36,7 +36,6 @@ import { FloatLabel } from 'primeng/floatlabel';
     imports: [
         CommonModule,
         LayoutComponent,
-        AppFloatingConfigurator,
         FullCalendarModule,
         DialogModule,
         ButtonModule,

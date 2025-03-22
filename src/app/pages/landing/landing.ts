@@ -14,7 +14,7 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
 @Component({
     selector: 'app-landing',
     standalone: true,
-    imports: [RouterModule, TopbarWidget, HeroWidget, FeaturesWidget, FooterWidget, RippleModule, StyleClassModule, ButtonModule, DividerModule, LayoutComponent],
+    imports: [RouterModule, HeroWidget, FeaturesWidget, RippleModule, StyleClassModule, ButtonModule, DividerModule, LayoutComponent],
     template: `
     <app-layout>
         <div selector>

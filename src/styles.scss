@@ -6,16 +6,17 @@
 
 
 input-error-color {
-    color: red;
+  color: red;
 }
 
 input-error-background {
-    background-color: red;
+  background-color: red;
 }
 
-input-error-border{
-    border: red 2px solid;
+input-error-border {
+  border: red 2px solid;
 }
+
 /* styles.css or styles.scss */
 
 /* Custom styles */
@@ -31,51 +32,69 @@ input-error-border{
 }
 
 @import '../node_modules/angular-calendar/css/angular-calendar.css';
+
 /* Custom CSS for the confirm dialog buttons */
 .custom-accept-delete-button {
-    background-color: #dc3545 !important; /* Red color for the "Accept" (Delete) button */
-    border-color: #dc3545 !important;
+  background-color: #dc3545 !important;
+  /* Red color for the "Accept" (Delete) button */
+  border-color: #dc3545 !important;
 }
 
 .custom-reject-button {
-    background-color: #2b2a2a !important; /* Blue color for the "Reject" (Cancel) button */
-    border-color: #ffffff !important;
+  background-color: #2b2a2a !important;
+  /* Blue color for the "Reject" (Cancel) button */
+  border-color: #ffffff !important;
 }
 
 .my-slot-class {
-    
-  }
-  .my-event-class {
-    background-color: #ffcc00;
-    color: #000;
-  }
-  .my-view-class{
-     height: 70vh;
-  }
   
-  .my-allDay-class{
+}
 
-.my-slotLabel-class{
-    
-}}
+.my-event-class {
+  background-color: #ffcc00;
+  color: #000;
+}
 
- 
+.my-view-class {
+  height: 70vh;
+  
+}
+.my-view-class tr {
+  height: 39px;
+}
+
+.my-allDay-class {
+
+  .my-slotLabel-class {}
+}
+
+
 
 @keyframes turn-right-left {
   0% {
-    transform: rotate(0deg) scale(1); /* Start at normal size */
-    opacity: 1; 
-    filter: brightness(100%); /* Normal brightness */
+    transform: rotate(0deg) scale(1);
+    /* Start at normal size */
+    opacity: 1;
+    filter: brightness(100%);
+    /* Normal brightness */
   }
+
   50% {
-    transform: rotate(30deg) scale(1.1); /* Slightly larger and rotated right */
-    opacity: 0.9; /* Slightly transparent */
-    filter: brightness(120%); /* Brighter */
+    transform: rotate(30deg) scale(1.1);
+    /* Slightly larger and rotated right */
+    opacity: 0.9;
+    /* Slightly transparent */
+    filter: brightness(120%);
+    /* Brighter */
   }
+
   100% {
-    transform: rotate(-30deg) scale(1.1); /* Slightly larger and rotated left */
-    opacity: 0.9; /* Slightly transparent */
-    filter: brightness(120%); /* Brighter */
+    transform: rotate(-30deg) scale(1.1);
+    /* Slightly larger and rotated left */
+    opacity: 0.9;
+    /* Slightly transparent */
+    filter: brightness(120%);
+    /* Brighter */
   }
 }
 
@@ -84,6 +103,6 @@ input-error-border{
   top: 10px;
   left: 10px;
   animation: turn-right-left 1.5s ease-in-out infinite alternate;
-  transform-origin: center; /* Ensure rotation happens around the center */
+  transform-origin: center;
+  /* Ensure rotation happens around the center */
 }
- 
