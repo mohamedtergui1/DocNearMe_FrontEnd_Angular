@@ -278,7 +278,7 @@ export class DoctorAppointmentComponent implements OnInit {
             const appointmentId = info.event.extendedProps.appointmentId;
             const appointment = this.appointments.find((a) => a.id === appointmentId);
 
-            if (appointment && (!appointment.patientId || appointment.patientId == this.authUser?.id)) {
+            if (appointment && (!appointment.patientId || appointment.patientId == this.authUser?.id) && appointment.status == AppointmentStatus.PENDING) {
                 // Set the selected appointment for editing
                 this.selectedAppointment = { ...appointment };
                 this.displayEditAppointmentDialog = true;
