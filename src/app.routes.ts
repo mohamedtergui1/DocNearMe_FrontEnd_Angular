@@ -84,7 +84,7 @@ export const appRoutes: Routes = [
             clinic: getClinicForAuthUserResolver
         }
         ,
-        canActivateChild: []
+        canActivateChild: [isMedicine]
     },
     { path: 'notfound', component: Notfound },
     { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },

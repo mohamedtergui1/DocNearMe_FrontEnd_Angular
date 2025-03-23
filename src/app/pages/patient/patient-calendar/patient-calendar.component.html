@@ -1,176 +1,117 @@
 <div class="p-4 card">
-    
-    <h1 class="text-xl font-bold">Appointment Scheduler - {{ clinic?.clinicName }}</h1>
+    <h1 class="text-xl font-bold">Your Appointments and Medications</h1>
     <div class="px-12 flex justify-end gap-2">
+        <p-tag [style]="{
+            'background-color': medicationColor,
+            color: 'white',
+            padding: '0.25rem 0.5rem',
+            'border-radius': '4px',
+            'font-size': '0.875rem'
+        }" value="MEDICATION"> </p-tag>
         <p-tag [style]="getStyleOfStatusForThTemplate('VALID')" value="VALID"> </p-tag>
         <p-tag [style]="getStyleOfStatusForThTemplate('PENDING')" value="PENDING"> </p-tag>
         <p-tag [style]="getStyleOfStatusForThTemplate('CANCELLED')" value="CANCELLED"> </p-tag>
+    </div>
+
+    <!-- Time Range Inputs -->
+    <div class="flex gap-4 mt-6">
+        <div class="flex items-center gap-2">
+            <label for="startTime" class="font-medium">Start Time:</label>
+            <p-inputNumber [(ngModel)]="startTime" [min]="0" [max]="23" [showButtons]="true" inputId="startTime"></p-inputNumber>
+        </div>
+        <div class="flex items-center gap-2">
+            <label for="endTime" class="font-medium">End Time:</label>
+            <p-inputNumber [(ngModel)]="endTime" [min]="0" [max]="23" [showButtons]="true" inputId="endTime"></p-inputNumber>
+        </div>
+        <button pButton type="button" label="Apply" (click)="updateCalendarTimeRange()"></button>
     </div>
     
     <div class="py-12 overflow-y-scroll">
         <full-calendar [options]="calendarOptions"></full-calendar>
     </div>
-
-   
-    <p-dialog 
-        (onHide)="cancelEdit()" 
-        header="Appointment Details" 
-        [(visible)]="displayEditAppointmentDialog" 
-        [modal]="true" 
-        [style]="{ width: '650px' }" 
-        [draggable]="false" 
-        [resizable]="false"
-    >
-        <form (ngSubmit)="updateAppointment()" class="p-fluid">
-           
-            <p-card>
-                
-                <div class="p-grid p-fluid">
-                    
-                    <div class="p-col-12 p-field">
-                        <div class="flex align-items-center gap-2 mb-2">
-                            <i class="pi pi-bookmark"></i>
-                            <label for="subject" class="font-medium">Subject</label>
-                        </div>
-                        <p class="m-0">{{ selectedAppointment.subject }}</p>
-                    </div>
-
-                    
-                    <div class="p-col-12 p-field">
-                        <div class="flex align-items-center gap-2 mb-2">
-                            <i class="pi pi-calendar"></i>
-                            <label for="startDateTime" class="font-medium">Start Date & Time</label>
-                        </div>
-                        <p class="m-0">{{ selectedAppointment.startDateTime | date: 'medium' }}</p>
-                    </div>
-
-                    
-                    <div class="p-col-12 p-field">
-                        <div class="flex align-items-center gap-2 mb-2">
-                            <i class="pi pi-calendar"></i>
-                            <label for="endDateTime" class="font-medium">End Date & Time</label>
-                        </div>
-                        <p class="m-0">{{ selectedAppointment.endDateTime | date: 'medium' }}</p>
-                    </div>
-
-                    
-                    <div class="p-col-12 p-field">
-                        <div class="flex align-items-center gap-2 mb-2">
-                            <i class="pi pi-info-circle"></i>
-                            <label for="status" class="font-medium">Status</label>
-                        </div>
-                        <div class="flex gap-2">
-                            
-                            <button 
-                                *ngIf="selectedAppointment.status === 'PENDING'"
-                                type="button" 
-                                pButton 
-                                label="Mark as Valid" 
-                                icon="pi pi-check" 
-                                (click)="confirmStatusChange('VALID')" 
-                                class="p-button-success"
-                            ></button>
-
-                            
-                            <button 
-                                *ngIf="selectedAppointment.status === 'PENDING'"
-                                type="button" 
-                                pButton 
-                                label="Mark as Cancelled" 
-                                icon="pi pi-times" 
-                                (click)="confirmStatusChange('CANCELLED')" 
-                                class="p-button-danger"
-                            ></button>
-
-                            
-                            <p-tag 
-                                *ngIf="selectedAppointment.status !== 'PENDING'"
-                                [style]="getStyleOfStatusForThTemplate(selectedAppointment.status)"
-                                [value]="selectedAppointment.status"
-                            ></p-tag>
-                        </div>
-                    </div>
-
-                    
-                    <div class="p-col-12 p-field  mt-8 ">
-                        <div class="flex align-items-center gap-2 mb-2">
-                            <i class="pi pi-user"></i>
-                            <label for="userDetails" class="font-medium">User Details</label>
-                        </div>
-                        <button 
-                            type="button" 
-                            pButton 
-                            label="View User Details" 
-                            icon="pi pi-user" 
-                            (click)="openUserDetailsModal()" 
-                            class="p-button-info"
-                        ></button>
-                    </div>
-                </div>
-            </p-card>
-
-            
-            <div class="p-dialog-footer p-grid p-justify-between p-mt-4 mt-8">
-                
-                <button 
-                    type="button" 
-                    pButton 
-                    label="Cancel" 
-                    icon="pi pi-times" 
-                    (click)="cancelEdit()" 
-                    class="p-button-text"
-                ></button>
-            </div>
-        </form>
-    </p-dialog>
-
-    <p-dialog 
-        header="User Details" 
-        [(visible)]="displayUserDetailsModal" 
-        [modal]="true" 
-        [style]="{ width: '650px' }" 
-        [draggable]="false" 
-        [resizable]="false"
-    >
-        <div *ngIf="selectedUser" class="p-fluid">
-            <div class="p-grid p-fluid">
-                <div class="p-col-12 p-field py-4">
-                    <div class="flex align-items-center gap-2 mb-2">
-                        <i class="pi pi-user"></i>
-                        <label for="name" class="font-medium">Name</label>
-                    </div>
-                    <p class="m-0">{{ selectedUser.name }}</p>
-                </div>
-
-                <div class="p-col-12 p-field py-4">
-                    <div class="flex align-items-center gap-2 mb-2">
-                        <i class="pi pi-envelope"></i>
-                        <label for="email" class="font-medium">Email</label>
-                    </div>
-                    <p class="m-0">{{ selectedUser.email }}</p>
-                </div>
-
-                <div class="p-col-12 p-field py-4">
-                    <div class="flex align-items-center gap-2 mb-2">
-                        <i class="pi pi-phone"></i>
-                        <label for="phone" class="font-medium">Phone</label>
-                    </div>
-                    <p class="m-0">{{ selectedUser.phoneNumber }}</p>
-                </div>
-
-                 
-            </div>
-        </div>
-
-        <div class="p-dialog-footer p-grid p-justify-end p-mt-4">
-            <button 
-                type="button" 
-                pButton 
-                label="Close" 
-                icon="pi pi-times" 
-                (click)="displayUserDetailsModal = false" 
-                class="p-button-text"
-            ></button>
-        </div>
-    </p-dialog>
 </div>
+
+<!-- Modal for Medication Dosage Details -->
+<p-dialog 
+    header="Medication Dosage Details" 
+    [(visible)]="displayMedicationDetailsModal" 
+    [modal]="true" 
+    [style]="{ width: '650px' }" 
+    [draggable]="false" 
+    [resizable]="false"
+>
+    <div *ngIf="selectedMedication" class="p-fluid">
+        <div class="p-grid p-fluid">
+            <div class="p-col-12 p-field">
+                <label for="medicationName" class="font-medium">Medication Name</label>
+                <p>{{ selectedMedication.medication.medicationNameField }}</p>
+            </div>
+            <div class="p-col-12 p-field">
+                <label for="dosage" class="font-medium">Dosage</label>
+                <p>{{ selectedMedication.quantity }} {{ selectedMedication.unit }}</p>
+            </div>
+            <div class="p-col-12 p-field">
+                <label for="instructions" class="font-medium">Special Instructions</label>
+                <p>{{ selectedMedication.specialInstructions }}</p>
+            </div>
+            <div class="p-col-12 p-field">
+                <label for="withFood" class="font-medium">Take with Food</label>
+                <p>{{ selectedMedication.withFood ? 'Yes' : 'No' }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="p-dialog-footer p-grid p-justify-end p-mt-4">
+        <button 
+            type="button" 
+            pButton 
+            label="Close" 
+            icon="pi pi-times" 
+            (click)="displayMedicationDetailsModal = false" 
+            class="p-button-text"
+        ></button>
+    </div>
+</p-dialog>
+
+<!-- Modal for Consultation Details -->
+<p-dialog 
+    header="Consultation Details" 
+    [(visible)]="displayConsultationDetailsModal" 
+    [modal]="true" 
+    [style]="{ width: '650px' }" 
+    [draggable]="false" 
+    [resizable]="false"
+>
+    <div *ngIf="selectedAppointment" class="p-fluid">
+        <div class="p-grid p-fluid">
+            <div class="p-col-12 p-field">
+                <label for="subject" class="font-medium">Subject</label>
+                <p>{{ selectedAppointment.subject }}</p>
+            </div>
+            <div class="p-col-12 p-field">
+                <label for="startDateTime" class="font-medium">Start Date & Time</label>
+                <p>{{ selectedAppointment.startDateTime | date: 'medium' }}</p>
+            </div>
+            <div class="p-col-12 p-field">
+                <label for="endDateTime" class="font-medium">End Date & Time</label>
+                <p>{{ selectedAppointment.endDateTime | date: 'medium' }}</p>
+            </div>
+            <div class="p-col-12 p-field">
+                <label for="status" class="font-medium">Status</label>
+                <p-tag 
+                    [style]="getStyleOfStatusForThTemplate(selectedAppointment.status)"
+                    [value]="selectedAppointment.status"
+                ></p-tag>
+            </div>
+        </div>
+    </div>
+    <div class="p-dialog-footer p-grid p-justify-end p-mt-4">
+        <button 
+            type="button" 
+            pButton 
+            label="Close" 
+            icon="pi pi-times" 
+            (click)="displayConsultationDetailsModal = false" 
+            class="p-button-text"
+        ></button>
+    </div>
+</p-dialog>

@@ -33,125 +33,7 @@ import { MedicationService } from '../../../core/services/medication.service';
     selector: 'app-patient-calendar',
     standalone: true,
     imports: [CommonModule, FullCalendarModule, DialogModule, ButtonModule, InputTextModule, InputNumberModule, FormsModule, Tag, DropdownModule],
-    template: `
-        <div class="p-4 card">
-            <h1 class="text-xl font-bold">Your Appointments and Medications</h1>
-            <div class="px-12 flex justify-end gap-2">
-                <p-tag [style]="{
-                    'background-color': medicationColor,
-                    color: 'white',
-                    padding: '0.25rem 0.5rem',
-                    'border-radius': '4px',
-                    'font-size': '0.875rem'
-                }" value="MEDICATION"> </p-tag>
-                <p-tag [style]="getStyleOfStatusForThTemplate('VALID')" value="VALID"> </p-tag>
-                <p-tag [style]="getStyleOfStatusForThTemplate('PENDING')" value="PENDING"> </p-tag>
-                <p-tag [style]="getStyleOfStatusForThTemplate('CANCELLED')" value="CANCELLED"> </p-tag>
-            </div>
-
-            <!-- Time Range Inputs -->
-            <div class="flex gap-4 mt-4">
-                <div class="flex items-center gap-2">
-                    <label for="startTime" class="font-medium">Start Time:</label>
-                    <p-inputNumber [(ngModel)]="startTime" [min]="0" [max]="23" [showButtons]="true" inputId="startTime"></p-inputNumber>
-                </div>
-                <div class="flex items-center gap-2">
-                    <label for="endTime" class="font-medium">End Time:</label>
-                    <p-inputNumber [(ngModel)]="endTime" [min]="0" [max]="23" [showButtons]="true" inputId="endTime"></p-inputNumber>
-                </div>
-                <button pButton type="button" label="Apply" (click)="updateCalendarTimeRange()"></button>
-            </div>
-            
-            <div class="py-12 overflow-y-scroll">
-                <full-calendar [options]="calendarOptions"></full-calendar>
-            </div>
-        </div>
-
-        <!-- Modal for Medication Dosage Details -->
-        <p-dialog 
-            header="Medication Dosage Details" 
-            [(visible)]="displayMedicationDetailsModal" 
-            [modal]="true" 
-            [style]="{ width: '650px' }" 
-            [draggable]="false" 
-            [resizable]="false"
-        >
-            <div *ngIf="selectedMedication" class="p-fluid">
-                <div class="p-grid p-fluid">
-                    <div class="p-col-12 p-field">
-                        <label for="medicationName" class="font-medium">Medication Name</label>
-                        <p>{{ selectedMedication.medication.medicationNameField }}</p>
-                    </div>
-                    <div class="p-col-12 p-field">
-                        <label for="dosage" class="font-medium">Dosage</label>
-                        <p>{{ selectedMedication.quantity }} {{ selectedMedication.unit }}</p>
-                    </div>
-                    <div class="p-col-12 p-field">
-                        <label for="instructions" class="font-medium">Special Instructions</label>
-                        <p>{{ selectedMedication.specialInstructions }}</p>
-                    </div>
-                    <div class="p-col-12 p-field">
-                        <label for="withFood" class="font-medium">Take with Food</label>
-                        <p>{{ selectedMedication.withFood ? 'Yes' : 'No' }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="p-dialog-footer p-grid p-justify-end p-mt-4">
-                <button 
-                    type="button" 
-                    pButton 
-                    label="Close" 
-                    icon="pi pi-times" 
-                    (click)="displayMedicationDetailsModal = false" 
-                    class="p-button-text"
-                ></button>
-            </div>
-        </p-dialog>
-
-        <!-- Modal for Consultation Details -->
-        <p-dialog 
-            header="Consultation Details" 
-            [(visible)]="displayConsultationDetailsModal" 
-            [modal]="true" 
-            [style]="{ width: '650px' }" 
-            [draggable]="false" 
-            [resizable]="false"
-        >
-            <div *ngIf="selectedAppointment" class="p-fluid">
-                <div class="p-grid p-fluid">
-                    <div class="p-col-12 p-field">
-                        <label for="subject" class="font-medium">Subject</label>
-                        <p>{{ selectedAppointment.subject }}</p>
-                    </div>
-                    <div class="p-col-12 p-field">
-                        <label for="startDateTime" class="font-medium">Start Date & Time</label>
-                        <p>{{ selectedAppointment.startDateTime | date: 'medium' }}</p>
-                    </div>
-                    <div class="p-col-12 p-field">
-                        <label for="endDateTime" class="font-medium">End Date & Time</label>
-                        <p>{{ selectedAppointment.endDateTime | date: 'medium' }}</p>
-                    </div>
-                    <div class="p-col-12 p-field">
-                        <label for="status" class="font-medium">Status</label>
-                        <p-tag 
-                            [style]="getStyleOfStatusForThTemplate(selectedAppointment.status)"
-                            [value]="selectedAppointment.status"
-                        ></p-tag>
-                    </div>
-                </div>
-            </div>
-            <div class="p-dialog-footer p-grid p-justify-end p-mt-4">
-                <button 
-                    type="button" 
-                    pButton 
-                    label="Close" 
-                    icon="pi pi-times" 
-                    (click)="displayConsultationDetailsModal = false" 
-                    class="p-button-text"
-                ></button>
-            </div>
-        </p-dialog>
-    `
+    templateUrl: './patient-calendar.component.html',
 })
 export class PatientCalendarComponent implements OnInit {
     @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
@@ -160,20 +42,20 @@ export class PatientCalendarComponent implements OnInit {
     public appointments: Appointment[] = [];
     public medicationTimes: any[] = [];
 
-    // Modals
+   
     public displayMedicationDetailsModal: boolean = false;
     public displayConsultationDetailsModal: boolean = false;
 
-    // Selected items
+
     public selectedMedication: any = null;
     public selectedAppointment: Appointment | null = null;
 
-    // Medication color
-    public medicationColor: string = '#0050ac'; // Blue color for medications
+    
+    public medicationColor: string = '#0050ac'; 
 
-    // Time range inputs
-    public startTime: number = 8; // Default start time (8 AM)
-    public endTime: number = 18; // Default end time (6 PM)
+    
+    public startTime: number = 8; 
+    public endTime: number = 18;
 
     public calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -188,15 +70,15 @@ export class PatientCalendarComponent implements OnInit {
             center: 'title',
             right: 'timeGridWeek,dayGridMonth,timeGridDay'
         },
-        editable: false, // Disable all editing
-        selectable: false, // Disable selecting time slots
-        selectMirror: false, // Disable select mirror
+        editable: false,
+        selectable: false,
+        selectMirror: false,
         dayMaxEvents: true,
         events: this.events,
-        slotMinTime: '08:00:00', // Default start time
-        slotMaxTime: '18:00:00', // Default end time
-        slotDuration: '00:30:00', // Slot duration (30 minutes)
-        eventClick: this.handleEventClick.bind(this) // Only handle click events
+        slotMinTime: '08:00:00',
+        slotMaxTime: '18:00:00', 
+        slotDuration: '00:30:00', 
+        eventClick: this.handleEventClick.bind(this)
     };
 
     constructor(
@@ -254,10 +136,10 @@ export class PatientCalendarComponent implements OnInit {
             };
         });
 
-        // Map medication times to calendar events
+        
         const formattedMedications = this.generateMedicationEvents(this.medicationTimes);
 
-        // Combine appointments and medication times
+        
         this.events = [...formattedAppointments, ...formattedMedications];
         this.calendarOptions.events = this.events;
 
@@ -268,18 +150,18 @@ export class PatientCalendarComponent implements OnInit {
         const medicationEvents: any[] = [];
 
         medications.forEach((medication) => {
-            const startDate = new Date(); // Start from today
-            const endDate = new Date(); // End date (e.g., 7 days from today)
-            endDate.setDate(endDate.getDate() + 7); // Example: 7 days from today
+            const startDate = new Date(); 
+            const endDate = new Date(medication.dateWhenMustStopConsumption); 
+            endDate.setDate(endDate.getDate() + 7); 
 
             const timesPerDay = medication.numberOfConsumptionInDay;
             const medicationName = medication.medication.medicationNameField;
 
-            // Generate events for each day between startDate and endDate
+           
             for (let day = startDate; day <= endDate; day.setDate(day.getDate() + 1)) {
                 for (let i = 0; i < timesPerDay; i++) {
                     const eventTime = new Date(day);
-                    eventTime.setHours(9 + i * 4); // Example: 9 AM, 1 PM, 5 PM
+                    eventTime.setHours(9 + i * 4); 
                     eventTime.setMinutes(0);
                     eventTime.setSeconds(0);
 
@@ -287,8 +169,8 @@ export class PatientCalendarComponent implements OnInit {
                         title: `Medication: ${medicationName}`,
                         start: eventTime,
                         end: eventTime,
-                        backgroundColor: this.medicationColor, // Use the medication color
-                        borderColor: this.medicationColor, // Use the medication color
+                        backgroundColor: this.medicationColor, 
+                        borderColor: this.medicationColor,
                         extendedProps: {
                             id: medication.id,
                             type: 'medication'
