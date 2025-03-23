@@ -36,7 +36,7 @@ import { User } from '../../../model/User';
                     </a>
                 </li>
                 <li>
-                    <a (click)="router.navigate([authUser.role == 'MEDICINE' ? 'medcine/dashboard' : 'pateint/dashboard'])" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
+                    <a (click)="router.navigate([authUser.role == 'MEDICINE' ? 'medcine/dashboard' : 'patient/dashboard'])" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
                         <span>Dashboard</span>
                     </a>
                 </li>

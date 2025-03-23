@@ -32,7 +32,8 @@ export class AppMenu {
             {
                 label: 'Patient',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/patient/dashboard/'] },
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/patient/dashboard'] },
+                    { label: 'Calendar', icon: 'pi pi-fw pi-home', routerLink: ['/patient/dashboard/calendar'] },
                 ]
             },
             {

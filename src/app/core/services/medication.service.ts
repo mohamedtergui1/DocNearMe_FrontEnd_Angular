@@ -11,4 +11,10 @@ export class MedicationService {
   searchMedications(query: string) {
     return this.api.get('/medications/search-medications', { params: { query } });
   }
+
+
+  getMedicationsDosageTimeForAuthPatient() {
+    return this.api.get('/medicationsdosages/getmedicationsdosagedimeforauthpatient');
+  }
+  
 }

@@ -35,7 +35,7 @@ import { UserService } from '../../../core/services/user.service';
 @Component({
     selector: 'app-medecin-manage-appointment',
     standalone: true,
-    imports: [CommonModule, AppFloatingConfigurator, FullCalendarModule, DialogModule, ButtonModule, InputTextModule, FormsModule, Tag, Card, DropdownModule],
+    imports: [CommonModule, FullCalendarModule, DialogModule, ButtonModule, InputTextModule, FormsModule, Tag, Card, DropdownModule],
     templateUrl: './medecin-manage-appointment.component.html'
 })
 export class MedecinManageAppointmentComponent implements OnInit {

@@ -40,4 +40,8 @@ export class AppointmentService {
         return this.api.put('/appointment/medicine/chnage-appointment-status/' + data.id,data);
     }
 
+    getAppointmentForAuthPatient(){
+        return this.api.get('/appointment/getAppointmentForAuthPatient')
+    }
+
 }

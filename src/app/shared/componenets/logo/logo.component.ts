@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
                     fill="var(--primary-color)"
                 />
             </svg>
-            <h4 class="font-medium text-3xl text-surface-900 dark:text-surface-0"><b>Doc<b class="text-primary" >Near</b>Me</b></h4>
+            <h4 class="font-medium text-3xl text-surface-900 dark:text-surface-0 righteous-regular"><b>Doc<b class="text-primary" >Near</b>Me</b></h4>
         </a>
     `
 })

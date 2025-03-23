@@ -14,6 +14,7 @@ import { ViewConsultationComponent } from './app/pages/medcine/dashboard/view-co
 import { isMedicine } from './app/core/guards/is-medicine';
 import { isPatientGuard } from './app/core/guards/is-patient.guard';
 import { CreateConsultationComponent } from './app/pages/medcine/consultation/create-consultation.component';
+import { PatientCalendarComponent } from './app/pages/patient/patient-calendar/patient-calendar.component';
 
 export const appRoutes: Routes = [
     { path: '', component: Landing },
@@ -28,16 +29,14 @@ export const appRoutes: Routes = [
         component: AppLayout,
         children: [
             { path: '', component: Dashboard },
+            { path: 'calendar', component: PatientCalendarComponent },
             {
                 path: 'profile',
                 component: ProfileComponent,
                 resolve: {
                     data: getAuthUserResolver
                 }
-            },
-            { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
-            { path: 'documentation', component: Documentation },
-            { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
+            }
 
         ]
         ,
