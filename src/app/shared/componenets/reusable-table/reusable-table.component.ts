@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
@@ -20,44 +20,46 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 interface Column {
-    field: string;
-    header: string;
-    customExportHeader?: string;
+  field: string;
+  header: string;
+  customExportHeader?: string;
 }
 
 interface ExportColumn {
-    title: string;
-    dataKey: string;
+  title: string;
+  dataKey: string;
 }
 
 @Component({
-    selector: 'app-reusable-table',
-    standalone: true,
-    imports: [
-        CommonModule,
-        TableModule,
-        FormsModule,
-        ButtonModule,
-        RippleModule,
-        ToastModule,
-        ToolbarModule,
-        RatingModule,
-        InputTextModule,
-        TextareaModule,
-        SelectModule,
-        RadioButtonModule,
-        InputNumberModule,
-        DialogModule,
-        TagModule,
-        InputIconModule,
-        IconFieldModule,
-        ConfirmDialogModule
-    ],
-    template: `
+  selector: 'app-reusable-table',
+  standalone: true,
+  imports: [
+    CommonModule,
+    TableModule,
+    FormsModule,
+    ButtonModule,
+    RippleModule,
+    ToastModule,
+    ToolbarModule,
+    RatingModule,
+    InputTextModule,
+    TextareaModule,
+    SelectModule,
+    RadioButtonModule,
+    InputNumberModule,
+    DialogModule,
+    TagModule,
+    InputIconModule,
+    IconFieldModule,
+    ConfirmDialogModule
+  ],
+  template: `
         <p-toolbar styleClass="mb-6">
             <ng-template #start>
-                <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
-                <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedItems()" [disabled]="!selectedItems || !selectedItems.length" />
+                <!-- Show "New" button only if showCreate is true -->
+                <p-button *ngIf="showCreate" label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+                <!-- Show "Delete" button only if showDelete is true -->
+                <p-button *ngIf="showDelete" severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedItems()" [disabled]="!selectedItems || !selectedItems.length" />
             </ng-template>
 
             <ng-template #end>
@@ -67,7 +69,7 @@ interface ExportColumn {
 
         <p-table
             #dt
-            [value]="data()"
+            [value]="data"
             [rows]="10"
             [columns]="cols"
             [paginator]="true"
@@ -108,9 +110,12 @@ interface ExportColumn {
                     </td>
                     <td *ngFor="let col of cols" style="min-width: 16rem">{{ item[col.field] }}</td>
                     <td>
-                        <p-button icon="pi pi-eye" class="mr-2" [rounded]="true" [outlined]="true" (click)="viewItem(item)" />
-                        <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editItem(item)" />
-                        <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteItem(item)" />
+                        <!-- Show "View" button only if showView is true -->
+                        <p-button *ngIf="showView" icon="pi pi-eye" class="mr-2" [rounded]="true" [outlined]="true" (click)="viewItem(item)" />
+                        <!-- Show "Edit" button only if showEdit is true -->
+                        <p-button *ngIf="showEdit" icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editItem(item)" />
+                        <!-- Show "Delete" button only if showDelete is true -->
+                        <p-button *ngIf="showDelete" icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteItem(item)" />
                     </td>
                 </tr>
             </ng-template>
@@ -135,98 +140,103 @@ interface ExportColumn {
 
         <p-confirmdialog [style]="{ width: '450px' }" />
     `,
-    providers: [MessageService, ConfirmationService]
+  providers: [MessageService, ConfirmationService]
 })
 export class ReusableTableComponent implements OnInit {
-    @Input() data = signal<any[]>([]);
-    @Input() cols: Column[] = [];
-    @Input() globalFilterFields: string[] = [];
-    @Output() viewItemEvent = new EventEmitter<any>();
-    @Output() editItemEvent = new EventEmitter<any>();
-    @Output() deleteItemEvent = new EventEmitter<any>();
-    @Output() addItemEvent = new EventEmitter<any>();
+  @Input() data: any[] = []; // Data to display in the table
+  @Input() cols: Column[] = []; // Columns configuration
+  @Input() globalFilterFields: string[] = []; // Fields for global filtering
+  @Input() showView: boolean = true; // Show "View" button
+  @Input() showEdit: boolean = true; // Show "Edit" button
+  @Input() showDelete: boolean = true; // Show "Delete" button
+  @Input() showCreate: boolean = true; // Show "Create" button
+  @Output() viewItemEvent = new EventEmitter<any>(); // Event for viewing an item
+  @Output() editItemEvent = new EventEmitter<any>(); // Event for editing an item
+  @Output() deleteItemEvent = new EventEmitter<any>(); // Event for deleting an item
+  @Output() addItemEvent = new EventEmitter<any>(); // Event for adding an item
 
-    itemDialog: boolean = false;
-    item: any = {};
-    selectedItems: any[] | null = [];
-    submitted: boolean = false;
+  itemDialog: boolean = false; // Controls the visibility of the dialog
+  item: any = {}; // Current item being edited or created
+  selectedItems: any[] | null = []; // Selected items for bulk deletion
+  submitted: boolean = false; // Tracks if the form has been submitted
 
-    @ViewChild('dt') dt!: Table;
+  @ViewChild('dt') dt!: Table; // Reference to the PrimeNG table
 
-    constructor(
-        private messageService: MessageService,
-        private confirmationService: ConfirmationService
-    ) {}
+  constructor(
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
+  ) { }
 
-    ngOnInit() {}
+  ngOnInit() { }
 
-    exportCSV() {
-        this.dt.exportCSV();
-    }
+  exportCSV() {
+    this.dt.exportCSV();
+  }
 
-    onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-    }
+  onGlobalFilter(table: Table, event: Event) {
+    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  }
 
-    openNew() {
-        this.item = {};
-        this.submitted = false;
-        this.itemDialog = true;
-    }
+  openNew() {
+    this.item = {};
+    this.submitted = false;
+    this.itemDialog = true;
+  }
 
-    viewItem(item: any) {
-        this.viewItemEvent.emit(item);
-    }
+  viewItem(item: any) {
+    this.viewItemEvent.emit(item);
+  }
 
-    editItem(item: any) {
-        this.item = { ...item };
-        this.itemDialog = true;
-    }
+  editItem(item: any) {
+    this.item = { ...item };
+    this.itemDialog = true;
+  }
 
-    deleteItem(item: any) {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete ' + item.name + '?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.deleteItemEvent.emit(item);
-            }
+  deleteItem(item: any) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete ' + item.name + '?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteItemEvent.emit(item);
+      }
+    });
+  }
+
+  deleteSelectedItems() {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete the selected items?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.data = this.data.filter((val) => !this.selectedItems?.includes(val));
+        this.selectedItems = null;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Items Deleted',
+          life: 3000
         });
-    }
+      }
+    });
+  }
 
-    deleteSelectedItems() {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete the selected items?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.data.set(this.data().filter((val) => !this.selectedItems?.includes(val)));
-                this.selectedItems = null;
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Items Deleted',
-                    life: 3000
-                });
-            }
-        });
-    }
+  hideDialog() {
+    this.itemDialog = false;
+    this.submitted = false;
+  }
 
-    hideDialog() {
-        this.itemDialog = false;
-        this.submitted = false;
+  saveItem() {
+    this.submitted = true;
+    if (this.item.name?.trim()) {
+      if (this.item.id) {
+        this.editItemEvent.emit(this.item);
+      } else {
+        this.addItemEvent.emit(this.item);
+      }
+      this.itemDialog = false;
+      this.item = {};
     }
-
-    saveItem() {
-        this.submitted = true;
-        if (this.item.name?.trim()) {
-            if (this.item.id) {
-                this.editItemEvent.emit(this.item);
-            } else {
-                this.addItemEvent.emit(this.item);
-            }
-            this.itemDialog = false;
-            this.item = {};
-        }
-    }
+  
+  }
 }

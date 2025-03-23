@@ -272,7 +272,7 @@ export class AppConfigurator implements OnInit {
     saveConfiguration() {
         if (isPlatformBrowser(this.platformId)) {
             const config = this.layoutService.layoutConfig();
-            console.log('Saving configuration:', config); // Debugging
+            
             localStorage.setItem('appConfig', JSON.stringify(config));
         }
     }
@@ -283,7 +283,7 @@ export class AppConfigurator implements OnInit {
             if (config) {
                 try {
                     const parsedConfig = JSON.parse(config);
-                    console.log('Loading configuration:', parsedConfig); // Debugging
+                    
                     this.layoutService.layoutConfig.set(parsedConfig);
                     this.onPresetChange(parsedConfig.preset);
                 } catch (error) {
@@ -313,7 +313,7 @@ export class AppConfigurator implements OnInit {
     }
 
     onPresetChange(event: any) {
-        console.log('Preset changed to:', event); // Debugging
+        
         this.layoutService.layoutConfig.update((state) => ({ ...state, preset: event }));
         const preset = presets[event as KeyOfType<typeof presets>];
         const surfacePalette = this.surfaces.find((s) => s.name === this.selectedSurfaceColor())?.palette;
