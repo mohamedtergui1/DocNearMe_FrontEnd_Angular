@@ -33,4 +33,8 @@ export class ClinicService {
   getClinicById(id:string){
     return this.api.get("/clinic/" + id)
   }
+  updateClinic(clinicId:string,clinic:ClinicRequest){
+    return this.api.put("/clinic/" + clinicId,clinic)
+
+  }
 }

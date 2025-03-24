@@ -31,7 +31,7 @@ import { LogoComponent } from '../../shared/componenets/logo/logo.component';
   ],
   template: `
     <app-layout>
-        <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden" selector>
+        <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] " selector>
             <div class="flex flex-col items-center justify-center w-full max-w-[800px] p-4">
                 <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
                     <div class="w-full bg-surface-0 dark:bg-surface-900 py-12 px-8 sm:px-20" style="border-radius: 53px">
@@ -46,7 +46,7 @@ import { LogoComponent } from '../../shared/componenets/logo/logo.component';
                         <form [formGroup]="clinicForm" (ngSubmit)="onSubmit()" class="space-y-5">
     <!-- Clinic Name -->
     <div class="field">
-        <label for="clinicName" class="block text-sm font-medium text-gray-700 mb-1">Clinic Name</label>
+        <label  class="text-primary-500 dark:text-primary-400" for="clinicName" class="block text-sm font-medium text-gray-700 mb-1">Clinic Name</label>
         <input pInputText id="clinicName" formControlName="clinicName" class="w-full"
             [ngClass]="{'p-invalid': clinicForm.get('clinicName')?.invalid && clinicForm.get('clinicName')?.touched}" />
         <small *ngIf="clinicForm.get('clinicName')?.invalid && clinicForm.get('clinicName')?.touched" class="p-error block mt-1">
@@ -56,7 +56,7 @@ import { LogoComponent } from '../../shared/componenets/logo/logo.component';
 
     <!-- Clinic Address -->
     <div class="field">
-        <label for="clinicAddress" class="block text-sm font-medium text-gray-700 mb-1">Clinic Address</label>
+        <label  class="text-primary-500 dark:text-primary-400" for="clinicAddress" class="block text-sm font-medium text-gray-700 mb-1">Clinic Address</label>
         <input pInputText id="clinicAddress" formControlName="clinicAddress" class="w-full"
             [ngClass]="{'p-invalid': clinicForm.get('clinicAddress')?.invalid && clinicForm.get('clinicAddress')?.touched}" />
         <small *ngIf="clinicForm.get('clinicAddress')?.invalid && clinicForm.get('clinicAddress')?.touched" class="p-error block mt-1">
@@ -66,7 +66,7 @@ import { LogoComponent } from '../../shared/componenets/logo/logo.component';
 
     <!-- Category -->
     <div class="field">
-        <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+        <label  class="text-primary-500 dark:text-primary-400" for="categoryId" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
         <p-dropdown id="categoryId" formControlName="categoryId" [style]="{width:'777px'}" [options]="categories" 
             optionLabel="name" optionValue="id" class="w-full"
             [ngClass]="{'p-invalid': clinicForm.get('categoryId')?.invalid && clinicForm.get('categoryId')?.touched}">
@@ -79,14 +79,14 @@ import { LogoComponent } from '../../shared/componenets/logo/logo.component';
     <!-- Working Hours -->
     <div class="grid grid-cols-2 gap-4">
         <div class="field">
-            <label for="startTime" class="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+            <label  class="text-primary-500 dark:text-primary-400" for="startTime" class="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
             <p-calendar id="startTime" formControlName="startTime" [timeOnly]="true" 
                 hourFormat="24" class="w-full"
                 [ngClass]="{'p-invalid': clinicForm.get('startTime')?.invalid && clinicForm.get('startTime')?.touched}">
             </p-calendar>
         </div>
         <div class="field">
-            <label for="stopTime" class="block text-sm font-medium text-gray-700 mb-1">Stop Time</label>
+            <label  class="text-primary-500 dark:text-primary-400" for="stopTime" class="block text-sm font-medium text-gray-700 mb-1">Stop Time</label>
             <p-calendar id="stopTime" formControlName="stopTime" [timeOnly]="true" 
                 hourFormat="24" class="w-full"
                 [ngClass]="{'p-invalid': (clinicForm.get('stopTime')?.invalid && clinicForm.get('stopTime')?.touched)}">
@@ -105,7 +105,7 @@ import { LogoComponent } from '../../shared/componenets/logo/logo.component';
 
     <!-- Working Days -->
     <div class="field">
-        <label for="workingDays" class="block text-sm font-medium text-gray-700 mb-1">Working Days</label>
+        <label  class="text-primary-500 dark:text-primary-400" for="workingDays" class="block text-sm font-medium text-gray-700 mb-1">Working Days</label>
         <p-multiSelect id="workingDays" formControlName="workingDays" [options]="daysOfWeek"
             optionLabel="label" optionValue="value" class="w-full"
             [ngClass]="{'p-invalid': clinicForm.get('workingDays')?.invalid && clinicForm.get('workingDays')?.touched}">
@@ -117,11 +117,11 @@ import { LogoComponent } from '../../shared/componenets/logo/logo.component';
 
     <!-- Vacation Periods -->
     <div>
-        <label class="block text-surface-900 dark:text-surface-0 text-lg font-medium mb-2">Vacation Periods</label>
+        <label  class="text-primary-500 dark:text-primary-400" class="block text-surface-900 dark:text-surface-0 text-lg font-medium mb-2">Vacation Periods</label>
         <div formArrayName="vacations" class="space-y-4">
             <div *ngFor="let vacation of vacations.controls; let i = index" [formGroupName]="i" class="grid grid-cols-2 gap-4">
                 <div class="field">
-                    <label for="startDate-{{ i }}" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                    <label  class="text-primary-500 dark:text-primary-400" for="startDate-{{ i }}" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
                     <p-calendar 
                         id="startDate-{{ i }}" 
                         formControlName="startDate" 
@@ -134,7 +134,7 @@ import { LogoComponent } from '../../shared/componenets/logo/logo.component';
                     </small>
                 </div>
                 <div class="field">
-                    <label for="endDate-{{ i }}" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                    <label  class="text-primary-500 dark:text-primary-400" for="endDate-{{ i }}" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
                     <p-calendar 
                         id="endDate-{{ i }}" 
                         formControlName="endDate" 

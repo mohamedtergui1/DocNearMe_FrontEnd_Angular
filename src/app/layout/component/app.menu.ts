@@ -29,6 +29,7 @@ export class AppMenu implements OnInit {
                 { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/medcine/dashboard/'] },
                 { label: 'Appointments', icon: 'pi pi-fw pi-calendar', routerLink: ['/medcine/dashboard/appointment'] },
                 { label: 'Consultations', icon: 'pi pi-fw pi-comments', routerLink: ['/medcine/dashboard/consultation'] },
+                { label: 'Clinic', icon: 'pi pi-fw pi-comments', routerLink: ['/medcine/dashboard/clinic/edit'] },
             ]
         },
         {

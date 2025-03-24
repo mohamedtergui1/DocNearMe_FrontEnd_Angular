@@ -16,6 +16,7 @@ import { isPatientGuard } from './app/core/guards/is-patient.guard';
 import { CreateConsultationComponent } from './app/pages/medcine/consultation/create-consultation.component';
 import { PatientCalendarComponent } from './app/pages/patient/patient-calendar/patient-calendar.component';
 import { authGuard } from './app/core/guards/auth.guard';
+import { UpdateClinicComponent } from './app/pages/medcine/update-clinic/update-clinic.component';
 
 export const appRoutes: Routes = [
     { path: '', component: Landing },
@@ -79,6 +80,14 @@ export const appRoutes: Routes = [
             {
                 path: 'view-consultation-by-appointment-id/:appointmentId',
                 component: ViewConsultationComponent
+            }
+            ,
+            {
+                path:'clinic/edit',
+                component:UpdateClinicComponent,
+                resolve: {
+                    clinic: getClinicForAuthUserResolver
+                }
             }
         ],
         resolve: {
