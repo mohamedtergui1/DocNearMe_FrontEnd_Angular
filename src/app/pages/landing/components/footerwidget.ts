@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { LogoComponent } from '../../../shared/componenets/logo/logo.component';
+import { AppFooter } from '../../../layout/component/app.footer';
 
 @Component({
     selector: 'footer-widget',
-    imports: [RouterModule,LogoComponent],
+    imports: [RouterModule, LogoComponent, AppFooter],
     template: `
         <div class="py-12 px-12 mx-0 mt-20 lg:mx-20">
         <div class="flex justify-center mb-8">
@@ -49,8 +50,9 @@ import { LogoComponent } from '../../../shared/componenets/logo/logo.component';
                 </div>
             </div>
         </div>
+        <app-footer />
     `
 })
 export class FooterWidget {
-    constructor(public router: Router) {}
+    constructor(public router: Router) { }
 }

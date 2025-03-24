@@ -15,6 +15,7 @@ import { isMedicine } from './app/core/guards/is-medicine';
 import { isPatientGuard } from './app/core/guards/is-patient.guard';
 import { CreateConsultationComponent } from './app/pages/medcine/consultation/create-consultation.component';
 import { PatientCalendarComponent } from './app/pages/patient/patient-calendar/patient-calendar.component';
+import { authGuard } from './app/core/guards/auth.guard';
 
 export const appRoutes: Routes = [
     { path: '', component: Landing },
@@ -86,7 +87,19 @@ export const appRoutes: Routes = [
         ,
         canActivateChild: [isMedicine]
     },
-    { path: 'notfound', component: Notfound },
+    {
+        path: 'settings',
+        component: AppLayout,
+        children: [
+            {
+                path: 'profile',
+                component: ProfileComponent
+            }
+        ],
+        canMatch:[authGuard]
+    }
+    ,
     { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },
+    { path: 'notfound', component: Notfound },
     { path: '**', component: Notfound }
 ];

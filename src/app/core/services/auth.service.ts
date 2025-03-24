@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { throwError } from 'rxjs';
 
-import { User as UserType } from '../../model/User';
+import { User  } from '../../model/User';
 import { UserRole } from '../../model/UserRole';
 
 export interface LoginResponse {
-    user: Omit<UserType, 'password'>; 
+    user: Omit<User, 'password'>; 
     refreshToken: string; 
     accessToken: string; 
     refreshExpiresIn: number;
@@ -27,7 +27,7 @@ export interface RegisterRequest {
     providedIn: 'root',
 })
 export class AuthService {
-    private currentUserSubject = new BehaviorSubject<Partial<UserType> | null>(null);
+    private currentUserSubject = new BehaviorSubject<Partial<User> | null>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
     private readonly ACCESS_TOKEN_KEY = 'access_token';
     private readonly REFRESH_TOKEN_KEY = 'refresh_token';
@@ -71,8 +71,8 @@ export class AuthService {
         );
     }
 
-    register(userData: RegisterRequest): Observable<UserType> {
-        return this.http.post<UserType>('/auth/signup', userData);
+    register(userData: RegisterRequest): Observable<User> {
+        return this.http.post<User>('/auth/signup', userData);
     }
 
     logout(): void {
@@ -86,7 +86,7 @@ export class AuthService {
     }
 
     isAuthenticated(): boolean {
-        return !!this.getAccessToken() && !!this.currentUserSubject.value;
+        return this.isAuthenticatedSubject.value;
     }
 
     getAccessToken(): string | null {
@@ -97,7 +97,7 @@ export class AuthService {
         return localStorage.getItem(this.REFRESH_TOKEN_KEY);
     }
 
-    getAuthUser(): Observable<Partial<UserType> | null> {
+    getAuthUser(): Observable<Partial<User> | null> {
         return this.currentUser$;
     }
 
@@ -117,12 +117,22 @@ export class AuthService {
         this.isAuthenticatedSubject.next(false);
     }
 
-    updateProfile(userId: string, updates: UserType): Observable<UserType> {
-        return this.http.put<UserType>(`/users/${userId}`, updates);
+    updateProfile(userId: string, updates: User): Observable<User> {
+        return this.http.put<User>(`/users/${userId}`, updates);
     }
 
     resetPassword(email: string): Observable<{ success: boolean }> {
         return this.http.post<{ success: boolean }>('/auth/reset-password', { email });
+    }
+
+    checkAuth(): Observable<boolean> {
+        const accessToken = this.getAccessToken();
+        if (accessToken && this.isAuthenticated()) {
+            return of(true); 
+        } else {
+            this.clearAuthData(); 
+            return of(false);
+        }
     }
 
      

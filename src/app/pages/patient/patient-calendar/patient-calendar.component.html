@@ -14,13 +14,13 @@
     </div>
 
     <!-- Time Range Inputs -->
-    <div class="flex gap-4 mt-6">
+    <div class="flex gap-4 mt-6 pb-3">
         <div class="flex items-center gap-2">
-            <label for="startTime" class="font-medium">Start Time:</label>
+            <label for="startTime" class=" text-primary font-medium">Start Time: : </label>
             <p-inputNumber [(ngModel)]="startTime" [min]="0" [max]="23" [showButtons]="true" inputId="startTime"></p-inputNumber>
         </div>
         <div class="flex items-center gap-2">
-            <label for="endTime" class="font-medium">End Time:</label>
+            <label for="endTime" class=" text-primary font-medium">End Time: : </label>
             <p-inputNumber [(ngModel)]="endTime" [min]="0" [max]="23" [showButtons]="true" inputId="endTime"></p-inputNumber>
         </div>
         <button pButton type="button" label="Apply" (click)="updateCalendarTimeRange()"></button>
@@ -42,21 +42,21 @@
 >
     <div *ngIf="selectedMedication" class="p-fluid">
         <div class="p-grid p-fluid">
-            <div class="p-col-12 p-field">
-                <label for="medicationName" class="font-medium">Medication Name</label>
-                <p>{{ selectedMedication.medication.medicationNameField }}</p>
+            <div class="p-col-12 p-field m-2 flex items-center ">
+                <label for="medicationName" class=" text-primary font-medium">Medication Name : </label>
+                <p> {{ selectedMedication.medication.medicationNameField }}</p>
             </div>
-            <div class="p-col-12 p-field">
-                <label for="dosage" class="font-medium">Dosage</label>
-                <p>{{ selectedMedication.quantity }} {{ selectedMedication.unit }}</p>
+            <div class="p-col-12 p-field m-2 flex items-center ">
+                <label for="dosage" class=" text-primary font-medium">Dosage : </label>
+                <p> {{ selectedMedication.quantity }} {{ selectedMedication.unit }}</p>
             </div>
-            <div class="p-col-12 p-field">
-                <label for="instructions" class="font-medium">Special Instructions</label>
-                <p>{{ selectedMedication.specialInstructions }}</p>
+            <div class="p-col-12 p-field m-2 flex items-center ">
+                <label for="instructions" class=" text-primary font-medium">Special Instructions : </label>
+                <p> {{ selectedMedication.specialInstructions }}</p>
             </div>
-            <div class="p-col-12 p-field">
-                <label for="withFood" class="font-medium">Take with Food</label>
-                <p>{{ selectedMedication.withFood ? 'Yes' : 'No' }}</p>
+            <div class="p-col-12 p-field m-2 flex items-center ">
+                <label for="withFood" class=" text-primary font-medium">Take with Food : </label>
+                <p> {{ selectedMedication.withFood ? 'Yes' : 'No' }}</p>
             </div>
         </div>
     </div>
@@ -83,20 +83,20 @@
 >
     <div *ngIf="selectedAppointment" class="p-fluid">
         <div class="p-grid p-fluid">
-            <div class="p-col-12 p-field">
-                <label for="subject" class="font-medium">Subject</label>
-                <p>{{ selectedAppointment.subject }}</p>
+            <div class="p-col-12 p-field m-2 flex items-center ">
+                <label for="subject" class=" text-primary font-medium">Subject : </label>
+                <p> {{ selectedAppointment.subject }}</p>
             </div>
-            <div class="p-col-12 p-field">
-                <label for="startDateTime" class="font-medium">Start Date & Time</label>
-                <p>{{ selectedAppointment.startDateTime | date: 'medium' }}</p>
+            <div class="p-col-12 p-field m-2 flex items-center ">
+                <label for="startDateTime" class=" text-primary font-medium">Start Date & Time : </label>
+                <p> {{ selectedAppointment.startDateTime | date: 'medium' }}</p>
             </div>
-            <div class="p-col-12 p-field">
-                <label for="endDateTime" class="font-medium">End Date & Time</label>
-                <p>{{ selectedAppointment.endDateTime | date: 'medium' }}</p>
+            <div class="p-col-12 p-field m-2 flex items-center ">
+                <label for="endDateTime" class=" text-primary font-medium">End Date & Time : </label>
+                <p> {{ selectedAppointment.endDateTime | date: 'medium' }}</p>
             </div>
-            <div class="p-col-12 p-field">
-                <label for="status" class="font-medium">Status</label>
+            <div class="p-col-12 p-field m-2 flex items-center ">
+                <label for="status" class=" text-primary font-medium">Status : </label>
                 <p-tag 
                     [style]="getStyleOfStatusForThTemplate(selectedAppointment.status)"
                     [value]="selectedAppointment.status"

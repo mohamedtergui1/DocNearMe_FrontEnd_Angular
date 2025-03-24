@@ -1,11 +1,12 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { CardModule } from 'primeng/card';
+import { EditorModule } from 'primeng/editor';
 import { PanelModule } from 'primeng/panel';
 
 @Component({
   selector: 'app-consultation-details-card',
-  imports: [CardModule, DatePipe, CommonModule, PanelModule],
+  imports: [CardModule, DatePipe, CommonModule, PanelModule,EditorModule],
   template: `
     <p-card *ngIf="consultation" header="Consultation Details">
       <div class="p-grid">

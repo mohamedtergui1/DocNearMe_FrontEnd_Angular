@@ -19,7 +19,7 @@ import { ButtonModule } from 'primeng/button'; // Import ButtonModule for toggle
   ],
   template: `
     <div >
-      <div class="grid">
+      <div class="grid gap-5">
         <!-- Basic Information -->
         <div class="col-12 md:col-6" *ngIf="showBasicInfo">
           <p-fieldset legend="Basic Information" [toggleable]="true" [collapsed]="isBasicInfoCollapsed">
@@ -90,7 +90,7 @@ import { ButtonModule } from 'primeng/button'; // Import ButtonModule for toggle
         <!-- Working Days -->
         <div class="col-12" *ngIf="showWorkingDays">
           <p-fieldset legend="Working Days" [toggleable]="true" [collapsed]="isWorkingDaysCollapsed">
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2 py-3">
               <ng-container *ngIf="!loading; else skeletonDays">
                 <p-tag *ngFor="let day of clinic?.workingDays" [value]="day" severity="info"></p-tag>
                 <p *ngIf="!clinic?.workingDays?.length">No working days specified.</p>
@@ -105,14 +105,16 @@ import { ButtonModule } from 'primeng/button'; // Import ButtonModule for toggle
 
         <!-- Vacation Periods -->
         <div class="col-12" *ngIf="showVacationPeriods">
-          <p-fieldset legend="Vacation Periods" [toggleable]="true" [collapsed]="isVacationPeriodsCollapsed">
+          <p-fieldset legend="Vacation Periods"  [toggleable]="true" [collapsed]="isVacationPeriodsCollapsed">
             <ng-container *ngIf="!loading; else skeletonVacations">
-              <div *ngFor="let vacation of clinic?.vacations" class="mb-3">
-                <div class="grid">
-                  <div class="col-4 font-bold text-primary">Start Date:</div>
-                  <div class="col-8">{{ transform(vacation.startDate) || 'N/A' }}</div>
-                  <div class="col-4 font-bold text-primary">End Date:</div>
-                  <div class="col-8">{{ transform(vacation.endDate) || 'N/A' }}</div>
+              <div class="flex justify-start flex-wrap gap-4" >
+                <div *ngFor="let vacation of clinic?.vacations" class="mb-3 p-5  border">
+                  <div class="grid">
+                    <div class="col-4 font-bold text-primary">Start Date:</div>
+                    <div class="col-8">{{ transform(vacation.startDate) || 'N/A' }}</div>
+                    <div class="col-4 font-bold text-primary">End Date:</div>
+                    <div class="col-8">{{ transform(vacation.endDate) || 'N/A' }}</div>
+                  </div>
                 </div>
               </div>
               <p *ngIf="!clinic?.vacations?.length">No vacation periods specified.</p>
@@ -142,15 +144,15 @@ import { ButtonModule } from 'primeng/button'; // Import ButtonModule for toggle
   `]
 })
 export class ClinicInfoComponent implements OnInit {
-  @Input() clinic: Clinic | null = null; // Clinic data
+  @Input() clinic: Clinic | null = null;
 
-  @Input() loading: boolean = true; // Loading state
+  @Input() loading: boolean = true;
 
-  // Props to control visibility of sections
-  @Input() showBasicInfo: boolean = true; // Show/hide Basic Information section
-  @Input() showWorkingHours: boolean = true; // Show/hide Working Hours section
-  @Input() showWorkingDays: boolean = true; // Show/hide Working Days section
-  @Input() showVacationPeriods: boolean = true; // Show/hide Vacation Periods section
+
+  @Input() showBasicInfo: boolean = true;
+  @Input() showWorkingHours: boolean = true;
+  @Input() showWorkingDays: boolean = true;
+  @Input() showVacationPeriods: boolean = true;
 
   // Props to control collapsed state of sections
   @Input() isBasicInfoCollapsed: boolean = false;
@@ -161,10 +163,10 @@ export class ClinicInfoComponent implements OnInit {
   ngOnInit(): void {
     // Simulate a delay of 500ms (0.5 seconds) before hiding the skeleton
     setTimeout(() => {
-      if(this.loading){
+      if (this.loading) {
         this.loading = false;
       }
-    
+
     }, 500);
   }
 
@@ -187,8 +189,8 @@ export class ClinicInfoComponent implements OnInit {
 
   transform(timeString: string): string {
     if (!timeString) return '';
-    return timeString.split(':').slice(0, 2).join(':'); 
+    return timeString.split(':').slice(0, 2).join(':');
   }
 
-  
+
 }
