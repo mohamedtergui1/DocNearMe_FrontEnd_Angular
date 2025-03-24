@@ -35,7 +35,7 @@ import { User } from '../../../model/User';
                         <span>Book Consultaion</span>
                     </a>
                 </li>
-                <li>
+                <li *ngIf="isAuth()">
                     <a (click)="router.navigate([authUser.role == 'MEDICINE' ? 'medcine/dashboard' : 'patient/dashboard'])" pRipple class="px-0 py-4 text-surface-900 dark:text-surface-0 font-medium text-xl">
                         <span>Dashboard</span>
                     </a>
@@ -61,11 +61,10 @@ export class TopbarWidget {
         private authService: AuthService
     ) {
           authService.getAuthUser().pipe(map((user) => user)).subscribe((user)=> this.authUser = user);
-          console.log(this.authUser)
     }
 
     isAuth() {
-        return this.authService.isAuthenticated();
+        return this.authService.isAuthenticated()
     }
     logout(): void {
         this.authService.logout(); 
