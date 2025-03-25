@@ -12,3 +12,4 @@ export class CategoryService {
     return this.api.get("/auth/categories")
   }
 }
+  

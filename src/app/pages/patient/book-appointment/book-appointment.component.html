@@ -1,0 +1,76 @@
+<app-layout>
+    <div selector>
+      <div class="p-4">
+        <h1 class="text-3xl text-primary font-bold mb-6">Clinic Directory</h1>
+        
+        <!-- Search and Filter Section -->
+         <div class="flex justify-center" >
+
+        
+  <div class="surface-card p-4 border-round shadow-2 mb-6">
+    <div class="flex flex-column md:flex-row align-items-center gap-4">
+      <!-- Search Input -->
+      <div class="w-full">
+        <span class="p-float-label">
+          <i class="pi pi-search"></i>
+          <input 
+            pInputText 
+            id="searchInput" 
+            [(ngModel)]="searchText" 
+            (input)="filterClinics()" 
+            class="w-full" 
+          />
+          <label for="searchInput">Search by name, address or category</label>
+        </span>
+      </div>
+  
+      <!-- Category Dropdown -->
+      <div class="w-full md:w-20rem">
+        <p-dropdown
+          [options]="categories"
+          [(ngModel)]="selectedCategory"
+          (onChange)="filterClinics()"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Select category"
+          [showClear]="true"
+          [loading]="loadingCategories"
+          [filter]="true"
+          appendTo="body"
+          inputId="categorySelect"
+        >
+          <ng-template pTemplate="dropdownicon">
+            <i class="pi pi-filter"></i>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+  </div>
+   </div>
+        <!-- Clinics List -->
+        <div *ngIf="filteredClinics.length > 0; else noResults">
+          <div *ngFor="let clinic of filteredClinics" class="grid grid-cols-1 mb-6">
+            <div class="card border-round border-1 surface-border p-0 overflow-hidden">
+              <app-clinic-info [clinic]="clinic" [isVacationPeriodsCollapsed]="true" />
+              <div class="flex justify-end p-4 bg-surface-50 border-top-1 surface-border">
+                <p-button 
+                  label="Book Appointment"  
+                  (click)="navigateToBookAppointment(clinic.id)"
+                  icon="pi pi-calendar"
+                  styleClass="p-button-primary"
+                ></p-button>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <ng-template #noResults>
+          <div class="text-center p-8 bg-surface-100 border-round">
+            <i class="pi pi-search text-4xl text-500 mb-3"></i>
+            <p class="text-600 text-xl">No clinics found matching your criteria</p>
+            <p class="text-500 mt-2">Try adjusting your search or filter</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </app-layout>
