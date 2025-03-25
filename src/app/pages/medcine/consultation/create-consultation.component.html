@@ -1,6 +1,6 @@
 <p-card header="Create Consultation">
   <div class="flex justify-end ">
-    <p-button (click)="showDialog()" label="Show Patient Consultation" />
+    <p-button (click)="showDialog()" label="Show Patient Old Consultation" />
   </div>
   <p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" 
           [style]="{ width: '99vw' }" [contentStyle]="{'max-height': '80vh', 'overflow': 'auto'}">
@@ -19,7 +19,14 @@
       <!-- Consultation Card -->
       <app-consultation-details-card 
         [consultation]="consultation"
+        [initialStates]="{
+          consultation: true, 
+          clinic: true,
+          patient: true,
+          medications: true,
+        }"
         [style]="{'border-left': '4px solid var(--primary-color)', 'padding-left': '1rem'}">
+        
       </app-consultation-details-card>
       
       <!-- Add space between items except last -->
