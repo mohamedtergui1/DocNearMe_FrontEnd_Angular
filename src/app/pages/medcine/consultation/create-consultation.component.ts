@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray, FormsModule } from '@angular/forms';
 
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -23,6 +23,9 @@ import { MedicationService } from '../../../core/services/medication.service';
 import { SelectItem } from 'primeng/select';
 import { Unit } from '../../../model/Unit';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
+import { DialogModule } from 'primeng/dialog';
+import { ConsultationDetailsCardComponent } from '../dashboard/view-consultation/componenets/consiltation-details-card/consultation-details-card.component';
+import { Divider } from 'primeng/divider';
 
 @Component({
   selector: 'app-create-consultation',
@@ -39,7 +42,11 @@ import { Dropdown, DropdownModule } from 'primeng/dropdown';
     EditorModule,
     AutoCompleteModule,
     CalendarModule,
-    DropdownModule
+    DropdownModule,
+    FormsModule,
+    DialogModule,
+    ConsultationDetailsCardComponent,
+    Divider
   ],
   templateUrl: './create-consultation.component.html',
   
@@ -70,6 +77,8 @@ export class CreateConsultationComponent implements OnInit {
   filteredMedications: { id: string, name: string }[] = [];
   unitOptions!: any[];
   appointmentId!: string ;
+  visible: boolean = false;
+  oldConsultations:any[] = []
   constructor(
     private route: ActivatedRoute,
     private appointmentService: AppointmentService,
@@ -187,5 +196,14 @@ export class CreateConsultationComponent implements OnInit {
         console.error('Failed to fetch medications:', err);
       },
     });
+  }
+
+  showDialog(){
+    this.visible = true
+    this.consultationService.getConsultationsByPatientAppointmentId(this.appointmentId).subscribe(
+      (response:any) => {
+        this.oldConsultations = response?.data
+      }
+    );
   }
 }

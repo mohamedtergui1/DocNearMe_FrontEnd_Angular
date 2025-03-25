@@ -24,5 +24,8 @@ export class ConsultationService {
   getConsultationsForAuthPatient(){
     return this.api.get('/consultation/getConsultationsForAuthPatient');
   }
+  getConsultationsByPatientAppointmentId(patientId:string){
+    return this.api.get('/consultation/getConsultationsByPatientAppointmentId/' + patientId )
+  }
 
 }

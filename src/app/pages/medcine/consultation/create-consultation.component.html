@@ -1,161 +1,132 @@
 <p-card header="Create Consultation">
-    <div *ngIf="appointment; else loading">
-      <!-- Appointment Details -->
-      <p><strong>Subject:</strong> {{ appointment.subject }}</p>
-      <p><strong>Start Time:</strong> {{ appointment.startDateTime | date:'shortTime' }}</p>
-      <p><strong>End Time:</strong> {{ appointment.endDateTime | date:'shortTime' }}</p>
-      <p><strong>Patient ID:</strong> {{ appointment.patientId }}</p>
-      <p><strong>Clinic ID:</strong> {{ appointment.clinicId }}</p>
-      <p><strong>Status:</strong> {{ appointment.status }}</p>
-  
-      <!-- Consultation Form -->
-      <form [formGroup]="consultationForm" (ngSubmit)="onSubmit()">
-        <!-- Reason for Consultation -->
-        <div class="field">
-          <label for="reason">Reason for Consultation</label>
-          <p-editor
-            id="reason"
-            formControlName="reason"
-            pInputTextarea
-            rows="6"
-            placeholder="Enter the reason for consultation"
-          ></p-editor>
-        </div>
-  
-        <!-- Recovery Days -->
-        <div class="field">
-          <label for="recoveryDays">Recovery Days</label>
-          <p-inputNumber
-            id="recoveryDays"
-            formControlName="recoveryDays"
-            mode="decimal"
-            placeholder="Enter recovery days"
-          ></p-inputNumber>
-        </div>
-  
-        <!-- Dosage Schedules -->
-        <div formArrayName="medicationsDosageSchedule">
-          <div
-            *ngFor="let dosage of dosageSchedules.controls; let i = index"
-            [formGroupName]="i"
-            class="dosage-schedule"
-          >
-            <h3>Dosage Schedule {{ i + 1 }}</h3>
+  <div class="flex justify-end ">
+    <p-button (click)="showDialog()" label="Show Patient Consultation" />
+  </div>
+  <p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" 
+          [style]="{ width: '99vw' }" [contentStyle]="{'max-height': '80vh', 'overflow': 'auto'}">
+  <span class="p-text-secondary block mb-5">Update your information.</span>
+
+  <div *ngIf=" oldConsultations && oldConsultations!.length > 0; else noConsultations">
+    <div *ngFor="let consultation of oldConsultations; let i = index" class="mb-5">
+      <!-- Number Badge and Separator -->
+      <div class="flex align-items-center mb-3">
+        <span class="p-badge p-mr-2" style="background-color: var(--primary-color); color: white; min-width: 2rem">
+          {{i + 1}}
+        </span>
+        <p-divider [layout]="'horizontal'" styleClass="w-full"></p-divider>
+      </div>
+      
+      <!-- Consultation Card -->
+      <app-consultation-details-card 
+        [consultation]="consultation"
+        [style]="{'border-left': '4px solid var(--primary-color)', 'padding-left': '1rem'}">
+      </app-consultation-details-card>
+      
+      <!-- Add space between items except last -->
+      <div *ngIf="i < oldConsultations.length - 1" class="mt-4"></div>
+    </div>
+  </div>
+
+  <ng-template #noConsultations>
+    <p class="p-text-secondary">No previous consultations found.</p>
+  </ng-template>
+</p-dialog>
+  <div *ngIf="appointment; else loading">
+    <!-- Appointment Details -->
+    <p><strong>Subject:</strong> {{ appointment.subject }}</p>
+    <p><strong>Start Time:</strong> {{ appointment.startDateTime | date:'shortTime' }}</p>
+    <p><strong>End Time:</strong> {{ appointment.endDateTime | date:'shortTime' }}</p>
+    <p><strong>Patient ID:</strong> {{ appointment.patientId }}</p>
+    <p><strong>Clinic ID:</strong> {{ appointment.clinicId }}</p>
+    <p><strong>Status:</strong> {{ appointment.status }}</p>
+
+    <!-- Consultation Form -->
+    <form [formGroup]="consultationForm" (ngSubmit)="onSubmit()">
+      <!-- Reason for Consultation -->
+      <div class="field">
+        <label for="reason">Reason for Consultation</label>
+        <p-editor id="reason" formControlName="reason" pInputTextarea rows="6"
+          placeholder="Enter the reason for consultation"></p-editor>
+      </div>
+
+      <!-- Recovery Days -->
+      <div class="field">
+        <label for="recoveryDays">Recovery Days</label>
+        <p-inputNumber id="recoveryDays" formControlName="recoveryDays" mode="decimal"
+          placeholder="Enter recovery days"></p-inputNumber>
+      </div>
+
+      <!-- Dosage Schedules -->
+      <div formArrayName="medicationsDosageSchedule">
+        <div *ngFor="let dosage of dosageSchedules.controls; let i = index" [formGroupName]="i" class="dosage-schedule">
+          <h3>Dosage Schedule {{ i + 1 }}</h3>
 
           <div class="field">
             <label for="medicationId-{{ i }}">Medication</label>
-            <p-autoComplete
-              id="medicationId-{{ i }}"
-              formControlName="medicationId"
-              [suggestions]="filteredMedications"
-              (completeMethod)="searchMedications($event)"
-              field="name"
-              placeholder="Search for a medication"
-            ></p-autoComplete>
+            <p-autoComplete id="medicationId-{{ i }}" formControlName="medicationId" [suggestions]="filteredMedications"
+              (completeMethod)="searchMedications($event)" field="name"
+              placeholder="Search for a medication"></p-autoComplete>
           </div>
 
-            <div class="field">
-              <label for="numberOfConsumptionInDay-{{ i }}">numberOfConsumptionInDay</label>
-              <p-inputNumber
-                id="numberOfConsumptionInDay-{{ i }}"
-                formControlName="numberOfConsumptionInDay"
-                mode="decimal"
-                placeholder="Enter number of days"
-              ></p-inputNumber>
-            </div>
-  
-            
-            <div class="field">
-              <label for="quantity-{{ i }}">Quantity</label>
-              <p-inputNumber
-                id="quantity-{{ i }}"
-                formControlName="quantity"
-                mode="decimal"
-                placeholder="Enter quantity"
-              ></p-inputNumber>
-            </div>
-  
-            <div class="field">
-              <label for="unit-{{ i }}">Unit</label>
-              <p-dropdown
-                id="unit-{{ i }}"
-                formControlName="unit"
-                [options]="unitOptions"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Select unit"
-              ></p-dropdown>
-            </div>
-  
-            <div class="field">
-              <label for="withFood-{{ i }}">With Food</label>
-              <p-checkbox
-                id="withFood-{{ i }}"
-                formControlName="withFood"
-                binary="true"
-              ></p-checkbox>
-            </div>
-  
-            <div class="field">
-              <label for="specialInstructions-{{ i }}">Special Instructions</label>
-              <textarea
-                id="specialInstructions-{{ i }}"
-                formControlName="specialInstructions"
-                pInputTextarea
-                rows="3"
-                placeholder="Enter special instructions"
-              ></textarea>
-            </div>
-  
-            <div class="field">
-              <label for="dateWhenMustStopConsumption-{{ i }}">Stop Consumption Date</label>
-              <p-calendar
-                id="dateWhenMustStopConsumption-{{ i }}"
-                formControlName="dateWhenMustStopConsumption"
-                [showIcon]="true"
-                dateFormat="yy-mm-dd"
-                placeholder="Select stop consumption date"
-              ></p-calendar>
-            </div>
-  
-            <div class="field">
-              <p-button
-                type="button"
-                label="Remove Dosage Schedule"
-                icon="pi pi-trash"
-                styleClass="p-button-danger"
-                (click)="removeDosageSchedule(i)"
-              ></p-button>
-            </div>
+          <div class="field">
+            <label for="numberOfConsumptionInDay-{{ i }}">numberOfConsumptionInDay</label>
+            <p-inputNumber id="numberOfConsumptionInDay-{{ i }}" formControlName="numberOfConsumptionInDay"
+              mode="decimal" placeholder="Enter number of days"></p-inputNumber>
+          </div>
+
+
+          <div class="field">
+            <label for="quantity-{{ i }}">Quantity</label>
+            <p-inputNumber id="quantity-{{ i }}" formControlName="quantity" mode="decimal"
+              placeholder="Enter quantity"></p-inputNumber>
+          </div>
+
+          <div class="field">
+            <label for="unit-{{ i }}">Unit</label>
+            <p-dropdown id="unit-{{ i }}" formControlName="unit" [options]="unitOptions" optionLabel="label"
+              optionValue="value" placeholder="Select unit"></p-dropdown>
+          </div>
+
+          <div class="field">
+            <label for="withFood-{{ i }}">With Food</label>
+            <p-checkbox id="withFood-{{ i }}" formControlName="withFood" binary="true"></p-checkbox>
+          </div>
+
+          <div class="field">
+            <label for="specialInstructions-{{ i }}">Special Instructions</label>
+            <textarea id="specialInstructions-{{ i }}" formControlName="specialInstructions" pInputTextarea rows="3"
+              placeholder="Enter special instructions"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="dateWhenMustStopConsumption-{{ i }}">Stop Consumption Date</label>
+            <p-calendar id="dateWhenMustStopConsumption-{{ i }}" formControlName="dateWhenMustStopConsumption"
+              [showIcon]="true" dateFormat="yy-mm-dd" placeholder="Select stop consumption date"></p-calendar>
+          </div>
+
+          <div class="field">
+            <p-button type="button" label="Remove Dosage Schedule" icon="pi pi-trash" styleClass="p-button-danger"
+              (click)="removeDosageSchedule(i)"></p-button>
           </div>
         </div>
-  
-        <!-- Add Dosage Schedule Button -->
-        <div class="field">
-          <p-button
-            type="button"
-            label="Add Dosage Schedule"
-            icon="pi pi-plus"
-            styleClass="p-button-secondary"
-            (click)="addDosageSchedule()"
-          ></p-button>
-        </div>
-  
-        <!-- Submit Button -->
-        <div class="field">
-          <p-button
-            type="submit"
-            label="Save Consultation"
-            icon="pi pi-save"
-            styleClass="p-button-success"
-            [disabled]="consultationForm.invalid"
-          ></p-button>
-        </div>
-      </form>
-    </div>
-  
-    <!-- Loading State -->
-    <ng-template #loading>
-      <p>Loading appointment details...</p>
-    </ng-template>
-  </p-card>
+      </div>
+
+      <!-- Add Dosage Schedule Button -->
+      <div class="field">
+        <p-button type="button" label="Add Dosage Schedule" icon="pi pi-plus" styleClass="p-button-secondary"
+          (click)="addDosageSchedule()"></p-button>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="field">
+        <p-button type="submit" label="Save Consultation" icon="pi pi-save" styleClass="p-button-success"
+          [disabled]="consultationForm.invalid"></p-button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading State -->
+  <ng-template #loading>
+    <p>Loading appointment details...</p>
+  </ng-template>
+</p-card>

@@ -11,7 +11,7 @@ import {  Router } from '@angular/router';
     <app-reusable-table
       [data]="consultations"
       [cols]="cols"
-      [globalFilterFields]="['patient.name', 'consultationDate', 'reason']"
+      [globalFilterFields]="['clinicName', 'consultationDate', 'reason']"
       [showView]="true"
       [showEdit]="false"
       [showDelete]="false"

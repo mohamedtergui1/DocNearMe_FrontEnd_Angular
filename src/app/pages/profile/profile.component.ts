@@ -1,173 +1,91 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
-import { CalendarModule } from 'primeng/calendar';
-import { FileUploadModule } from 'primeng/fileupload';
+import { CardModule } from 'primeng/card';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { PasswordModule } from 'primeng/password';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { DividerModule } from 'primeng/divider';
 import { AuthService } from '../../core/services/auth.service';
-import { FluidModule } from 'primeng/fluid';
 import { User } from '../../model/User';
-import { UserRole } from '../../model/UserRole';
-import { CardModule } from 'primeng/card'; // Add CardModule for better layout
-import { MessageService } from 'primeng/api'; // For toast messages
-import { ToastModule } from 'primeng/toast'; // For toast messages
+import { LogoComponent } from '../../shared/componenets/logo/logo.component';
 
 @Component({
-    selector: 'app-profile',
-    standalone: true,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterModule,
-        InputTextModule,
-        ButtonModule,
-        DropdownModule,
-        CalendarModule,
-        FileUploadModule,
-        FluidModule,
-        CardModule, // Add CardModule
-        ToastModule, // Add ToastModule
-    ],
-    template: `
-        <p-toast></p-toast> <!-- Toast component for messages -->
-        <div class="profile-container">
-            <p-card header="User Profile">
-                <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-                    <div class="p-fluid">
-                        <div class="p-field">
-                            <label for="name">Name</label>
-                            <input id="name" type="text" pInputText formControlName="name" />
-                        </div>
-                        <div class="p-field">
-                            <label for="email">Email</label>
-                            <input id="email" type="email" pInputText formControlName="email" />
-                        </div>
-                        <div class="p-field">
-                            <label for="phoneNumber">Phone Number</label>
-                            <input id="phoneNumber" type="text" pInputText formControlName="phoneNumber" />
-                        </div>
-                        <div class="p-field">
-                            <label for="role">Role</label>
-                            <p-dropdown
-                                id="role"
-                                [options]="roles"
-                                formControlName="role"
-                                placeholder="Select Role"
-                            ></p-dropdown>
-                        </div>
-                        <div class="p-field">
-                            <button type="submit" pButton label="Save" [disabled]="profileForm.invalid"></button>
-                        </div>
-                    </div>
-                </form>
-            </p-card>
-        </div>
-    `,
-    styles: [
-        `
-            .profile-container {
-                max-width: 600px;
-                margin: 2rem auto;
-                padding: 1rem;
-            }
-            .p-field {
-                margin-bottom: 1rem;
-            }
-            label {
-                display: block;
-                margin-bottom: 0.5rem;
-                font-weight: bold;
-            }
-            input, p-dropdown {
-                width: 100%;
-            }
-            button {
-                margin-top: 1rem;
-            }
-        `,
-    ],
-    providers: [MessageService], // Provide MessageService for toast messages
+  selector: 'app-profile',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    ButtonModule,
+    CardModule,
+    ToastModule,
+    PasswordModule,
+    ToggleButtonModule,
+    LogoComponent,
+    FormsModule,
+    DividerModule
+  ],
+  templateUrl: './profile.component.html'
 })
 export class ProfileComponent implements OnInit {
-    profileForm: FormGroup; // Form group for user profile
-    user: User | null = null; // Store the authenticated user's data
-    roles = [
-        { label: 'Medicine', value: UserRole.MEDICINE },
-        { label: 'Patient', value: UserRole.PATIENT },
-    ]; // Roles for the dropdown
+  showPasswordForm = false;
+  passwordForm: FormGroup;
+  profileForm: FormGroup;
+  user: User | null = null;
 
-    constructor(
-        private authService: AuthService,
-        private fb: FormBuilder, // FormBuilder for creating the form
-        private messageService: MessageService // For toast messages
-    ) {
-        // Initialize the form
-        this.profileForm = this.fb.group({
-            name: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            phoneNumber: ['', Validators.required],
-            role: ['', Validators.required],
-        });
+  constructor(
+    private authService: AuthService,
+    private fb: FormBuilder,
+    private messageService: MessageService
+  ) {
+    this.passwordForm = this.fb.group({
+      currentPassword: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required]
+    }, { validators: this.passwordMatchValidator });
+
+    this.profileForm = this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadUserProfile();
+  }
+
+  loadUserProfile(): void {
+    this.authService.getAuthUser().subscribe(user => {
+      this.user = user as User;
+      this.profileForm.patchValue({
+        name: user?.name,
+        email: user?.email,
+        phoneNumber: user?.phoneNumber
+      });
+    });
+  }
+
+  passwordMatchValidator(form: FormGroup) {
+    return form.get('newPassword')?.value === form.get('confirmPassword')?.value 
+      ? null 
+      : { mismatch: true };
+  }
+
+  onPasswordChange(): void {
+    if (this.passwordForm.valid) {
+      const { currentPassword, newPassword } = this.passwordForm.value;
+      this.messageService.add({ severity: 'success', summary: 'Password Updated', detail: 'Password updated successfully' });
     }
+  }
 
-    ngOnInit(): void {
-        // Fetch the authenticated user's data
-        this.authService.getAuthUser().subscribe((user) => {
-            if (user) {
-                this.user = user as User;
-                this.populateForm(user as User);
-            }
-        });
+  onProfileUpdate(): void {
+    if (this.profileForm.valid && this.user) {
+        this.messageService.add({ severity: 'success', summary: 'Profile Updated', detail: 'Profile updated successfully' });
     }
-
-    /**
-     * Populates the form with the user's data.
-     * @param user - The authenticated user's data.
-     */
-    populateForm(user: User): void {
-        this.profileForm.patchValue({
-            name: user.name,
-            email: user.email,
-            phoneNumber: user.phoneNumber,
-            role: user.role,
-        });
-    }
-
-    /**
-     * Handles form submission.
-     */
-    onSubmit(): void {
-        if (this.profileForm.valid && this.user) {
-            const updatedUser: User = {
-                ...this.user,
-                ...this.profileForm.value,
-            };
-
-            // Call the AuthService to update the user's profile
-            this.authService.updateProfile(this.user.id as string, updatedUser).subscribe({
-                next: (response) => {
-                    console.log('Profile updated successfully', response);
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Success',
-                        detail: 'Profile updated successfully',
-                    });
-                    // Optionally, update the local user data
-                    this.user = response;
-                    this.populateForm(response);
-                },
-                error: (error) => {
-                    console.error('Failed to update profile', error);
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'Failed to update profile',
-                    });
-                },
-            });
-        }
-    }
+  }
 }

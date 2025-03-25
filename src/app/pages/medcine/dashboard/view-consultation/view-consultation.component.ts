@@ -40,7 +40,6 @@ export class ViewConsultationComponent implements OnInit {
     this.consultationService.getConsultationByAppointmentId(appointmentId).subscribe({
       next: (res: any) => {
         this.consultation = res.data;
-        console.log(JSON.stringify(this.consultation));
       },
       error: (err) => {
         console.error('Failed to load consultation details:', err);

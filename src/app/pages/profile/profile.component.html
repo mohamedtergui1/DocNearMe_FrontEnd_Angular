@@ -1,98 +1,108 @@
-<p-fluid>
-    <!-- Profile Section -->
-     
 
-    <!-- Form Section -->
-    <div *ngIf="isEditMode" class="flex mt-8">
-        <div class="card flex flex-col gap-6 w-full">
-            <div class="flex justify-between items-center">
-                <div class="font-semibold text-xl">Edit Profile</div>
-                <p-button label="Cancel" (onClick)="cancelEdit()" severity="secondary" icon="pi pi-times"></p-button>
+<div class="flex justify-center">
+    <div class="flex flex-col items-center justify-center w-full max-w-[800px] p-4">
+      <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
+        <div class="w-full bg-surface-0 dark:bg-surface-900 py-12 px-8 sm:px-20" style="border-radius: 53px">
+          <div class="text-center mb-8">
+            <div class="flex items-center justify-center pb-8">
+              <app-logo />
             </div>
-            
-            <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                     
+            <div class="text-primary-500 dark:text-primary-400 text-3xl font-bold mb-2">Profile Settings</div>
+          </div>
 
-                    <!-- Last Name -->
-                    <div>
-                        <label for="nom" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Last Name</label>
-                        <input pInputText id="nom" formControlName="nom" placeholder="Enter last name" class="w-full mb-4" />
-                        <small *ngIf="userForm.get('nom')?.invalid && userForm.get('nom')?.touched" class="p-error">Last name is required</small>
-                    </div>
+          <!-- Form Selection Toggle -->
+          <div class="flex justify-center gap-4 mb-8">
+            <button pButton 
+                    type="button" 
+                    label="Profile Information" 
+                    [class.p-button-outlined]="showPasswordForm"
+                    (click)="showPasswordForm = false"></button>
+            <button pButton 
+                    type="button" 
+                    label="Change Password" 
+                    [class.p-button-outlined]="!showPasswordForm"
+                    (click)="showPasswordForm = true"></button>
+          </div>
 
-                    <!-- First Name -->
-                    <div>
-                        <label for="prenom" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">First Name</label>
-                        <input pInputText id="prenom" formControlName="prenom" placeholder="Enter first name" class="w-full mb-4" />
-                        <small *ngIf="userForm.get('prenom')?.invalid && userForm.get('prenom')?.touched" class="p-error">First name is required</small>
-                    </div>
+          <p-divider [align]="'center'">
+            <span class="text-600 dark:text-400 font-medium">
+              {{ showPasswordForm ? 'Password Settings' : 'Personal Information' }}
+            </span>
+          </p-divider>
 
-                    <!-- Email -->
-                    <div>
-                        <label for="email" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                        <input pInputText id="email" type="email" formControlName="email" placeholder="Enter email address" class="w-full mb-4" />
-                        <small *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="p-error">
-                            <span *ngIf="userForm.get('email')?.errors?.['required']">Email is required</span>
-                            <span *ngIf="userForm.get('email')?.errors?.['email']">Invalid email format</span>
-                        </small>
-                    </div>
+          <!-- Password Change Form -->
+          <form *ngIf="showPasswordForm" [formGroup]="passwordForm" (ngSubmit)="onPasswordChange()" class="space-y-5 mt-5">
+            <div class="field">
+              <label class="text-primary-500 dark:text-primary-400 block text-sm font-medium mb-1">Current Password</label>
+              <p-password [feedback]="false" formControlName="currentPassword" [inputStyle]="{'width':'66vw'}" 
+                [ngClass]="{'p-invalid': passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched}">
+              </p-password>
+              <small *ngIf="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched" class="p-error block mt-1">
+                Current password is required
+              </small>
+            </div>
 
-                    <!-- Phone Number -->
-                    <div>
-                        <label for="telephone" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Phone Number</label>
-                        <p-inputMask id="telephone" mask="(999) 999-9999" formControlName="telephone" placeholder="(612) 345-6789" class="w-full mb-4"></p-inputMask>
-                        <small *ngIf="userForm.get('telephone')?.invalid && userForm.get('telephone')?.touched" class="p-error">Phone number is required</small>
-                    </div>
+            <div class="field">
+              <label class="text-primary-500 dark:text-primary-400 block text-sm font-medium mb-1">New Password</label>
+              <p-password [feedback]="true" formControlName="newPassword" [inputStyle]="{'width':'66vw'}" 
+                [ngClass]="{'p-invalid': passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched}">
+              </p-password>
+              <small *ngIf="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched" class="p-error block mt-1">
+                Password must be at least 6 characters
+              </small>
+            </div>
 
-                    <!-- Date of Birth -->
-                    <div>
-                        <label for="dateNaissance" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Date of Birth</label>
-                        <p-calendar 
-                            id="dateNaissance" 
-                            [showIcon]="true" 
-                            [maxDate]="maxBirthDate" 
-                            dateFormat="yy-mm-dd" 
-                            formControlName="dateNaissance" 
-                            placeholder="Select birth date" 
-                            class="w-full mb-4">
-                        </p-calendar>
-                        <small *ngIf="userForm.get('dateNaissance')?.invalid && userForm.get('dateNaissance')?.touched" class="p-error">
-                            <span *ngIf="userForm.get('dateNaissance')?.errors?.['required']">Date of birth is required</span>
-                            <span *ngIf="userForm.get('dateNaissance')?.errors?.['underage']">Must be at least 16 years old</span>
-                        </small>
-                    </div>
+            <div class="field">
+              <label class="text-primary-500 dark:text-primary-400 block text-sm font-medium mb-1">Confirm Password</label>
+              <p-password [feedback]="false" formControlName="confirmPassword" [inputStyle]="{'width':'66vw'}" 
+                [ngClass]="{'p-invalid': passwordForm.get('confirmPassword')?.errors?.['mismatch']}">
+              </p-password>
+              <small *ngIf="passwordForm.get('confirmPassword')?.errors?.['mismatch']" class="p-error block mt-1">
+                Passwords do not match
+              </small>
+            </div>
 
-                    <!-- Address Section -->
-                    <div formGroupName="adresse">
-                        <!-- Street Address -->
-                        <label for="rue" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Street Address</label>
-                        <input pInputText id="rue" formControlName="rue" placeholder="Enter street address" class="w-full mb-4" />
-                        <small *ngIf="userForm.get('adresse.rue')?.invalid && userForm.get('adresse.rue')?.touched" class="p-error">Street address is required</small>
-                    </div>
+            <div class="flex justify-center mt-6">
+              <button type="submit" pButton label="Change Password" class="w-full" 
+                [disabled]="passwordForm.invalid || passwordForm.pending"></button>
+            </div>
+          </form>
 
-                    <!-- City -->
-                    <div formGroupName="adresse">
-                        <label for="ville" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">City</label>
-                        <input pInputText id="ville" formControlName="ville" placeholder="Enter city" class="w-full mb-4" />
-                        <small *ngIf="userForm.get('adresse.ville')?.invalid && userForm.get('adresse.ville')?.touched" class="p-error">City is required</small>
-                    </div>
+          <!-- Profile Information Form -->
+          <form *ngIf="!showPasswordForm" [formGroup]="profileForm" (ngSubmit)="onProfileUpdate()" class="space-y-5 mt-5">
+            <div class="field">
+              <label class="text-primary-500 dark:text-primary-400 block text-sm font-medium mb-1">Name</label>
+              <input style="width:66vw;" pInputText formControlName="name"  class="w-full"
+                [ngClass]="{'p-invalid': profileForm.get('name')?.invalid && profileForm.get('name')?.touched}">
+              <small *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched" class="p-error block mt-1">
+                Name is required
+              </small>
+            </div>
 
-                    <!-- Postal Code -->
-                    <div formGroupName="adresse">
-                        <label for="codePostal" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Postal Code</label>
-                        <p-inputMask id="codePostal" mask="99999" formControlName="codePostal" placeholder="20000" class="w-full mb-4"></p-inputMask>
-                        <small *ngIf="userForm.get('adresse.codePostal')?.invalid && userForm.get('adresse.codePostal')?.touched" class="p-error">Postal code is required</small>
-                    </div>
+            <div class="field">
+              <label class="text-primary-500 dark:text-primary-400 block text-sm font-medium mb-1">Email</label>
+              <input style="width:66vw;" pInputText formControlName="email"  class="w-full"
+                [ngClass]="{'p-invalid': profileForm.get('email')?.invalid && profileForm.get('email')?.touched}">
+              <small *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="p-error block mt-1">
+                Valid email is required
+              </small>
+            </div>
 
-                    
-                </div>
+            <div class="field">
+              <label class="text-primary-500 dark:text-primary-400 block text-sm font-medium mb-1">Phone Number</label>
+              <input style="width:66vw;" pInputText formControlName="phoneNumber"  class="w-full"
+                [ngClass]="{'p-invalid': profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched}">
+              <small *ngIf="profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched" class="p-error block mt-1">
+                Phone number is required
+              </small>
+            </div>
 
-                <!-- Submit Button -->
-                <div class="flex justify-end mt-8">
-                    <p-button label="Update Profile" type="submit" styleClass="w-full" [disabled]="!userForm.valid"></p-button>
-                </div>
-            </form>
+            <div class="flex justify-center mt-6">
+              <button type="submit" pButton label="Update Profile"  class="w-full" 
+                [disabled]="profileForm.invalid"></button>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
-</p-fluid>
+  </div>
