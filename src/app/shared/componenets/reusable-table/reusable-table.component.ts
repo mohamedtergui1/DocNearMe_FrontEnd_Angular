@@ -143,24 +143,24 @@ interface ExportColumn {
   providers: [MessageService, ConfirmationService]
 })
 export class ReusableTableComponent implements OnInit {
-  @Input() data: any[] = []; // Data to display in the table
-  @Input() cols: Column[] = []; // Columns configuration
-  @Input() globalFilterFields: string[] = []; // Fields for global filtering
-  @Input() showView: boolean = true; // Show "View" button
-  @Input() showEdit: boolean = true; // Show "Edit" button
-  @Input() showDelete: boolean = true; // Show "Delete" button
-  @Input() showCreate: boolean = true; // Show "Create" button
-  @Output() viewItemEvent = new EventEmitter<any>(); // Event for viewing an item
-  @Output() editItemEvent = new EventEmitter<any>(); // Event for editing an item
-  @Output() deleteItemEvent = new EventEmitter<any>(); // Event for deleting an item
-  @Output() addItemEvent = new EventEmitter<any>(); // Event for adding an item
+  @Input() data: any[] = []; 
+  @Input() cols: Column[] = []; 
+  @Input() globalFilterFields: string[] = []; 
+  @Input() showView: boolean = true; 
+  @Input() showEdit: boolean = true; 
+  @Input() showDelete: boolean = true; 
+  @Input() showCreate: boolean = true; 
+  @Output() viewItemEvent = new EventEmitter<any>(); 
+  @Output() editItemEvent = new EventEmitter<any>(); 
+  @Output() deleteItemEvent = new EventEmitter<any>(); 
+  @Output() addItemEvent = new EventEmitter<any>(); 
 
-  itemDialog: boolean = false; // Controls the visibility of the dialog
-  item: any = {}; // Current item being edited or created
-  selectedItems: any[] | null = []; // Selected items for bulk deletion
-  submitted: boolean = false; // Tracks if the form has been submitted
+  itemDialog: boolean = false; 
+  item: any = {}; 
+  selectedItems: any[] | null = []; 
+  submitted: boolean = false; 
 
-  @ViewChild('dt') dt!: Table; // Reference to the PrimeNG table
+  @ViewChild('dt') dt!: Table; 
 
   constructor(
     private messageService: MessageService,

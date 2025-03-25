@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AppLayout } from './app/layout/component/app.layout';
 import { Dashboard } from './app/pages/medcine/dashboard/dashboard';
-import { Documentation } from './app/pages/documentation/documentation';
 import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
 import { ProfileComponent } from './app/pages/profile/profile.component';
@@ -17,6 +16,7 @@ import { CreateConsultationComponent } from './app/pages/medcine/consultation/cr
 import { PatientCalendarComponent } from './app/pages/patient/patient-calendar/patient-calendar.component';
 import { authGuard } from './app/core/guards/auth.guard';
 import { UpdateClinicComponent } from './app/pages/medcine/update-clinic/update-clinic.component';
+import { PatientDashboardComponent } from './app/pages/patient/patient-dashboard/patient-dashboard.component';
 
 export const appRoutes: Routes = [
     { path: '', component: Landing },
@@ -30,7 +30,7 @@ export const appRoutes: Routes = [
         path: 'patient/dashboard',
         component: AppLayout,
         children: [
-            { path: '', component: Dashboard },
+            { path: '', component: PatientDashboardComponent },
             { path: 'calendar', component: PatientCalendarComponent },
             {
                 path: 'profile',
@@ -70,8 +70,6 @@ export const appRoutes: Routes = [
                     clinic: getClinicForAuthUserResolver
                 }
             },
-            { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
-            { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') },
             {
                 path: 'create-consultation-from-appointment/:appointmentId',

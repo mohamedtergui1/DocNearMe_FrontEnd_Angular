@@ -33,9 +33,9 @@ export class LogoComponent implements OnInit  {
     }
 
     navigateToHome() {
-        this.loaderService.setLoading(true); // Set loading to true
+        this.loaderService.setLoading(true); 
         this.router.navigate(['/'], { fragment: 'home' }).finally(() => {
-            this.loaderService.setLoading(false); // Set loading to false after navigation
+            this.loaderService.setLoading(false); 
         });
     }
 }

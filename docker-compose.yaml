@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: docnearme-postgres-after
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: DocNearMe
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5431:5432"  # Host:Container port mapping
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - docnearme-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d DocNearMe"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: mohamedtergui/docnearme-backend:latest
+    container_name: docnearme-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+    environment:
+      # Database configuration
+      SPRING_DATASOURCE_URL: jdbc:postgresql://docnearme-postgres-after:5432/DocNearMe
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+
+      # Email configuration
+      EMAIL_USERNAME: test@gmail.com
+      EMAIL_PASSWORD: jxabmuioebcmoa
+
+      # Disable actuator
+      MANAGEMENT_ENDPOINTS_ENABLED: "false"
+      MANAGEMENT_ENDPOINT_HEALTH_ENABLED: "false"
+    networks:
+      - docnearme-network
+
+networks:
+  docnearme-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
