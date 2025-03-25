@@ -44,6 +44,13 @@ export const appRoutes: Routes = [
                 path: 'consultation',
                 loadComponent: () => import('./app/pages/patient/patient-consultation-list/patient-consultation-list.component').then((m) => m.PatientConsultationListComponent)
             }
+            ,
+            {
+                path: 'view-consultation-by-appointment-id/:appointmentId',
+                component: ViewConsultationComponent
+            }
+            ,
+             
 
         ]
         ,

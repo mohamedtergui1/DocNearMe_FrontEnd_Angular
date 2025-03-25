@@ -45,6 +45,6 @@ export class PatientConsultationListComponent {
   }
 
   showDetails(item: any) {
-      this.router.navigate(["medcine/dashboard/view-consultation-by-appointment-id/" + item.appointmentId])
+      this.router.navigate(["patient/dashboard/view-consultation-by-appointment-id/" + item.appointmentId])
   }
 }
