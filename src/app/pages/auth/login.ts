@@ -118,7 +118,7 @@ export class Login implements OnInit {
             next: (res: { data: LoginResponse }) => {
                 this.authService.storeAuthData(res.data);
 
-                this.router.navigate([res.data.user.role == UserRole.MEDICINE ? 'medcine/dashboard' : 'PATIENT/dashboard']);
+                this.router.navigate([res.data.user.role == UserRole.MEDICINE ? 'medcine/dashboard' : 'patient/dashboard']);
             },
             error: (error) => {
                 this.loading = false;
