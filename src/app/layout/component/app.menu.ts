@@ -37,6 +37,7 @@ export class AppMenu implements OnInit {
             items: [
                 { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/patient/dashboard'] },
                 { label: 'Calendar', icon: 'pi pi-fw pi-calendar', routerLink: ['/patient/dashboard/calendar'] },
+                { label: 'consultation', icon: 'pi pi-fw pi-calendar', routerLink: ['/patient/dashboard/consultation'] },
             ]
         },
         {

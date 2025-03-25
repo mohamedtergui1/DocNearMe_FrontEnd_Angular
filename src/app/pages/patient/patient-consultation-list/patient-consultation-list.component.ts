@@ -4,7 +4,7 @@ import { ReusableTableComponent } from '../../../shared/componenets/reusable-tab
 import {  Router } from '@angular/router';
 
 @Component({
-  selector: 'app-consultation-list',
+  selector: 'app-patient-consultation-list',
   standalone: true,
   imports: [ReusableTableComponent],
   template: `
@@ -20,17 +20,17 @@ import {  Router } from '@angular/router';
     ></app-reusable-table>
   `
 })
-export class ConsultationListComponent {
+export class PatientConsultationListComponent {
   consultations: any[] = [];
   cols = [
-    { field: 'patientName', header: 'Patient Name' },
+    { field: 'clinicName', header: 'clinic Name' },
     { field: 'consultationDate', header: 'Consultation Date' } ,
     { field: 'recoveryDays', header: 'Recovery Days' } ,
     { field: 'medicationDosage', header: 'Number Of Medication' } ,
   ];
 
   constructor(private consultationService: ConsultationService, private router:Router) {
-    this.consultationService.getConsultationsForAuthMedcine().subscribe({
+    this.consultationService.getConsultationsForAuthPatient().subscribe({
       
       next: (res: any) => {
         console.log(res.data);
@@ -38,8 +38,7 @@ export class ConsultationListComponent {
         this.consultations = res.data.map((consultation: any) => {
           return {
             ...consultation,
-            patientName: consultation.medicalRecord.patient?.name || 'N/A', consultationDate: consultation.consultationDate.slice(0, 16)
-            , medicationDosage: consultation.medicationsDosageSchedule.length || 'N/A'
+            clinicName: consultation.clinic.clinicName || 'N/A', consultationDate: consultation.consultationDate.slice(0, 16) , medicationDosage: consultation.medicationsDosageSchedule.length || 'N/A'
             }});
       } 
     });

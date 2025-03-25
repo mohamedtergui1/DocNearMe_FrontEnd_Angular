@@ -13,15 +13,15 @@ export const getClinicForAuthUserResolver: ResolveFn<any> = (route, state) => {
   return clinicService.getClinicForAuthUser().pipe(
     switchMap((clinic: any) => {
       if (clinic) {
-        return of(clinic); // Return the clinic if it exists
+        return of(clinic); 
       } else {
         router.navigate(['/create-clinic']);
-        return of(null); // Return null if no clinic exists
+        return of(null); 
       }
     }),
     catchError((error) => {
       router.navigate(['/create-clinic']);
-      return of(null); // Return null in case of an error
+      return of(null);
     })
   );
 };

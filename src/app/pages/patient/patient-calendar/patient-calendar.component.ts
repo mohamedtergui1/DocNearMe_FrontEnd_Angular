@@ -143,14 +143,15 @@ export class PatientCalendarComponent implements OnInit {
         this.events = [...formattedAppointments, ...formattedMedications];
         this.calendarOptions.events = this.events;
 
-        console.log('Calendar configured with events:', this.events);
+      
     }
 
     generateMedicationEvents(medications: any[]): any[] {
         const medicationEvents: any[] = [];
 
         medications.forEach((medication) => {
-            const startDate = new Date(); 
+            console.log(medication.consultationDate);
+            const startDate = new Date(medication.consultationDate); 
             const endDate = new Date(medication.dateWhenMustStopConsumption); 
             endDate.setDate(endDate.getDate() + 7); 
 
