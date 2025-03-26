@@ -11,5 +11,6 @@ export class CategoryService {
   getCategories(){
     return this.api.get("/auth/categories")
   }
+  
 }
   

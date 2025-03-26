@@ -85,7 +85,11 @@ export class ProfileComponent implements OnInit {
 
   onProfileUpdate(): void {
     if (this.profileForm.valid && this.user) {
-        this.messageService.add({ severity: 'success', summary: 'Profile Updated', detail: 'Profile updated successfully' });
+      const editedUser = this.profileForm.value
+        this.authService.updateProfile(this.user.id as string, editedUser ).subscribe((response:any)=>{
+          console.log(response)
+          this.authService.storeChangedUser(response.data)
+        })
     }
   }
 }

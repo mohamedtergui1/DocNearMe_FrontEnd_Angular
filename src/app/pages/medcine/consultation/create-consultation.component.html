@@ -2,9 +2,9 @@
   <div class="flex justify-end ">
     <p-button (click)="showDialog()" label="Show Patient Old Consultation" />
   </div>
-  <p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" 
-          [style]="{ width: '99vw' }" [contentStyle]="{'max-height': '80vh', 'overflow': 'auto'}">
-  <span class="p-text-secondary block mb-5">Update your information.</span>
+  <p-dialog header="Old Consultation List" [modal]="true" [(visible)]="visible" 
+          [style]="{ width: '99vw' }" [contentStyle]="{'height': '80vh', 'overflow': 'auto'}">
+  
 
   <div *ngIf=" oldConsultations && oldConsultations!.length > 0; else noConsultations">
     <div *ngFor="let consultation of oldConsultations; let i = index" class="mb-5">

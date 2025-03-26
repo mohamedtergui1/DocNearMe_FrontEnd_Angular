@@ -134,19 +134,27 @@ export class BookAppointmentComponent implements OnInit {
   }
 
   filterClinics(): void {
-    this.filteredClinics = this.clinics.filter((clinic: any) => {
+    // this.filteredClinics = this.clinics.filter((clinic: any) => {
       
-      const matchesSearch = !this.searchText ||
-        clinic.clinicName.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        clinic.clinicAddress.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        (clinic.category?.name.toLowerCase().includes(this.searchText.toLowerCase()));
+    //   const matchesSearch = !this.searchText ||
+    //     clinic.clinicName.toLowerCase().includes(this.searchText.toLowerCase()) ||
+    //     clinic.clinicAddress.toLowerCase().includes(this.searchText.toLowerCase()) ||
+    //     (clinic.category?.name.toLowerCase().includes(this.searchText.toLowerCase()));
 
-      // Category filter
-      const matchesCategory = !this.selectedCategory ||
-        ( clinic.categoryid === this.selectedCategory);
+    //   // Category filter
+    //   const matchesCategory = !this.selectedCategory ||
+    //     ( clinic.categoryid === this.selectedCategory);
 
-      return matchesSearch && matchesCategory;
-    });
+    //   return matchesSearch && matchesCategory;
+    // });
+    console.log(this.selectedCategory)
+
+    this.clinicService.searchByNameAndFliterByCategoryId(this.searchText,this.selectedCategory as string).subscribe(
+      (response:any) => {
+        console.log(response)
+        this.filteredClinics = response.data
+      }
+    )
   }
 
   navigateToBookAppointment(id: string) {

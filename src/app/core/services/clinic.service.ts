@@ -37,4 +37,7 @@ export class ClinicService {
     return this.api.put("/clinic/" + clinicId,clinic)
 
   }
+  searchByNameAndFliterByCategoryId(query:string,category_id:string){
+    return this.api.get("/clinic/searchByNameAndFilterByCategoryId?query=" + (query ? query : "") + "&category_id=" + (category_id ? category_id : "") )
+  }
 }

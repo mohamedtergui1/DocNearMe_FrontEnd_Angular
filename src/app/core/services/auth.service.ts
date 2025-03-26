@@ -109,6 +109,10 @@ export class AuthService {
         this.isAuthenticatedSubject.next(true);
     }
 
+    public storeChangedUser(authData: User): void {
+        this.currentUserSubject.next(authData);
+    }
+
     private clearAuthData(): void {
         localStorage.removeItem(this.ACCESS_TOKEN_KEY);
         localStorage.removeItem(this.REFRESH_TOKEN_KEY);
@@ -117,8 +121,8 @@ export class AuthService {
         this.isAuthenticatedSubject.next(false);
     }
 
-    updateProfile(userId: string, updates: User): Observable<User> {
-        return this.http.put<User>(`/users/${userId}`, updates);
+    updateProfile(userId: string, user: User) {
+        return this.http.put(`/users/${userId}`, user);
     }
 
     resetPassword(email: string): Observable<{ success: boolean }> {
