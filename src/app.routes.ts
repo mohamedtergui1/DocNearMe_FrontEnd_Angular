@@ -17,11 +17,12 @@ import { PatientCalendarComponent } from './app/pages/patient/patient-calendar/p
 import { authGuard } from './app/core/guards/auth.guard';
 import { UpdateClinicComponent } from './app/pages/medcine/update-clinic/update-clinic.component';
 import { PatientDashboardComponent } from './app/pages/patient/patient-dashboard/patient-dashboard.component';
+import { notAuthGuard } from './app/core/guards/not-auth.guard';
 
 export const appRoutes: Routes = [
     { path: '', component: Landing },
-    { path: 'bookApointment/:clinic_id', component: DoctorAppointmentComponent },
-    { path: 'ClinicListApointment', component: BookAppointmentComponent },
+    { path: 'bookApointment/:clinic_id', component: DoctorAppointmentComponent ,  canMatch:[authGuard] },
+    { path: 'ClinicListApointment', component: BookAppointmentComponent ,  canMatch:[authGuard] },
     {
         path: 'create-clinic',
         component: CreateClinicComponent
@@ -119,7 +120,7 @@ export const appRoutes: Routes = [
         canMatch:[authGuard]
     }
     ,
-    { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },
+    { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes'), canActivate:[notAuthGuard] },
     { path: 'notfound', component: Notfound },
     { path: '**', component: Notfound }
 ];
