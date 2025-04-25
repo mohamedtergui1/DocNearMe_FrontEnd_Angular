@@ -98,8 +98,14 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
                             <small *ngIf="registrationForm.get('termsAccepted')?.invalid && registrationForm.get('termsAccepted')?.touched" class="p-error block mt-1 ml-2">You must accept the terms and conditions</small>
                         </div>
 
-                        <!-- Submit Button -->
-                        <p-button label="Create Account" type="submit" styleClass="w-full mt-5 " [disabled]="!registrationForm.valid"></p-button>
+                        <!-- Submit Button with Loading Spinner -->
+                        <p-button 
+                            label="Create Account" 
+                            type="submit" 
+                            styleClass="w-full mt-5" 
+                            [loading]="isLoading" 
+                            [disabled]="!registrationForm.valid || isLoading">
+                        </p-button>
                     </form>
                 </div>
             </div>
@@ -111,6 +117,7 @@ import { LayoutComponent } from '../../shared/componenets/layout/layout.componen
 export class Register implements OnInit {
     registrationForm!: FormGroup;
     backendError: string | null = null;
+    isLoading: boolean = false;
 
     roles = Object.keys(UserRole).map((key) => ({
         label: key,
@@ -164,6 +171,8 @@ export class Register implements OnInit {
 
     onRegister() {
         if (this.registrationForm.valid) {
+            this.isLoading = true;
+            
             const formValue = this.registrationForm.value;
 
             const registrationData: RegisterRequest = {
@@ -176,9 +185,11 @@ export class Register implements OnInit {
 
             this.authService.register(registrationData).subscribe({
                 next: () => {
+                    this.isLoading = false;
                     this.router.navigate(['/auth/login']);
                 },
                 error: (error) => {
+                    this.isLoading = false;
                     this.backendError = error.error.message || 'Registration failed. Please try again.';
                 }
             });

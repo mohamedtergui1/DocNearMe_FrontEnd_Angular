@@ -68,50 +68,63 @@
         <div *ngFor="let dosage of dosageSchedules.controls; let i = index" [formGroupName]="i" class="dosage-schedule">
           <h3>Dosage Schedule {{ i + 1 }}</h3>
 
-          <div class="field">
+          <div class="field"  >
             <label for="medicationId-{{ i }}">Medication</label>
-            <p-autoComplete id="medicationId-{{ i }}" formControlName="medicationId" [suggestions]="filteredMedications"
+            <p-autoComplete [style]="{
+              width: '70vw'
+            }" id="medicationId-{{ i }}" formControlName="medicationId" [suggestions]="filteredMedications"
               (completeMethod)="searchMedications($event)" field="name"
               placeholder="Search for a medication"></p-autoComplete>
           </div>
 
-          <div class="field">
-            <label for="numberOfConsumptionInDay-{{ i }}">numberOfConsumptionInDay</label>
-            <p-inputNumber id="numberOfConsumptionInDay-{{ i }}" formControlName="numberOfConsumptionInDay"
+          <div class="field"  >
+            <label for="numberOfConsumptionInDay-{{ i }}">Number Of Consumation In Day</label>
+            <p-inputNumber [style]="{
+              width: '70vw'
+            }" id="numberOfConsumptionInDay-{{ i }}" formControlName="numberOfConsumptionInDay"
               mode="decimal" placeholder="Enter number of days"></p-inputNumber>
           </div>
 
 
-          <div class="field">
+          <div class="field"  >
             <label for="quantity-{{ i }}">Quantity</label>
-            <p-inputNumber id="quantity-{{ i }}" formControlName="quantity" mode="decimal"
+            <p-inputNumber [style]="{
+              width: '70vw'
+            }" id="quantity-{{ i }}" formControlName="quantity" mode="decimal"
               placeholder="Enter quantity"></p-inputNumber>
           </div>
 
-          <div class="field">
+          <div class="field"  >
             <label for="unit-{{ i }}">Unit</label>
-            <p-dropdown id="unit-{{ i }}" formControlName="unit" [options]="unitOptions" optionLabel="label"
+            <p-dropdown [style]="{
+              width: '70vw'
+            }" id="unit-{{ i }}" formControlName="unit" [options]="unitOptions" optionLabel="label"
               optionValue="value" placeholder="Select unit"></p-dropdown>
           </div>
 
-          <div class="field">
+          <div class="field"  >
             <label for="withFood-{{ i }}">With Food</label>
             <p-checkbox id="withFood-{{ i }}" formControlName="withFood" binary="true"></p-checkbox>
           </div>
 
-          <div class="field">
+          <div class="field"  >
             <label for="specialInstructions-{{ i }}">Special Instructions</label>
-            <textarea id="specialInstructions-{{ i }}" formControlName="specialInstructions" pInputTextarea rows="3"
+            <textarea [style]="{
+              width: '70vw',
+              'border' : '2px solid'
+            }" id="specialInstructions-{{ i }}" formControlName="specialInstructions" pInputTextarea rows="3"
               placeholder="Enter special instructions"></textarea>
           </div>
 
-          <div class="field">
+          <div class="field"  >
             <label for="dateWhenMustStopConsumption-{{ i }}">Stop Consumption Date</label>
-            <p-calendar id="dateWhenMustStopConsumption-{{ i }}" formControlName="dateWhenMustStopConsumption"
+            <p-calendar [style]="{
+              width: '70vw'
+            }" id="dateWhenMustStopConsumption-{{ i }}" formControlName="dateWhenMustStopConsumption"
               [showIcon]="true" dateFormat="yy-mm-dd" placeholder="Select stop consumption date"></p-calendar>
           </div>
 
-          <div class="field">
+          <div class="field"  >
             <p-button type="button" label="Remove Dosage Schedule" icon="pi pi-trash" styleClass="p-button-danger"
               (click)="removeDosageSchedule(i)"></p-button>
           </div>
@@ -119,7 +132,7 @@
       </div>
 
       <!-- Add Dosage Schedule Button -->
-      <div class="field">
+      <div class="field"  >
         <p-button type="button" label="Add Dosage Schedule" icon="pi pi-plus" styleClass="p-button-secondary"
           (click)="addDosageSchedule()"></p-button>
       </div>
